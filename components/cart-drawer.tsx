@@ -92,9 +92,9 @@ export function CartDrawer() {
     return `R ${price.toFixed(2)}`
   }
 
-  const freeDeliveryThreshold = 800
-  const remainingForFreeDelivery = Math.max(0, freeDeliveryThreshold - state.total)
-  const progressPercentage = Math.min(100, (state.total / freeDeliveryThreshold) * 100)
+  const FREE_DELIVERY_THRESHOLD = 1000
+  const remainingForFreeDelivery = Math.max(0, FREE_DELIVERY_THRESHOLD - state.total)
+  const progressPercentage = Math.min(100, (state.total / FREE_DELIVERY_THRESHOLD) * 100)
 
   const navTo = (url: string) => {
     try {
@@ -217,6 +217,11 @@ export function CartDrawer() {
                     style={{ width: `${progressPercentage}%` }}
                   />
                 </div>
+                <p className="text-xs text-slate-600 mt-2">
+                  {remainingForFreeDelivery > 0
+                    ? `You're ${formatPrice(remainingForFreeDelivery)} away from qualifying for free delivery within 5–10 km. Outside that area, delivery is charged at R5 per km.`
+                    : "Your order qualifies for free delivery within 5–10 km. Deliveries beyond 10 km are charged at R5 per km."}
+                </p>
               </div>
 
               {/* Clear Cart Button */}

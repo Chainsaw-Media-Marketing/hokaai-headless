@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { SocialIcons } from "./social-icons"
@@ -50,6 +52,10 @@ const ClockIcon = () => (
 function Footer() {
   const currentYear = new Date().getFullYear()
 
+  const handleLinkClick = () => {
+    window.scrollTo({ top: 0, behavior: "instant" })
+  }
+
   return (
     <footer className="bg-black text-white">
       <div className="container mx-auto px-4 py-12">
@@ -96,38 +102,45 @@ function Footer() {
             <h3 className="font-heading font-semibold text-xl mb-6">Quick Links</h3>
             <ul className="space-y-3">
               <li>
-                <Link href="/collections/beef" className="hover:text-brand-red transition-colors">
+                <Link
+                  href="/collections/beef"
+                  onClick={handleLinkClick}
+                  className="hover:text-brand-red transition-colors"
+                >
                   Shop
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="hover:text-brand-red transition-colors">
-                  About
+                <Link
+                  href="/game-processing"
+                  onClick={handleLinkClick}
+                  className="hover:text-brand-red transition-colors"
+                >
+                  Game Processing
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-brand-red transition-colors">
+                <Link
+                  href="/spitbraai-hire"
+                  onClick={handleLinkClick}
+                  className="hover:text-brand-red transition-colors"
+                >
+                  Spitbraai Hire
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" onClick={handleLinkClick} className="hover:text-brand-red transition-colors">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" onClick={handleLinkClick} className="hover:text-brand-red transition-colors">
                   Contact
                 </Link>
               </li>
               <li>
-                <Link href="/news" className="hover:text-brand-red transition-colors">
-                  News/Recipes
-                </Link>
-              </li>
-              <li>
-                <Link href="/delivery" className="hover:text-brand-red transition-colors">
-                  Delivery Info
-                </Link>
-              </li>
-              <li>
-                <Link href="/faq" className="hover:text-brand-red transition-colors">
-                  FAQ
-                </Link>
-              </li>
-              <li>
-                <Link href="/returns" className="hover:text-brand-red transition-colors">
-                  Returns
+                <Link href="/recipes" onClick={handleLinkClick} className="hover:text-brand-red transition-colors">
+                  Recipes
                 </Link>
               </li>
             </ul>
@@ -137,7 +150,7 @@ function Footer() {
           <div>
             <h3 className="font-heading font-semibold text-xl mb-6">Online Store</h3>
             <div className="space-y-4">
-              <p className="text-sm text-gray-200">Secure Payments</p>
+              <p className="text-sm text-gray-200">Secure card payments via PayGate</p>
               <div className="flex space-x-4">
                 <div className="bg-white rounded px-2 py-1">
                   <span className="text-blue-600 font-bold text-sm">VISA</span>
@@ -146,7 +159,6 @@ function Footer() {
                   <span className="text-red-600 font-bold text-sm">MC</span>
                 </div>
               </div>
-              <p className="text-sm text-gray-200 mt-4">Free delivery on orders over R800</p>
             </div>
           </div>
 
@@ -175,15 +187,47 @@ function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-gray-600 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-gray-400">© {currentYear} Hokaai Meat Market. All rights reserved.</p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link href="/privacy" className="text-sm text-gray-400 hover:text-white transition-colors">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="text-sm text-gray-400 hover:text-white transition-colors">
-              Terms of Service
-            </Link>
+        <div className="border-t border-gray-600 mt-12 pt-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div>
+              <h4 className="font-semibold mb-3">Legal</h4>
+              <ul className="space-y-2">
+                <li>
+                  <a
+                    href="/legal/terms-and-conditions.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-gray-400 hover:text-white transition-colors"
+                  >
+                    Terms & Conditions
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/legal/privacy-policy.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-gray-400 hover:text-white transition-colors"
+                  >
+                    Privacy Policy
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/legal/paia-manual.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-gray-400 hover:text-white transition-colors"
+                  >
+                    PAIA Manual
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div className="md:col-span-2 flex flex-col md:flex-row justify-between items-start md:items-center">
+              <p className="text-sm text-gray-400">© {currentYear} Hokaai Vleismark BK. All rights reserved.</p>
+              <p className="text-xs text-gray-500 mt-2 md:mt-0">CK Number: 1994/00211923</p>
+            </div>
           </div>
         </div>
       </div>
