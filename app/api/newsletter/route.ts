@@ -66,12 +66,15 @@ export async function POST(request: NextRequest) {
         }
       }
     `
-
+    const now = new Date().toISOString()
     const variables = {
       input: {
         email,
-        // You *can* add tags or marketing fields here later if needed,
-        // but keep it minimal for now to avoid schema issues.
+        tags: ["newsletter"],
+      emailMarketingConsent: {
+        marketingState: "SUBSCRIBED",
+        marketingOptInLevel: "SINGLE_OPT_IN",
+        consentUpdatedAt: now,
       },
     }
 
