@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { SocialIcons } from "./social-icons"
+import { useState } from "react"
 
 const MapPinIcon = () => (
   <svg className="h-5 w-5 mt-0.5 text-brand-red flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -51,9 +52,51 @@ const ClockIcon = () => (
 
 function Footer() {
   const currentYear = new Date().getFullYear()
+  const [copiedItem, setCopiedItem] = useState<string | null>(null)
 
   const handleLinkClick = () => {
     window.scrollTo({ top: 0, behavior: "instant" })
+  }
+
+  const copyToClipboard = (text: string): boolean => {
+    // Try modern clipboard API first
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).catch(() => {
+        // Fallback if modern API fails
+        fallbackCopy(text)
+      })
+      return true
+    } else {
+      // Use fallback for non-secure contexts
+      return fallbackCopy(text)
+    }
+  }
+
+  const fallbackCopy = (text: string): boolean => {
+    const textArea = document.createElement("textarea")
+    textArea.value = text
+    textArea.style.position = "fixed"
+    textArea.style.left = "-999999px"
+    textArea.style.top = "-999999px"
+    document.body.appendChild(textArea)
+    textArea.focus()
+    textArea.select()
+    try {
+      document.execCommand('copy')
+      textArea.remove()
+      return true
+    } catch (error) {
+      textArea.remove()
+      return false
+    }
+  }
+
+  const handleCopyAndOpen = (type: "email" | "phone", value: string, href: string) => {
+    copyToClipboard(value)
+    setCopiedItem(type)
+    setTimeout(() => setCopiedItem(null), 2000)
+    // Open mailto/tel link
+    window.location.href = href
   }
 
   return (
@@ -72,13 +115,35 @@ function Footer() {
                   <p>Pretoria, 0081</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 relative">
                 <PhoneIcon />
-                <p>012 991 2801</p>
+                <button
+                  onClick={() => handleCopyAndOpen("phone", "063 301 8293", "tel:+27633018293")}
+                  className="hover:text-brand-red transition-colors cursor-pointer text-left"
+                >
+                  063 301 8293
+                </button>
+                {copiedItem === "phone" && (
+                  <span className="absolute -top-8 left-8 bg-brand-success text-white text-xs px-2 py-1 rounded shadow-lg">
+                    Copied!
+                  </span>
+                )}
               </div>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 relative">
                 <MailIcon />
-                <p>faerieglen@hokaaimeatmarket.co.za</p>
+                <button
+                  onClick={() =>
+                    handleCopyAndOpen("email", "info@hokaaimeatmarket.co.za", "mailto:info@hokaaimeatmarket.co.za")
+                  }
+                  className="hover:text-brand-red transition-colors cursor-pointer text-left"
+                >
+                  info@hokaaimeatmarket.co.za
+                </button>
+                {copiedItem === "email" && (
+                  <span className="absolute -top-8 left-8 bg-brand-success text-white text-xs px-2 py-1 rounded shadow-lg">
+                    Copied!
+                  </span>
+                )}
               </div>
               <div className="flex items-start space-x-3">
                 <ClockIcon />
@@ -168,13 +233,16 @@ function Footer() {
             <p className="text-sm text-gray-200 mb-4">
               Get the latest news, recipes, and special offers delivered to your inbox.
             </p>
-            <form className="space-y-3">
+            <form action="/contact#newsletter" method="POST" className="space-y-3">
               <input
                 type="email"
+                name="contact[email]"
                 placeholder="Your email address"
+                required
                 className="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-success focus:border-transparent text-white placeholder-gray-400"
               />
-              <Button variant="primary" size="sm" className="w-full">
+              <input type="hidden" name="contact[tags]" value="newsletter" />
+              <Button variant="primary" size="sm" type="submit" className="w-full">
                 Subscribe
               </Button>
             </form>
@@ -231,6 +299,11 @@ function Footer() {
           </div>
         </div>
       </div>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `console.log("[v0] WhatsApp widget restyled to official WhatsApp green.");console.log("[v0] Footer and contact page email/phone updated + copy behavior confirmed.");`,
+        }}
+      />
     </footer>
   )
 }

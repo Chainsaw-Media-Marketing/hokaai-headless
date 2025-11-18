@@ -138,7 +138,7 @@ export function WhatsAppChatPanel({ isOpen, onClose }: WhatsAppChatPanelProps) {
         className="fixed bottom-6 right-6 w-full max-w-sm bg-white dark:bg-[#1A1A1A] rounded-lg shadow-2xl z-50 overflow-hidden"
       >
         {/* Header */}
-        <div className="bg-[#E60012] text-white p-4 flex items-center justify-between">
+        <div className="bg-[#25D366] text-white p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <WhatsAppIcon className="h-6 w-6" />
             <div>
@@ -174,7 +174,7 @@ export function WhatsAppChatPanel({ isOpen, onClose }: WhatsAppChatPanelProps) {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={4}
-                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E60012] dark:bg-[#141414] dark:text-white resize-none"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[#25D366] dark:bg-[#141414] dark:text-white resize-none"
                   placeholder="Type your message here..."
                   required
                 />
@@ -182,7 +182,7 @@ export function WhatsAppChatPanel({ isOpen, onClose }: WhatsAppChatPanelProps) {
 
               <button
                 type="submit"
-                className="w-full bg-[#E60012] hover:opacity-90 text-white font-semibold py-3 px-4 rounded-md transition-opacity focus:outline-none focus:ring-2 focus:ring-[#E60012] focus:ring-offset-2"
+                className="w-full bg-[#25D366] hover:bg-[#1DA851] text-white font-semibold py-3 px-4 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-2"
               >
                 Continue on WhatsApp
               </button>
@@ -190,7 +190,7 @@ export function WhatsAppChatPanel({ isOpen, onClose }: WhatsAppChatPanelProps) {
               <div className="text-center">
                 <a
                   href={`tel:${formatWhatsAppNumber(WHATSAPP_E164).replace(/\s/g, "")}`}
-                  className="text-sm text-slate-600 dark:text-slate-400 hover:text-[#E60012] dark:hover:text-[#E60012] transition-colors"
+                  className="text-sm text-slate-600 dark:text-slate-400 hover:text-[#25D366] dark:hover:text-[#25D366] transition-colors"
                 >
                   Or call: {formatWhatsAppNumber(WHATSAPP_E164)}
                 </a>

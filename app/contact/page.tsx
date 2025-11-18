@@ -18,13 +18,11 @@ export default function ContactPage() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [submitSuccess, setSubmitSuccess] = useState(false)
   const [mountedAt, setMountedAt] = useState<number>(0)
-  const [showFallback, setShowFallback] = useState(false)
-  const [copied, setCopied] = useState(false)
-  const [copiedEmail, setCopiedEmail] = useState(false)
-  const [lastMessage, setLastMessage] = useState("")
   const formRef = useRef<HTMLFormElement>(null)
   const honeypotRef = useRef<HTMLInputElement>(null)
+  const [copiedItem, setCopiedItem] = useState<string | null>(null)
 
   useEffect(() => {
     setMountedAt(Date.now())
@@ -32,11 +30,48 @@ export default function ContactPage() {
 
   const isMobile = typeof navigator !== "undefined" && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
   const whatsappNumber = "27633018293"
-  const publicEmail = "faerieglen@hokaaimeatmarket.co.za"
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const copyToClipboard = (text: string): boolean => {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).catch(() => {
+        fallbackCopy(text)
+      })
+      return true
+    } else {
+      return fallbackCopy(text)
+    }
+  }
+
+  const fallbackCopy = (text: string): boolean => {
+    const textArea = document.createElement("textarea")
+    textArea.value = text
+    textArea.style.position = "fixed"
+    textArea.style.left = "-999999px"
+    textArea.style.top = "-999999px"
+    document.body.appendChild(textArea)
+    textArea.focus()
+    textArea.select()
+    try {
+      document.execCommand('copy')
+      textArea.remove()
+      return true
+    } catch (error) {
+      textArea.remove()
+      return false
+    }
+  }
+
+  const handleCopyAndOpen = (type: "email" | "phone", value: string, href: string) => {
+    copyToClipboard(value)
+    setCopiedItem(type)
+    setTimeout(() => setCopiedItem(null), 2000)
+    window.location.href = href
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setErrors({})
+    setSubmitSuccess(false)
 
     if (!formRef.current) return
 
@@ -64,6 +99,54 @@ export default function ContactPage() {
       return
     }
 
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          subject,
+          message,
+          source: "contact",
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send message")
+      }
+
+      setSubmitSuccess(true)
+      formRef.current?.reset()
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        subject: "",
+        message: "",
+      })
+    } catch (error) {
+      setErrors({ form: error instanceof Error ? error.message : "Failed to send message. Please try again." })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleWhatsAppFallback = () => {
+    if (!formRef.current) return
+
+    const formData = new FormData(formRef.current)
+    const name = (formData.get("name") as string)?.trim()
+    const email = (formData.get("email") as string)?.trim()
+    const phone = (formData.get("phone") as string)?.trim()
+    const subject = (formData.get("subject") as string)?.trim()
+    const message = (formData.get("message") as string)?.trim()
+
     const fullBody = `[Hokaai] Website Contact
 
 Name: ${name}
@@ -72,13 +155,7 @@ Phone: ${phone}
 
 Subject: ${subject}
 Message:
-${message}
-
-Page: /contact
-Timestamp: ${new Date().toISOString()}`
-
-    setLastMessage(fullBody)
-    setIsSubmitting(true)
+${message}`
 
     if (isMobile) {
       window.location.href = `whatsapp://send?phone=${whatsappNumber}&text=${encodeURIComponent(fullBody)}`
@@ -88,19 +165,6 @@ Timestamp: ${new Date().toISOString()}`
     } else {
       window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(fullBody)}`, "_blank")
     }
-
-    setTimeout(() => {
-      setIsSubmitting(false)
-      setShowFallback(true)
-      formRef.current?.reset()
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        subject: "",
-        message: "",
-      })
-    }, 1000)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -108,20 +172,6 @@ Timestamp: ${new Date().toISOString()}`
       ...prev,
       [e.target.name]: e.target.value,
     }))
-  }
-
-  const handleCopyMessage = () => {
-    if (lastMessage) {
-      navigator.clipboard.writeText(lastMessage)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
-    }
-  }
-
-  const handleCopyEmail = () => {
-    navigator.clipboard.writeText(publicEmail)
-    setCopiedEmail(true)
-    setTimeout(() => setCopiedEmail(false), 1500)
   }
 
   return (
@@ -190,9 +240,19 @@ Timestamp: ${new Date().toISOString()}`
                         />
                       </svg>
                     </div>
-                    <div>
+                    <div className="relative">
                       <h3 className="font-heading font-semibold text-brand-primary mb-1">Phone</h3>
-                      <p className="text-body text-slate-700">012 991 2801</p>
+                      <button
+                        onClick={() => handleCopyAndOpen("phone", "063 301 8293", "tel:+27633018293")}
+                        className="text-body text-slate-700 hover:text-brand-red transition-colors cursor-pointer text-left"
+                      >
+                        063 301 8293
+                      </button>
+                      {copiedItem === "phone" && (
+                        <span className="absolute -top-8 left-0 bg-brand-success text-white text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap z-10">
+                          Copied!
+                        </span>
+                      )}
                     </div>
                   </div>
 
@@ -207,9 +267,21 @@ Timestamp: ${new Date().toISOString()}`
                         />
                       </svg>
                     </div>
-                    <div>
+                    <div className="relative">
                       <h3 className="font-heading font-semibold text-brand-primary mb-1">Email</h3>
-                      <p className="text-body text-slate-700">faerieglen@hokaaimeatmarket.co.za</p>
+                      <button
+                        onClick={() =>
+                          handleCopyAndOpen("email", "info@hokaaimeatmarket.co.za", "mailto:info@hokaaimeatmarket.co.za")
+                        }
+                        className="text-body text-slate-700 hover:text-brand-red transition-colors cursor-pointer text-left break-all"
+                      >
+                        info@hokaaimeatmarket.co.za
+                      </button>
+                      {copiedItem === "email" && (
+                        <span className="absolute -top-8 left-0 bg-brand-success text-white text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap z-10">
+                          Copied!
+                        </span>
+                      )}
                     </div>
                   </div>
 
@@ -364,59 +436,33 @@ Timestamp: ${new Date().toISOString()}`
                     </div>
                   )}
 
+                  {submitSuccess && (
+                    <div className="rounded-lg border border-green-500/30 bg-green-50 p-3 text-green-600 text-sm">
+                      Message sent successfully! We'll get back to you soon.
+                    </div>
+                  )}
+
                   <Button
                     type="submit"
                     disabled={isSubmitting}
                     className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-semibold"
                   >
-                    {isSubmitting ? "Opening WhatsApp..." : "Send via WhatsApp"}
+                    {isSubmitting ? "Sending..." : "Send Message"}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    onClick={handleWhatsAppFallback}
+                    variant="outline"
+                    className="w-full border-brand-red text-brand-red hover:bg-brand-red/5"
+                  >
+                    Or Send via WhatsApp
                   </Button>
 
                   <p className="text-xs text-slate-600 text-center">
-                    We'll reply on WhatsApp to assist you with your inquiry.
+                    We'll respond to your inquiry as soon as possible.
                   </p>
                 </form>
-
-                {showFallback && (
-                  <div className="mt-6 pt-6 border-t border-slate-200">
-                    <p className="text-xs text-slate-600 mb-3 text-center">
-                      If WhatsApp didn't open, use one of these options:
-                    </p>
-                    <div className="flex flex-col gap-2">
-                      {isMobile ? (
-                        <>
-                          <a
-                            href={`tel:+${whatsappNumber}`}
-                            className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors text-center"
-                          >
-                            Call us
-                          </a>
-                          <a
-                            href={`sms:+${whatsappNumber}?&body=${encodeURIComponent(lastMessage)}`}
-                            className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors text-center"
-                          >
-                            Send SMS instead
-                          </a>
-                        </>
-                      ) : (
-                        <>
-                          <button
-                            onClick={handleCopyEmail}
-                            className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
-                          >
-                            {copiedEmail ? "Copied!" : "Copy email address"}
-                          </button>
-                          <button
-                            onClick={handleCopyMessage}
-                            className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
-                          >
-                            {copied ? "Copied!" : "Copy message"}
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>

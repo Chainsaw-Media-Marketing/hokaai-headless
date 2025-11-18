@@ -10,10 +10,8 @@ interface BookingFormProps {
 export function BookingForm({ whatsappNumber }: BookingFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [submitSuccess, setSubmitSuccess] = useState(false)
   const [mountedAt, setMountedAt] = useState<number>(0)
-  const [showFallback, setShowFallback] = useState(false)
-  const [copied, setCopied] = useState(false)
-  const [lastMessage, setLastMessage] = useState("")
   const formRef = useRef<HTMLFormElement>(null)
   const honeypotRef = useRef<HTMLInputElement>(null)
 
@@ -23,11 +21,11 @@ export function BookingForm({ whatsappNumber }: BookingFormProps) {
 
   const isMobile = typeof navigator !== "undefined" && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setErrors({})
+    setSubmitSuccess(false)
 
-    // Get form data
     if (!formRef.current) return
 
     const formData = new FormData(formRef.current)
@@ -38,7 +36,6 @@ export function BookingForm({ whatsappNumber }: BookingFormProps) {
     const weight = (formData.get("weight") as string)?.trim()
     const notes = (formData.get("notes") as string)?.trim()
 
-    // Validate required fields
     const newErrors: Record<string, string> = {}
     if (!name) newErrors.name = "Name is required"
     if (!email) newErrors.email = "Email is required"
@@ -49,18 +46,58 @@ export function BookingForm({ whatsappNumber }: BookingFormProps) {
       return
     }
 
-    // Check honeypot - block if filled
     if (honeypotRef.current && honeypotRef.current.value) {
       setErrors({ form: "Invalid submission detected" })
       return
     }
 
-    // Time trap: block if submitted < 3s after mount
-    const timeSinceMount = Date.now() - mountedAt
-    if (timeSinceMount < 3000) {
-      setErrors({ form: "Please wait a moment before submitting" })
-      return
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          message: `Game Processing Booking
+
+Species / Type of game: ${species || "Not specified"}
+Estimated weight (kg): ${weight || "Not specified"}
+Processing requests / notes: ${notes || "None"}`,
+          source: "game-processing",
+          species,
+          weight,
+          processingNotes: notes,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send booking request")
+      }
+
+      setSubmitSuccess(true)
+      formRef.current?.reset()
+    } catch (error) {
+      setErrors({ form: error instanceof Error ? error.message : "Failed to send booking. Please try again." })
+    } finally {
+      setIsSubmitting(false)
     }
+  }
+
+  const handleWhatsAppFallback = () => {
+    if (!formRef.current) return
+
+    const formData = new FormData(formRef.current)
+    const name = (formData.get("name") as string)?.trim()
+    const email = (formData.get("email") as string)?.trim()
+    const phone = (formData.get("phone") as string)?.trim()
+    const species = (formData.get("species") as string)?.trim()
+    const weight = (formData.get("weight") as string)?.trim()
+    const notes = (formData.get("notes") as string)?.trim()
 
     const fullBody = `[Hokaai] Game Processing Booking
 
@@ -71,38 +108,15 @@ Phone: ${phone}
 Species / Type of game: ${species || ""}
 Estimated weight (kg): ${weight || ""}
 Processing requests / notes:
-${notes || "None"}
-
-Page: /game-processing
-Timestamp: ${new Date().toISOString()}`
-
-    setLastMessage(fullBody)
-    setIsSubmitting(true)
+${notes || "None"}`
 
     if (isMobile) {
-      // Try native app first
       window.location.href = `whatsapp://send?phone=${whatsappNumber}&text=${encodeURIComponent(fullBody)}`
-      // After 800ms, open fallback tab
       setTimeout(() => {
         window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(fullBody)}`, "_blank")
       }, 800)
     } else {
-      // Desktop: open WhatsApp Web
       window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(fullBody)}`, "_blank")
-    }
-
-    setTimeout(() => {
-      setIsSubmitting(false)
-      setShowFallback(true)
-      formRef.current?.reset()
-    }, 1000)
-  }
-
-  const handleCopy = () => {
-    if (lastMessage) {
-      navigator.clipboard.writeText(lastMessage)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
     }
   }
 
@@ -119,7 +133,6 @@ Timestamp: ${new Date().toISOString()}`
 
       <div className="rounded-2xl border border-border/40 bg-black p-6 max-w-2xl">
         <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
-          {/* Honeypot field */}
           <input
             ref={honeypotRef}
             name="company"
@@ -216,48 +229,33 @@ Timestamp: ${new Date().toISOString()}`
             </div>
           )}
 
+          {submitSuccess && (
+            <div className="rounded-lg border border-green-500/30 bg-green-500/10 p-3 text-green-400 text-sm">
+              Booking request sent successfully! We'll contact you soon.
+            </div>
+          )}
+
           <Button
             type="submit"
             disabled={isSubmitting}
             className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-semibold"
           >
-            {isSubmitting ? "Opening WhatsApp..." : "Send via WhatsApp"}
+            {isSubmitting ? "Sending..." : "Send Booking Request"}
+          </Button>
+
+          <Button
+            type="button"
+            onClick={handleWhatsAppFallback}
+            variant="outline"
+            className="w-full border-white/40 text-white hover:bg-white/10"
+          >
+            Or Send via WhatsApp
           </Button>
 
           <p className="text-xs text-white/60 text-center">
-            We'll reply on WhatsApp to arrange collection and processing.
+            We'll contact you to arrange collection and processing.
           </p>
         </form>
-
-        {showFallback && (
-          <div className="mt-6 pt-6 border-t border-border/40">
-            <p className="text-xs text-white/70 mb-3 text-center">If WhatsApp didn't open, use one of these options:</p>
-            <div className="flex flex-col sm:flex-row gap-2">
-              {isMobile && (
-                <a
-                  href="tel:+27633018293"
-                  className="flex-1 rounded-lg border border-border/40 bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors text-center"
-                >
-                  Call us
-                </a>
-              )}
-              {isMobile && (
-                <a
-                  href={`sms:+27633018293?&body=${encodeURIComponent(lastMessage)}`}
-                  className="flex-1 rounded-lg border border-border/40 bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors text-center"
-                >
-                  Send SMS instead
-                </a>
-              )}
-              <button
-                onClick={handleCopy}
-                className="flex-1 rounded-lg border border-border/40 bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors relative"
-              >
-                {copied ? "Copied!" : "Copy message"}
-              </button>
-            </div>
-          </div>
-        )}
       </div>
     </section>
   )

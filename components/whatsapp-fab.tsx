@@ -14,7 +14,7 @@ export function WhatsAppFab({ onClick }: WhatsAppFabProps) {
   return (
     <button
       onClick={onClick}
-      className="fixed bottom-6 right-6 w-14 h-14 bg-[#E60012] hover:opacity-90 text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 z-50 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[#E60012] focus:ring-offset-2"
+      className="fixed bottom-6 right-6 w-14 h-14 bg-[#25D366] hover:bg-[#1DA851] text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 z-50 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-2"
       aria-label="Chat on WhatsApp"
     >
       <WhatsAppIcon className="h-7 w-7" />

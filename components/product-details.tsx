@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Minus, ShoppingCart, Info } from "lucide-react"
+import { Minus, ShoppingCart, Info } from 'lucide-react'
 import { PlusIcon } from "@/components/icons/Plus"
 import type { Product, ShopifyVariant } from "@/lib/types"
 import { addToCartAndHydrate } from "@/lib/cart-actions"
@@ -35,6 +35,36 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const [householdSize, setHouseholdSize] = useState<string>("not-specified")
   const [specialRequests, setSpecialRequests] = useState<string>("")
   const [isAdding, setIsAdding] = useState(false)
+  
+  const [moisturePreference, setMoisturePreference] = useState<string>("")
+  const [fatPreference, setFatPreference] = useState<string>("")
+
+  const isBiltong = (() => {
+    if (!product.deli_type) return false
+    
+    if (Array.isArray(product.deli_type)) {
+      return product.deli_type.includes("biltong")
+    }
+    
+    if (typeof product.deli_type === "string") {
+      if (product.deli_type === "biltong") return true
+      
+      try {
+        const parsed = JSON.parse(product.deli_type)
+        if (Array.isArray(parsed)) {
+          return parsed.includes("biltong")
+        }
+      } catch {
+        return false
+      }
+    }
+    
+    return false
+  })()
+
+  if (isBiltong) {
+    console.log("[v0] Biltong options injected for", product.handle)
+  }
 
   const showVariantSelector = shouldShowVariantSelector(product.variants)
   const isBulk = isBulkProduct(product)
@@ -146,6 +176,12 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       if (isHamper && specialRequests.trim().length > 0) {
         attributes.push({ key: "special_requests", value: specialRequests.trim() })
       }
+      if (isBiltong && moisturePreference) {
+        attributes.push({ key: "moisture_preference", value: moisturePreference })
+      }
+      if (isBiltong && fatPreference) {
+        attributes.push({ key: "fat_preference", value: fatPreference })
+      }
 
       await addToCartAndHydrate({
         lines: [
@@ -250,6 +286,36 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             </button>
           </div>
         </div>
+
+        {isBiltong && (
+          <>
+            <div>
+              <label className="text-label text-slate-700 mb-3 block">Moisture Preference</label>
+              <select
+                value={moisturePreference}
+                onChange={(e) => setMoisturePreference(e.target.value)}
+                className="w-full px-4 py-3 border border-slate-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-success"
+              >
+                <option value="">Select preference</option>
+                <option value="Wet">Wet</option>
+                <option value="Dry">Dry</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-label text-slate-700 mb-3 block">Fat Preference</label>
+              <select
+                value={fatPreference}
+                onChange={(e) => setFatPreference(e.target.value)}
+                className="w-full px-4 py-3 border border-slate-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-success"
+              >
+                <option value="">Select preference</option>
+                <option value="With Fat">With Fat</option>
+                <option value="No Fat">No Fat</option>
+              </select>
+            </div>
+          </>
+        )}
 
         {isBulk && (
           <div>

@@ -10,10 +10,8 @@ interface SpitHireFormProps {
 export function SpitHireForm({ whatsappNumber }: SpitHireFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [submitSuccess, setSubmitSuccess] = useState(false)
   const [mountedAt, setMountedAt] = useState<number>(0)
-  const [showFallback, setShowFallback] = useState(false)
-  const [copied, setCopied] = useState(false)
-  const [lastMessage, setLastMessage] = useState("")
   const [guestCount, setGuestCount] = useState(50)
   const [selectedExtras, setSelectedExtras] = useState<string[]>([])
   const formRef = useRef<HTMLFormElement>(null)
@@ -29,11 +27,11 @@ export function SpitHireForm({ whatsappNumber }: SpitHireFormProps) {
     setSelectedExtras((prev) => (prev.includes(extra) ? prev.filter((e) => e !== extra) : [...prev, extra]))
   }
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setErrors({})
+    setSubmitSuccess(false)
 
-    // Get form data
     if (!formRef.current) return
 
     const formData = new FormData(formRef.current)
@@ -50,7 +48,6 @@ export function SpitHireForm({ whatsappNumber }: SpitHireFormProps) {
     const buyingMeat = (formData.get("buyingMeat") as string)?.trim()
     const notes = (formData.get("notes") as string)?.trim()
 
-    // Validate required fields
     const newErrors: Record<string, string> = {}
     if (!name) newErrors.name = "Name is required"
     if (!email) newErrors.email = "Email is required"
@@ -63,18 +60,79 @@ export function SpitHireForm({ whatsappNumber }: SpitHireFormProps) {
       return
     }
 
-    // Check honeypot - block if filled
     if (honeypotRef.current && honeypotRef.current.value) {
       setErrors({ form: "Invalid submission detected" })
       return
     }
 
-    // Time trap: block if submitted < 3s after mount
-    const timeSinceMount = Date.now() - mountedAt
-    if (timeSinceMount < 3000) {
-      setErrors({ form: "Please wait a moment before submitting" })
-      return
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          message: `Spitbraai Hire Booking
+
+Event Date: ${eventDate || "Not specified"}
+Event Time: ${eventTime || "Not specified"}
+Number of Guests: ${guestCount}
+Event Address: ${address || "Not specified"}
+Suburb: ${suburb || "Not specified"}
+City: ${city || "Not specified"}
+Postal Code: ${postalCode || "Not specified"}
+Spit Type: ${unitType}
+Buying Meat: ${buyingMeat}
+Extras: ${selectedExtras.length > 0 ? selectedExtras.join(", ") : "None"}
+Notes: ${notes || "None"}`,
+          source: "spitbraai-hire",
+          eventDate,
+          eventTime,
+          guestCount,
+          eventLocation: { address, suburb, city, postalCode },
+          spitType: unitType,
+          buyingMeat,
+          extras: selectedExtras,
+          additionalNotes: notes,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send booking request")
+      }
+
+      setSubmitSuccess(true)
+      formRef.current?.reset()
+      setSelectedExtras([])
+      setGuestCount(50)
+    } catch (error) {
+      setErrors({ form: error instanceof Error ? error.message : "Failed to send booking. Please try again." })
+    } finally {
+      setIsSubmitting(false)
     }
+  }
+
+  const handleWhatsAppFallback = () => {
+    if (!formRef.current) return
+
+    const formData = new FormData(formRef.current)
+    const name = (formData.get("name") as string)?.trim()
+    const email = (formData.get("email") as string)?.trim()
+    const phone = (formData.get("phone") as string)?.trim()
+    const eventDate = (formData.get("eventDate") as string)?.trim()
+    const eventTime = (formData.get("eventTime") as string)?.trim()
+    const address = (formData.get("address") as string)?.trim()
+    const suburb = (formData.get("suburb") as string)?.trim()
+    const city = (formData.get("city") as string)?.trim()
+    const postalCode = (formData.get("postalCode") as string)?.trim()
+    const unitType = (formData.get("unitType") as string)?.trim()
+    const buyingMeat = (formData.get("buyingMeat") as string)?.trim()
+    const notes = (formData.get("notes") as string)?.trim()
 
     const fullBody = `[Hokaai] Spitbraai Hire Booking
 
@@ -98,40 +156,15 @@ Buying Meat: ${buyingMeat}
 Extras Needed: ${selectedExtras.length > 0 ? selectedExtras.join(", ") : "None"}
 
 Additional Notes:
-${notes || "None"}
-
-Page: /spitbraai-hire
-Timestamp: ${new Date().toISOString()}`
-
-    setLastMessage(fullBody)
-    setIsSubmitting(true)
+${notes || "None"}`
 
     if (isMobile) {
-      // Try native app first
       window.location.href = `whatsapp://send?phone=${whatsappNumber}&text=${encodeURIComponent(fullBody)}`
-      // After 800ms, open fallback tab
       setTimeout(() => {
         window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(fullBody)}`, "_blank")
       }, 800)
     } else {
-      // Desktop: open WhatsApp Web
       window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(fullBody)}`, "_blank")
-    }
-
-    setTimeout(() => {
-      setIsSubmitting(false)
-      setShowFallback(true)
-      formRef.current?.reset()
-      setSelectedExtras([])
-      setGuestCount(50)
-    }, 1000)
-  }
-
-  const handleCopy = () => {
-    if (lastMessage) {
-      navigator.clipboard.writeText(lastMessage)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
     }
   }
 
@@ -142,12 +175,11 @@ Timestamp: ${new Date().toISOString()}`
         <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-16 h-0.5 bg-brand-red" />
       </h2>
       <p className="text-foreground/70 mb-6 text-center">
-        Ready to hire a spitbraai? Complete the form below and we'll contact you via WhatsApp to confirm your booking.
+        Ready to hire a spitbraai? Complete the form below and we'll contact you to confirm your booking.
       </p>
 
       <div className="rounded-2xl border border-border/40 bg-black p-6 max-w-2xl">
         <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
-          {/* Honeypot field */}
           <input
             ref={honeypotRef}
             name="company"
@@ -371,48 +403,33 @@ Timestamp: ${new Date().toISOString()}`
             </div>
           )}
 
+          {submitSuccess && (
+            <div className="rounded-lg border border-green-500/30 bg-green-500/10 p-3 text-green-400 text-sm">
+              Booking request sent successfully! We'll contact you soon.
+            </div>
+          )}
+
           <Button
             type="submit"
             disabled={isSubmitting}
             className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-semibold"
           >
-            {isSubmitting ? "Opening WhatsApp..." : "Send via WhatsApp"}
+            {isSubmitting ? "Sending..." : "Send Booking Request"}
+          </Button>
+
+          <Button
+            type="button"
+            onClick={handleWhatsAppFallback}
+            variant="outline"
+            className="w-full border-white/40 text-white hover:bg-white/10"
+          >
+            Or Send via WhatsApp
           </Button>
 
           <p className="text-xs text-white/60 text-center">
-            We'll reply on WhatsApp to confirm your booking and arrange collection.
+            We'll contact you to confirm your booking and arrange collection.
           </p>
         </form>
-
-        {showFallback && (
-          <div className="mt-6 pt-6 border-t border-border/40">
-            <p className="text-xs text-white/70 mb-3 text-center">If WhatsApp didn't open, use one of these options:</p>
-            <div className="flex flex-col sm:flex-row gap-2">
-              {isMobile && (
-                <a
-                  href="tel:+27633018293"
-                  className="flex-1 rounded-lg border border-border/40 bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors text-center"
-                >
-                  Call us
-                </a>
-              )}
-              {isMobile && (
-                <a
-                  href={`sms:+27633018293?&body=${encodeURIComponent(lastMessage)}`}
-                  className="flex-1 rounded-lg border border-border/40 bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors text-center"
-                >
-                  Send SMS instead
-                </a>
-              )}
-              <button
-                onClick={handleCopy}
-                className="flex-1 rounded-lg border border-border/40 bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors relative"
-              >
-                {copied ? "Copied!" : "Copy message"}
-              </button>
-            </div>
-          </div>
-        )}
       </div>
     </section>
   )
