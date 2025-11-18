@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server"
-import { storefrontFetch } from "@/server/shopify"
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,61 +15,59 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: "Invalid email format" }, { status: 400 })
     }
 
-    const mutation = `
-      mutation customerCreate($input: CustomerInput!) {
-        customerCreate(input: $input) {
-          customer {
-            id
-            email
-            emailMarketingConsent {
-              marketingState
-            }
-          }
-          customerUserErrors {
-            field
-            message
-          }
-        }
-      }
-    `
+    const shopifyDomain = "https://hokaaimeatmarket.co.za"
+    const contactUrl = `${shopifyDomain}/contact`
+    
+    // Build form-urlencoded body
+    const formData = new URLSearchParams({
+      "form_type": "customer",
+      "contact[email]": email,
+      "contact[tags]": "newsletter",
+    })
 
-    const variables = {
-      input: {
-        email,
-        emailMarketingConsent: {
-          marketingState: "SUBSCRIBED",
-          marketingOptInLevel: "SINGLE_OPT_IN",
+    // Create abort controller for timeout
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
+
+    try {
+      // POST to Shopify's native contact endpoint
+      const response = await fetch(contactUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
         },
-        tags: ["newsletter"],
-      },
-    }
+        body: formData.toString(),
+        signal: controller.signal,
+      })
 
-    const data = await storefrontFetch<{
-      customerCreate: {
-        customer: {
-          id: string
-          email: string
-        } | null
-        customerUserErrors: Array<{ field: string[]; message: string }>
-      }
-    }>(mutation, variables)
+      clearTimeout(timeoutId)
 
-    // Check for errors
-    if (data.customerCreate.customerUserErrors && data.customerCreate.customerUserErrors.length > 0) {
-      const error = data.customerCreate.customerUserErrors[0]
-      console.error("[newsletter] Customer create error:", error)
+      // Check if successful
+      const responseText = await response.text()
       
-      // If customer already exists, that's actually a success case for newsletter
-      if (error.message.toLowerCase().includes("taken") || error.message.toLowerCase().includes("already")) {
-        console.log("[newsletter] Customer already exists, treating as success")
+      if (response.ok && responseText.includes("Thank you for your message")) {
+        console.log("[newsletter] Successfully subscribed:", email)
         return NextResponse.json({ success: true })
       }
-      
-      return NextResponse.json({ success: false, error: error.message }, { status: 400 })
-    }
 
-    console.log("[newsletter] Successfully subscribed:", email)
-    return NextResponse.json({ success: true })
+      // If response wasn't OK or didn't include success message
+      console.error("[newsletter] Subscription failed:", response.status, responseText)
+      return NextResponse.json(
+        { success: false, error: "Failed to subscribe. Please try again." },
+        { status: 400 }
+      )
+    } catch (fetchError) {
+      clearTimeout(timeoutId)
+      
+      if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+        console.error("[newsletter] Request timed out")
+        return NextResponse.json(
+          { success: false, error: "Request timed out. Please try again." },
+          { status: 408 }
+        )
+      }
+      throw fetchError
+    }
   } catch (error) {
     console.error("[newsletter] Subscription error:", error)
     const errorMessage = error instanceof Error ? error.message : "Failed to subscribe. Please try again."
