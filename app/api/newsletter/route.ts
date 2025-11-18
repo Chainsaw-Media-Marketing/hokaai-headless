@@ -1,13 +1,28 @@
 import { NextRequest, NextResponse } from "next/server"
+import { storefrontFetch } from "@/server/shopify"
 
-const SHOPIFY_STORE_DOMAIN =
-  process.env.SHOPIFY_STOREFRONT_DOMAIN || process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_DOMAIN
+type CustomerCreateResponse = {
+  customerCreate: {
+    customer: {
+      id: string
+      email: string
+      emailMarketingConsent?: {
+        marketingState: string
+      } | null
+    } | null
+    customerUserErrors: Array<{
+      field: string[] | null
+      message: string
+    }>
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { email } = body
 
+    // Basic validation
     if (!email || typeof email !== "string") {
       return NextResponse.json(
         { success: false, error: "Email is required" },
@@ -23,45 +38,63 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (!SHOPIFY_STORE_DOMAIN) {
-      console.error("[newsletter] Missing SHOPIFY_STOREFRONT_DOMAIN env var")
+    // 🔑 Storefront API mutation with the **correct** input type
+    const mutation = `
+      mutation customerCreate($input: CustomerCreateInput!) {
+        customerCreate(input: $input) {
+          customer {
+            id
+            email
+            emailMarketingConsent {
+              marketingState
+            }
+          }
+          customerUserErrors {
+            field
+            message
+          }
+        }
+      }
+    `
+
+    const variables = {
+      input: {
+        email,
+        // Storefront API supports email marketing consent
+        emailMarketingConsent: {
+          marketingState: "SUBSCRIBED",
+          marketingOptInLevel: "SINGLE_OPT_IN",
+        },
+        // ⚠️ Storefront API does NOT support tags, so we skip tags here
+        // tags: ["newsletter"],   // <— this would be Admin API-only
+      },
+    }
+
+    const data = await storefrontFetch<CustomerCreateResponse>(mutation, variables)
+
+    const errors = data.customerCreate.customerUserErrors || []
+
+    if (errors.length > 0) {
+      const first = errors[0]
+      console.error("[newsletter] customerCreate error:", first)
+
+      const msg = first.message.toLowerCase()
+
+      // If the email is already in use, we treat that as success for newsletter purposes
+      if (msg.includes("already") || msg.includes("taken") || msg.includes("has already been used")) {
+        console.log("[newsletter] Customer already exists, treating as success:", email)
+        return NextResponse.json({ success: true })
+      }
+
+      // Otherwise, surface a generic error to the user
       return NextResponse.json(
         { success: false, error: "Failed to subscribe. Please try again." },
-        { status: 500 },
+        { status: 400 },
       )
     }
 
-    const form = new URLSearchParams()
-    form.append("form_type", "customer")
-    form.append("contact[email]", email)
-    form.append("contact[tags]", "newsletter")
-
-    const shopifyResponse = await fetch(`https://${SHOPIFY_STORE_DOMAIN}/contact`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Accept: "text/html,application/json,*/*",
-      },
-      body: form.toString(),
-      redirect: "manual",
-    })
-
-    // Shopify returns 302 on success normally
-    if (shopifyResponse.status === 302 || shopifyResponse.ok) {
-      return NextResponse.json({ success: true })
-    }
-
-    const raw = await shopifyResponse.text()
-    console.error(
-      "[newsletter] Shopify /contact error:",
-      shopifyResponse.status,
-      raw.slice(0, 300),
-    )
-
-    return NextResponse.json(
-      { success: false, error: "Failed to subscribe. Please try again." },
-      { status: 400 },
-    )
+    console.log("[newsletter] Successfully subscribed via Storefront:", email)
+    return NextResponse.json({ success: true })
   } catch (error) {
     console.error("[newsletter] Subscription error:", error)
     return NextResponse.json(
