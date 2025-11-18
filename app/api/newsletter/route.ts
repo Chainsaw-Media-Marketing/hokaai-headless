@@ -1,79 +1,77 @@
 import { NextRequest, NextResponse } from "next/server"
 
+const SHOPIFY_STORE_DOMAIN =
+  process.env.SHOPIFY_STORE_DOMAIN || process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { email } = body
 
+    // Basic validation
     if (!email || typeof email !== "string") {
-      return NextResponse.json({ success: false, error: "Email is required" }, { status: 400 })
+      return NextResponse.json(
+        { success: false, error: "Email is required" },
+        { status: 400 },
+      )
     }
 
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
-      return NextResponse.json({ success: false, error: "Invalid email format" }, { status: 400 })
+      return NextResponse.json(
+        { success: false, error: "Please enter a valid email address." },
+        { status: 400 },
+      )
     }
 
-    const shopifyDomain = "https://hokaaimeatmarket.co.za"
-    const contactUrl = `${shopifyDomain}/contact`
-    
-    // Build form-urlencoded body
-    const formData = new URLSearchParams({
-      "form_type": "customer",
-      "contact[email]": email,
-      "contact[tags]": "newsletter",
-    })
-
-    // Create abort controller for timeout
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
-
-    try {
-      // POST to Shopify's native contact endpoint
-      const response = await fetch(contactUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: formData.toString(),
-        signal: controller.signal,
-      })
-
-      clearTimeout(timeoutId)
-
-      // Check if successful
-      const responseText = await response.text()
-      
-      if (response.ok && responseText.includes("Thank you for your message")) {
-        console.log("[newsletter] Successfully subscribed:", email)
-        return NextResponse.json({ success: true })
-      }
-
-      // If response wasn't OK or didn't include success message
-      console.error("[newsletter] Subscription failed:", response.status, responseText)
+    if (!SHOPIFY_STORE_DOMAIN) {
+      console.error("[newsletter] Missing SHOPIFY_STORE_DOMAIN env var")
       return NextResponse.json(
         { success: false, error: "Failed to subscribe. Please try again." },
-        { status: 400 }
+        { status: 500 },
       )
-    } catch (fetchError) {
-      clearTimeout(timeoutId)
-      
-      if (fetchError instanceof Error && fetchError.name === 'AbortError') {
-        console.error("[newsletter] Request timed out")
-        return NextResponse.json(
-          { success: false, error: "Request timed out. Please try again." },
-          { status: 408 }
-        )
-      }
-      throw fetchError
     }
+
+    // Build the same payload Shopify's contact form expects
+    const form = new URLSearchParams()
+    form.append("form_type", "customer")
+    form.append("contact[email]", email)
+    // Optional: tag customer as newsletter
+    form.append("contact[tags]", "newsletter")
+
+    const shopifyResponse = await fetch(`https://${SHOPIFY_STORE_DOMAIN}/contact`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Accept: "text/html,application/json,*/*",
+      },
+      body: form.toString(),
+      redirect: "manual", // We don't care about the redirect target, just success/fail
+    })
+
+    // Shopify usually responds with 302 on success, or 200/400 with HTML if there are errors.
+    if (shopifyResponse.status === 302 || shopifyResponse.ok) {
+      console.log("[newsletter] Successfully subscribed:", email)
+      return NextResponse.json({ success: true })
+    }
+
+    const raw = await shopifyResponse.text()
+    console.error(
+      "[newsletter] Shopify /contact non-OK",
+      shopifyResponse.status,
+      raw.slice(0, 300),
+    )
+
+    return NextResponse.json(
+      { success: false, error: "Failed to subscribe. Please try again." },
+      { status: 400 },
+    )
   } catch (error) {
     console.error("[newsletter] Subscription error:", error)
-    const errorMessage = error instanceof Error ? error.message : "Failed to subscribe. Please try again."
     return NextResponse.json(
-      { success: false, error: errorMessage },
+      { success: false, error: "Failed to subscribe. Please try again." },
       { status: 500 },
     )
   }
 }
+
