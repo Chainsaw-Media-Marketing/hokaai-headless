@@ -4,6 +4,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { SocialIcons } from "./social-icons"
 import { useState } from "react"
+import { NewsletterFooterForm } from "./newsletter-footer-form"
 
 const MapPinIcon = () => (
   <svg className="h-5 w-5 mt-0.5 text-brand-red flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -233,19 +234,7 @@ function Footer() {
             <p className="text-sm text-gray-200 mb-4">
               Get the latest news, recipes, and special offers delivered to your inbox.
             </p>
-            <form action="/contact#newsletter" method="POST" className="space-y-3">
-              <input
-                type="email"
-                name="contact[email]"
-                placeholder="Your email address"
-                required
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-success focus:border-transparent text-white placeholder-gray-400"
-              />
-              <input type="hidden" name="contact[tags]" value="newsletter" />
-              <Button variant="primary" size="sm" type="submit" className="w-full">
-                Subscribe
-              </Button>
-            </form>
+            <NewsletterFooterForm />
             <p className="text-xs text-gray-400 mt-2">By subscribing, you agree to our privacy policy.</p>
 
             <div className="mt-6 flex justify-center">

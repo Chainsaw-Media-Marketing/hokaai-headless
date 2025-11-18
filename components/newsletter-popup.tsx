@@ -24,35 +24,44 @@ interface NewsletterPopupProps {
 export function NewsletterPopup({ onSignupComplete, onClose }: NewsletterPopupProps) {
   const [email, setEmail] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (email.trim()) {
+      setLoading(true)
+      setError(null)
+      
       try {
-        // Submit to Shopify newsletter endpoint
-        const formData = new FormData()
-        formData.append("contact[email]", email)
-        formData.append("contact[tags]", "newsletter")
-
-        await fetch("/contact#newsletter", {
+        const response = await fetch("/api/newsletter", {
           method: "POST",
-          body: formData,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
         })
 
-        console.log("[v0] Newsletter popup tested — subscription received in Shopify.")
-        
-        setIsSubmitted(true)
-        setEmail("")
+        const data = await response.json()
 
-        // Mark as signed up in localStorage
-        localStorage.setItem("newsletter-signed-up", "true")
+        if (data.success) {
+          console.log("[v0] Newsletter popup — subscription successful via API.")
+          setIsSubmitted(true)
+          setEmail("")
 
-        // Close popup after 2 seconds
-        setTimeout(() => {
-          onSignupComplete()
-        }, 2000)
+          // Mark as signed up in localStorage
+          localStorage.setItem("newsletter-signed-up", "true")
+
+          // Close popup after 2 seconds
+          setTimeout(() => {
+            onSignupComplete()
+          }, 2000)
+        } else {
+          setError(data.error || "Subscription failed. Please try again.")
+        }
       } catch (error) {
         console.error("[v0] Newsletter subscription error:", error)
+        setError("Network error. Please try again.")
+      } finally {
+        setLoading(false)
       }
     }
   }
@@ -102,10 +111,12 @@ export function NewsletterPopup({ onSignupComplete, onClose }: NewsletterPopupPr
             placeholder="Enter your email address"
             className="w-full px-4 py-3 border border-slate-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-success focus:border-transparent"
             required
+            disabled={loading}
           />
-          <Button type="submit" size="lg" className="w-full">
-            Subscribe
+          <Button type="submit" size="lg" className="w-full" disabled={loading}>
+            {loading ? "Subscribing..." : "Subscribe"}
           </Button>
+          {error && <p className="text-xs text-red-600">{error}</p>}
           <p className="text-xs text-slate-500">
             By subscribing, you agree to our privacy policy and consent to receive marketing emails.
           </p>

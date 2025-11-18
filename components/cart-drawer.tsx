@@ -4,7 +4,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/lib/cart-context"
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from 'next/navigation'
 import { ProductCard } from "@/components/product-card"
 import type { Product } from "@/lib/types"
 import { getUpsellProducts } from "@/app/actions/get-upsell-products"
@@ -256,6 +256,17 @@ export function CartDrawer() {
                           {item.title}
                         </h4>
                       </button>
+                      {(item.attributes?.find((attr) => attr.key === "moisture_preference") ||
+                        item.attributes?.find((attr) => attr.key === "fat_preference")) && (
+                        <p className="text-xs text-slate-600 mb-1">
+                          {[
+                            item.attributes.find((attr) => attr.key === "moisture_preference")?.value,
+                            item.attributes.find((attr) => attr.key === "fat_preference")?.value,
+                          ]
+                            .filter(Boolean)
+                            .join(" • ")}
+                        </p>
+                      )}
                       {item.attributes?.find((attr) => attr.key === "household_size") && (
                         <p className="text-xs text-slate-600 mb-1">
                           Household size: {item.attributes.find((attr) => attr.key === "household_size")?.value}
