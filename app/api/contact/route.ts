@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       message,
       source,
       // Optional fields
-      subject,
+      subject: bodySubject, // Renamed to avoid conflict with computed subject variable
       species,
       weight,
       notes,
@@ -79,8 +79,8 @@ export async function POST(request: NextRequest) {
     `
 
     // Add subject if present (Contact Us page)
-    if (subject && body.subject) {
-      htmlBody += `<p><strong>Subject:</strong> ${body.subject}</p>`
+    if (bodySubject) { // Using renamed variable
+      htmlBody += `<p><strong>Subject:</strong> ${bodySubject}</p>`
     }
 
     htmlBody += `</div>`
@@ -153,8 +153,8 @@ export async function POST(request: NextRequest) {
     textBody += `Email: ${email}\n`
     textBody += `Phone: ${phone}\n`
     
-    if (subject && body.subject) {
-      textBody += `Subject: ${body.subject}\n`
+    if (bodySubject) { // Using renamed variable
+      textBody += `Subject: ${bodySubject}\n`
     }
 
     if (source === "game-processing") {
