@@ -1,40 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
 
 const SHOPIFY_STORE_DOMAIN =
-  process.env.SHOPIFY_STORE_DOMAIN || process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN
+  process.env.SHOPIFY_STOREFRONT_DOMAIN || process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_DOMAIN
 
 export async function POST(request: NextRequest) {
   try {
-    // Detect how the client sent the data: JSON vs form
-    const contentType = request.headers.get("content-type") || ""
-    let email: string | null = null
+    const body = await request.json()
+    const { email } = body
 
-    if (contentType.includes("application/json")) {
-      // JSON payload: { email: "..." }
-      const body = await request.json().catch((err) => {
-        console.error("[newsletter] Failed to parse JSON body:", err)
-        return null
-      })
-
-      if (body && typeof body.email === "string") {
-        email = body.email
-      }
-    } else {
-      // Fallback for form submissions (e.g. <form method="POST">)
-      const formData = await request.formData().catch((err) => {
-        console.error("[newsletter] Failed to parse formData:", err)
-        return null
-      })
-
-      if (formData) {
-        email =
-          (formData.get("email") as string | null) ||
-          (formData.get("contact[email]") as string | null) ||
-          null
-      }
-    }
-
-    // Basic validation
     if (!email || typeof email !== "string") {
       return NextResponse.json(
         { success: false, error: "Email is required" },
@@ -51,14 +24,13 @@ export async function POST(request: NextRequest) {
     }
 
     if (!SHOPIFY_STORE_DOMAIN) {
-      console.error("[newsletter] Missing SHOPIFY_STORE_DOMAIN env var")
+      console.error("[newsletter] Missing SHOPIFY_STOREFRONT_DOMAIN env var")
       return NextResponse.json(
         { success: false, error: "Failed to subscribe. Please try again." },
         { status: 500 },
       )
     }
 
-    // Build the payload Shopify's /contact expects
     const form = new URLSearchParams()
     form.append("form_type", "customer")
     form.append("contact[email]", email)
@@ -71,18 +43,17 @@ export async function POST(request: NextRequest) {
         Accept: "text/html,application/json,*/*",
       },
       body: form.toString(),
-      redirect: "manual", // we only care if it succeeded, not where it redirects
+      redirect: "manual",
     })
 
-    // Shopify usually returns 302 on success, 200/4xx with HTML on errors
+    // Shopify returns 302 on success normally
     if (shopifyResponse.status === 302 || shopifyResponse.ok) {
-      console.log("[newsletter] Successfully subscribed:", email)
       return NextResponse.json({ success: true })
     }
 
-    const raw = await shopifyResponse.text().catch(() => "")
+    const raw = await shopifyResponse.text()
     console.error(
-      "[newsletter] Shopify /contact non-OK",
+      "[newsletter] Shopify /contact error:",
       shopifyResponse.status,
       raw.slice(0, 300),
     )
