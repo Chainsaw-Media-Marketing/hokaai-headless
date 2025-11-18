@@ -5,8 +5,34 @@ const SHOPIFY_STORE_DOMAIN =
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    const { email } = body
+    // Detect how the client sent the data: JSON vs form
+    const contentType = request.headers.get("content-type") || ""
+    let email: string | null = null
+
+    if (contentType.includes("application/json")) {
+      // JSON payload: { email: "..." }
+      const body = await request.json().catch((err) => {
+        console.error("[newsletter] Failed to parse JSON body:", err)
+        return null
+      })
+
+      if (body && typeof body.email === "string") {
+        email = body.email
+      }
+    } else {
+      // Fallback for form submissions (e.g. <form method="POST">)
+      const formData = await request.formData().catch((err) => {
+        console.error("[newsletter] Failed to parse formData:", err)
+        return null
+      })
+
+      if (formData) {
+        email =
+          (formData.get("email") as string | null) ||
+          (formData.get("contact[email]") as string | null) ||
+          null
+      }
+    }
 
     // Basic validation
     if (!email || typeof email !== "string") {
@@ -32,11 +58,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Build the same payload Shopify's contact form expects
+    // Build the payload Shopify's /contact expects
     const form = new URLSearchParams()
     form.append("form_type", "customer")
     form.append("contact[email]", email)
-    // Optional: tag customer as newsletter
     form.append("contact[tags]", "newsletter")
 
     const shopifyResponse = await fetch(`https://${SHOPIFY_STORE_DOMAIN}/contact`, {
@@ -46,16 +71,16 @@ export async function POST(request: NextRequest) {
         Accept: "text/html,application/json,*/*",
       },
       body: form.toString(),
-      redirect: "manual", // We don't care about the redirect target, just success/fail
+      redirect: "manual", // we only care if it succeeded, not where it redirects
     })
 
-    // Shopify usually responds with 302 on success, or 200/400 with HTML if there are errors.
+    // Shopify usually returns 302 on success, 200/4xx with HTML on errors
     if (shopifyResponse.status === 302 || shopifyResponse.ok) {
       console.log("[newsletter] Successfully subscribed:", email)
       return NextResponse.json({ success: true })
     }
 
-    const raw = await shopifyResponse.text()
+    const raw = await shopifyResponse.text().catch(() => "")
     console.error(
       "[newsletter] Shopify /contact non-OK",
       shopifyResponse.status,
@@ -74,4 +99,3 @@ export async function POST(request: NextRequest) {
     )
   }
 }
-
