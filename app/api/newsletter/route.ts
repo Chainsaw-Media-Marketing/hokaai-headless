@@ -1,17 +1,24 @@
 import { NextRequest, NextResponse } from "next/server"
-import { storefrontFetch } from "@/server/shopify"
 
-type CustomerCreateResponse = {
-  customerCreate: {
-    customer: {
-      id: string
-      email: string
-    } | null
-    customerUserErrors: Array<{
-      field: string[] | null
-      message: string
-    }>
+const SHOPIFY_DOMAIN =
+  process.env.SHOPIFY_STOREFRONT_DOMAIN || process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_DOMAIN
+const SHOPIFY_ADMIN_API_TOKEN = process.env.SHOPIFY_ADMIN_API_TOKEN
+const SHOPIFY_ADMIN_API_VERSION = process.env.SHOPIFY_ADMIN_API_VERSION || "2025-01"
+
+type AdminCustomerCreateResponse = {
+  data?: {
+    customerCreate?: {
+      customer: {
+        id: string
+        email: string
+      } | null
+      userErrors: Array<{
+        field: string[] | null
+        message: string
+      }>
+    }
   }
+  errors?: Array<{ message: string }>
 }
 
 export async function POST(request: NextRequest) {
@@ -35,15 +42,24 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // ✅ Minimal Storefront API mutation
+    if (!SHOPIFY_DOMAIN || !SHOPIFY_ADMIN_API_TOKEN) {
+      console.error("[newsletter] Missing Shopify admin env vars")
+      return NextResponse.json(
+        { success: false, error: "Failed to subscribe. Please try again." },
+        { status: 500 },
+      )
+    }
+
+    const endpoint = `https://${SHOPIFY_DOMAIN}/admin/api/${SHOPIFY_ADMIN_API_VERSION}/graphql.json`
+
     const mutation = `
-      mutation customerCreate($input: CustomerCreateInput!) {
+      mutation customerCreate($input: CustomerInput!) {
         customerCreate(input: $input) {
           customer {
             id
             email
           }
-          customerUserErrors {
+          userErrors {
             field
             message
           }
@@ -54,30 +70,46 @@ export async function POST(request: NextRequest) {
     const variables = {
       input: {
         email,
-        // ❌ Do NOT include emailMarketingConsent or tags here – Storefront schema is stricter
+        // You *can* add tags or marketing fields here later if needed,
+        // but keep it minimal for now to avoid schema issues.
       },
     }
 
-    const data = await storefrontFetch<CustomerCreateResponse>(mutation, variables)
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": SHOPIFY_ADMIN_API_TOKEN,
+      },
+      body: JSON.stringify({ query: mutation, variables }),
+    })
 
-    if (!data || !data.customerCreate) {
-      console.error("[newsletter] No data.customerCreate in response", data)
+    const json = (await res.json()) as AdminCustomerCreateResponse
+
+    if (json.errors && json.errors.length > 0) {
+      console.error("[newsletter] Admin GraphQL top-level errors:", json.errors)
       return NextResponse.json(
         { success: false, error: "Failed to subscribe. Please try again." },
         { status: 500 },
       )
     }
 
-    const { customerUserErrors } = data.customerCreate
-    const errors = customerUserErrors || []
+    const payload = json.data?.customerCreate
+    if (!payload) {
+      console.error("[newsletter] No customerCreate payload:", json)
+      return NextResponse.json(
+        { success: false, error: "Failed to subscribe. Please try again." },
+        { status: 500 },
+      )
+    }
 
-    if (errors.length > 0) {
-      const first = errors[0]
-      console.error("[newsletter] customerCreate error:", first)
-
+    const userErrors = payload.userErrors || []
+    if (userErrors.length > 0) {
+      const first = userErrors[0]
       const msg = first.message.toLowerCase()
+      console.error("[newsletter] customerCreate user error:", first)
 
-      // If the email is already used, treat as success for newsletter purposes
+      // If the email is already used, treat it as success for newsletter purposes
       if (
         msg.includes("already") ||
         msg.includes("taken") ||
@@ -93,7 +125,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.log("[newsletter] Successfully subscribed via Storefront:", email)
+    console.log("[newsletter] Successfully subscribed via Admin API:", email)
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error("[newsletter] Subscription error:", error)
