@@ -6,9 +6,6 @@ type CustomerCreateResponse = {
     customer: {
       id: string
       email: string
-      emailMarketingConsent?: {
-        marketingState: string
-      } | null
     } | null
     customerUserErrors: Array<{
       field: string[] | null
@@ -38,16 +35,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 🔑 Storefront API mutation with the **correct** input type
+    // ✅ Minimal Storefront API mutation
     const mutation = `
       mutation customerCreate($input: CustomerCreateInput!) {
         customerCreate(input: $input) {
           customer {
             id
             email
-            emailMarketingConsent {
-              marketingState
-            }
           }
           customerUserErrors {
             field
@@ -60,19 +54,22 @@ export async function POST(request: NextRequest) {
     const variables = {
       input: {
         email,
-        // Storefront API supports email marketing consent
-        emailMarketingConsent: {
-          marketingState: "SUBSCRIBED",
-          marketingOptInLevel: "SINGLE_OPT_IN",
-        },
-        // ⚠️ Storefront API does NOT support tags, so we skip tags here
-        // tags: ["newsletter"],   // <— this would be Admin API-only
+        // ❌ Do NOT include emailMarketingConsent or tags here – Storefront schema is stricter
       },
     }
 
     const data = await storefrontFetch<CustomerCreateResponse>(mutation, variables)
 
-    const errors = data.customerCreate.customerUserErrors || []
+    if (!data || !data.customerCreate) {
+      console.error("[newsletter] No data.customerCreate in response", data)
+      return NextResponse.json(
+        { success: false, error: "Failed to subscribe. Please try again." },
+        { status: 500 },
+      )
+    }
+
+    const { customerUserErrors } = data.customerCreate
+    const errors = customerUserErrors || []
 
     if (errors.length > 0) {
       const first = errors[0]
@@ -80,13 +77,16 @@ export async function POST(request: NextRequest) {
 
       const msg = first.message.toLowerCase()
 
-      // If the email is already in use, we treat that as success for newsletter purposes
-      if (msg.includes("already") || msg.includes("taken") || msg.includes("has already been used")) {
+      // If the email is already used, treat as success for newsletter purposes
+      if (
+        msg.includes("already") ||
+        msg.includes("taken") ||
+        msg.includes("has already been used")
+      ) {
         console.log("[newsletter] Customer already exists, treating as success:", email)
         return NextResponse.json({ success: true })
       }
 
-      // Otherwise, surface a generic error to the user
       return NextResponse.json(
         { success: false, error: "Failed to subscribe. Please try again." },
         { status: 400 },
