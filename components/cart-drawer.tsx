@@ -11,6 +11,7 @@ import { getUpsellProducts } from "@/app/actions/get-upsell-products"
 import { refreshAndGetCheckoutUrl, goToCheckout } from "@/lib/shopifyClient"
 import { PlusIcon } from "@/components/icons/Plus"
 import { updateCartQuantityAndHydrate, removeCartLineAndHydrate, clearCartAndHydrate } from "@/lib/cart-actions"
+import { trackMetaPixelEvent } from "@/lib/metaPixel"
 
 const XIcon = () => (
   <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -114,6 +115,21 @@ export function CartDrawer() {
     try {
       const url = await refreshAndGetCheckoutUrl()
       console.log("[checkout] using checkoutUrl:", url)
+
+      if (state.items && state.items.length > 0) {
+        const contentIds = state.items.map((item) => item.variantId).filter(Boolean)
+        const numItems = state.items.reduce((sum, item) => sum + item.quantity, 0)
+        const value = state.total || 0
+
+        trackMetaPixelEvent("InitiateCheckout", {
+          content_ids: contentIds,
+          content_type: "product",
+          num_items: numItems,
+          value,
+          currency: "ZAR",
+        })
+      }
+
       goToCheckout(url)
     } catch (e) {
       console.error("[v0] Checkout error:", e)

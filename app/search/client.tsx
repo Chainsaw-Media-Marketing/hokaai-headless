@@ -1,13 +1,14 @@
 "use client"
 
 import { useState, useMemo, useEffect } from "react"
-import { useRouter, usePathname, useSearchParams } from "next/navigation"
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { CollectionFilterSidebar } from "@/components/collection-filter-sidebar"
 import { ProductGrid } from "@/components/product-grid"
 import type { Product } from "@/lib/types"
 import type { FilterState } from "@/lib/filter-utils"
 import { buildAvailableFilters, applyFilters } from "@/lib/filter-utils"
-import { LayoutGrid, Grid3x3 } from "lucide-react"
+import { LayoutGrid, Grid3x3 } from 'lucide-react'
+import { trackMetaPixelEvent } from "@/lib/metaPixel"
 
 interface SearchPageClientProps {
   query: string
@@ -192,6 +193,14 @@ export function SearchPageClient({ query, products, initialFilters }: SearchPage
       setActiveFilters(filtersFromUrl)
     }
   }, [searchParams])
+
+  useEffect(() => {
+    if (!query) return
+    
+    trackMetaPixelEvent("Search", {
+      search_string: query,
+    })
+  }, [query])
 
   const [gridDensity, setGridDensity] = useState<"comfortable" | "compact">("comfortable")
   const [sortBy, setSortBy] = useState<"featured" | "price-low" | "price-high" | "name-az" | "name-za">("featured")

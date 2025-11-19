@@ -8,6 +8,7 @@ import { useCart } from "@/lib/cart-context"
 import { useToast } from "@/hooks/use-toast"
 import type { Product } from "@/lib/types"
 import { addToCartAndHydrate } from "@/lib/cart-actions"
+import { trackMetaPixelEvent } from "@/lib/metaPixel"
 
 interface StockedItem {
   handle: string
@@ -82,6 +83,15 @@ export function ShopIngredients({ items, recipeSlug }: ShopIngredientsProps) {
         console.log("[recipes] No available variants")
         return
       }
+
+      const contentIds = lines.map((line) => line.variantId)
+      const totalQuantity = lines.reduce((sum, line) => sum + (line.quantity ?? 0), 0)
+      
+      trackMetaPixelEvent("AddToCart", {
+        content_ids: contentIds,
+        content_type: "product",
+        num_items: totalQuantity,
+      })
 
       // Single API call for all items
       await addToCartAndHydrate({ lines })

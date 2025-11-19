@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Minus, ShoppingCart, Info } from 'lucide-react'
 import { PlusIcon } from "@/components/icons/Plus"
@@ -8,6 +8,7 @@ import type { Product, ShopifyVariant } from "@/lib/types"
 import { addToCartAndHydrate } from "@/lib/cart-actions"
 import { isBulkProduct } from "@/lib/product-flags"
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
+import { trackMetaPixelEvent } from "@/lib/metaPixel"
 
 interface ProductDetailsProps {
   product: Product
@@ -163,11 +164,41 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     }
   }
 
+  useEffect(() => {
+    if (!product) return
+
+    const variantId = selectedVariant?.id || product.variants?.[0]?.id
+    if (!variantId) return
+
+    const value = product.minVariantPrice || product.pricePerKg || 0
+    const currency = product.variants?.[0]?.price?.currencyCode || "ZAR"
+
+    trackMetaPixelEvent("ViewContent", {
+      content_ids: [variantId],
+      content_type: "product",
+      value,
+      currency,
+    })
+  }, [product.id, product])
+
   const handleAddToCart = async () => {
     if (!selectedVariant?.id) return
 
     try {
       setIsAdding(true)
+
+      const value = usePricePerKg && weightInKg && weightInKg > 0 
+        ? pricePerKg * weightInKg * quantity 
+        : Number.parseFloat(selectedVariant.price.amount) * quantity
+      const currency = selectedVariant.price.currencyCode || "ZAR"
+
+      trackMetaPixelEvent("AddToCart", {
+        content_ids: [selectedVariant.id],
+        content_type: "product",
+        value,
+        currency,
+        num_items: quantity,
+      })
 
       const attributes: Array<{ key: string; value: string }> = []
       if (isBulk && householdSize !== "not-specified") {

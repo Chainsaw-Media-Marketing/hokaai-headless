@@ -6,6 +6,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import type { Product, ShopifyVariant } from "@/lib/types"
 import { addToCartAndHydrate } from "@/lib/cart-actions"
+import { trackMetaPixelEvent } from "@/lib/metaPixel"
 
 interface ProductCardProps {
   product: Product
@@ -158,6 +159,18 @@ export function ProductCard({
 
     try {
       setIsAdding(true)
+
+      const value = Number.parseFloat(selectedVariant.price.amount)
+      const currency = selectedVariant.price.currencyCode || "ZAR"
+
+      trackMetaPixelEvent("AddToCart", {
+        content_ids: [selectedVariant.id],
+        content_type: "product",
+        value,
+        currency,
+        num_items: 1,
+      })
+
       await addToCartAndHydrate({
         lines: [
           {
