@@ -4,7 +4,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/lib/cart-context"
 import { useEffect, useState } from "react"
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation"
 import { ProductCard } from "@/components/product-card"
 import type { Product } from "@/lib/types"
 import { getUpsellProducts } from "@/app/actions/get-upsell-products"
@@ -235,8 +235,8 @@ export function CartDrawer() {
                 </div>
                 <p className="text-xs text-slate-600 mt-2">
                   {remainingForFreeDelivery > 0
-                    ? `You're ${formatPrice(remainingForFreeDelivery)} away from qualifying for free delivery within 5–10 km. Outside that area, delivery is charged at R5 per km.`
-                    : "Your order qualifies for free delivery within 5–10 km. Deliveries beyond 10 km are charged at R5 per km."}
+                    ? `You're ${formatPrice(remainingForFreeDelivery)} away from free delivery in Pretoria & Centurion on orders over R1 000.`
+                    : "Your order qualifies for free delivery in Pretoria & Centurion. Other areas charged at R5/km."}
                 </p>
               </div>
 

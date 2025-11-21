@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
 import { SocialIcons } from "./social-icons"
 import { useState } from "react"
 import { NewsletterFooterForm } from "./newsletter-footer-form"
@@ -83,7 +82,7 @@ function Footer() {
     textArea.focus()
     textArea.select()
     try {
-      document.execCommand('copy')
+      document.execCommand("copy")
       textArea.remove()
       return true
     } catch (error) {
@@ -207,6 +206,16 @@ function Footer() {
               <li>
                 <Link href="/recipes" onClick={handleLinkClick} className="hover:text-brand-red transition-colors">
                   Recipes
+                </Link>
+              </li>
+              {/* Delivery Information link */}
+              <li>
+                <Link
+                  href="/delivery-info"
+                  onClick={handleLinkClick}
+                  className="hover:text-brand-red transition-colors"
+                >
+                  Delivery Information
                 </Link>
               </li>
             </ul>

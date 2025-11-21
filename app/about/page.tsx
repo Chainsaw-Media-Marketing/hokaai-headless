@@ -17,7 +17,7 @@ export default function AboutPage() {
         <section className="relative overflow-hidden min-h-[260px] md:min-h-[340px]">
           <div className="absolute inset-0">
             <img
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ABOUT%20US%20BANNER-RVHllkeOTGwBJoCR5ShqKap57GicUd.png"
+              src="/images/about-20us-20banner.png"
               alt="Hokaai Meat Market - Family Legacy"
               className="w-full h-full object-cover"
             />
@@ -74,11 +74,15 @@ export default function AboutPage() {
                 </div>
 
                 <div className="relative">
-                  <img
-                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ABOUT%20US%20SECOND-KNoQc6TOx05m6fv97tNJjfhqThFSRf.png"
-                    alt="Premium quality meats from Hokaai"
-                    className="rounded-lg shadow-lg w-full"
-                  />
+                  <picture>
+                    <source srcSet="/about-side.webp" type="image/webp" />
+                    <img
+                      src="/about-side.jpg"
+                      alt="Premium quality meats from Hokaai"
+                      className="rounded-lg shadow-lg w-full object-cover"
+                      style={{ objectPosition: "center 45%" }}
+                    />
+                  </picture>
                 </div>
               </div>
             </div>

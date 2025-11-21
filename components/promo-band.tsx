@@ -24,8 +24,8 @@ export function PromoBand() {
         <div className="flex items-center justify-center space-x-3 text-center">
           <Truck />
           <span className="font-semibold text-sm md:text-base">
-            Local delivery from our butchery in Faerie Glen. Free delivery up to 5 km, and free delivery on orders over
-            R1 000 within 5–10 km. Beyond 10 km, delivery is charged at R5 per km.
+            Local delivery from Faerie Glen. Free delivery within 5 km, or on orders over R1 000 in Pretoria &
+            Centurion.
           </span>
           <Link href="/delivery-info" className="underline hover:no-underline whitespace-nowrap">
             See details

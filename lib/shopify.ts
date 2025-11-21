@@ -1,10 +1,10 @@
-const SHOPIFY_STOREFRONT_DOMAIN = process.env.SHOPIFY_STOREFRONT_DOMAIN
+const SHOPIFY_STOREFRONT_DOMAIN =
+  process.env.SHOPIFY_STOREFRONT_DOMAIN ||
+  process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_DOMAIN ||
+  "hfzgry-kp.myshopify.com"
+
 const SHOPIFY_STOREFRONT_TOKEN = process.env.SHOPIFY_STOREFRONT_TOKEN
 const SHOPIFY_API_VERSION = process.env.SHOPIFY_API_VERSION || "2024-01"
-
-if (!SHOPIFY_STOREFRONT_DOMAIN) {
-  throw new Error("Missing SHOPIFY_STOREFRONT_DOMAIN environment variable")
-}
 
 if (!SHOPIFY_STOREFRONT_TOKEN) {
   throw new Error("Missing SHOPIFY_STOREFRONT_TOKEN environment variable")

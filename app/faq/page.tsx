@@ -147,9 +147,9 @@ export default function FAQPage() {
                 <div className="bg-white rounded-lg p-6 shadow-sm">
                   <h4 className="font-semibold text-slate-900 mb-2">Do you offer delivery?</h4>
                   <p className="text-slate-600">
-                    Yes! We offer free delivery on orders over R800. See our{" "}
-                    <a href="/delivery" className="text-brand-red hover:underline">
-                      delivery page
+                    Yes! We offer free delivery within 5 km, or on orders over R1 000 in Pretoria & Centurion. See our{" "}
+                    <a href="/delivery-info" className="text-brand-red hover:underline">
+                      delivery information page
                     </a>{" "}
                     for more details.
                   </p>

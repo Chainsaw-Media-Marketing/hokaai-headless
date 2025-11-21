@@ -198,7 +198,10 @@ export default async function ProductPage(props: { params: Promise<{ handle: str
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <h4 className="font-semibold text-brand-primary mb-2">Free Delivery</h4>
-              <p className="text-slate-700">Orders over R800 qualify for free delivery to your door.</p>
+              <p className="text-slate-700">
+                Free delivery within 5 km of Hokaai (Faerie Glen). Orders over R1 000 delivered free in Pretoria &
+                Centurion. All other deliveries are charged at R5 per km, confirmed with you after checkout.
+              </p>
             </div>
             <div>
               <h4 className="font-semibold text-brand-primary mb-2">Fresh Guarantee</h4>

@@ -5,13 +5,13 @@ export function HeroBanner() {
   return (
     <Link href="/collections/all" className="block relative overflow-hidden group">
       <div className="h-[280px] sm:h-[320px] lg:h-[380px] relative">
-        {/* Mobile version - zoomed in more (25%) */}
+        {/* Mobile version - zoomed in more */}
         <div
           className="w-full h-full bg-cover relative transition-transform duration-500 group-hover:scale-[1.025] sm:hidden"
           style={{
-            backgroundImage: `url(/hero-shop-banner.jpg)`,
+            backgroundImage: `url(/homepage-hero-banner.webp), url(/homepage-hero-banner.jpg)`,
             backgroundColor: "#8B5A3C",
-            backgroundPosition: "center 25%",
+            backgroundPosition: "left 35%", // Updated to left 35% to keep sosaties visible on mobile
           }}
         >
           {/* Overlay gradient for better text readability */}
@@ -21,10 +21,10 @@ export function HeroBanner() {
           <div className="absolute inset-0 flex items-center">
             <div className="container mx-auto px-6 lg:px-8">
               <div className="max-w-2xl">
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 text-balance">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 text-balance [text-shadow:0_2px_8px_rgba(0,0,0,0.55)]">
                   Premium Quality Meats
                 </h1>
-                <p className="text-lg sm:text-xl text-white/90 mb-8 text-pretty">
+                <p className="text-lg sm:text-xl text-white/90 mb-8 text-pretty [text-shadow:0_2px_8px_rgba(0,0,0,0.55)]">
                   Discover our full range of fresh cuts, deli specialties, and braai essentials
                 </p>
 
@@ -37,13 +37,13 @@ export function HeroBanner() {
           </div>
         </div>
 
-        {/* Desktop version - original positioning (35%) */}
+        {/* Desktop version - original positioning */}
         <div
           className="w-full h-full bg-cover relative transition-transform duration-500 group-hover:scale-[1.025] hidden sm:block"
           style={{
-            backgroundImage: `url(/hero-shop-banner.jpg)`,
+            backgroundImage: `url(/homepage-hero-banner.webp), url(/homepage-hero-banner.jpg)`,
             backgroundColor: "#8B5A3C",
-            backgroundPosition: "center 35%",
+            backgroundPosition: "left 40%", // Updated to left 40% to anchor image on left side
           }}
         >
           {/* Overlay gradient for better text readability */}
@@ -53,10 +53,10 @@ export function HeroBanner() {
           <div className="absolute inset-0 flex items-center">
             <div className="container mx-auto px-6 lg:px-8">
               <div className="max-w-2xl">
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 text-balance">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 text-balance [text-shadow:0_2px_8px_rgba(0,0,0,0.55)]">
                   Premium Quality Meats
                 </h1>
-                <p className="text-lg sm:text-xl text-white/90 mb-8 text-pretty">
+                <p className="text-lg sm:text-xl text-white/90 mb-8 text-pretty [text-shadow:0_2px_8px_rgba(0,0,0,0.55)]">
                   Discover our full range of fresh cuts, deli specialties, and braai essentials
                 </p>
 
