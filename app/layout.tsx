@@ -5,8 +5,7 @@ import { Oswald, Open_Sans } from "next/font/google"
 import { CartProvider } from "@/lib/cart-context"
 import { BackToTopButton } from "@/components/back-to-top-button"
 import { ShopifyAutoWireInit } from "@/components/shopify-auto-wire-init"
-import { WhatsAppFab } from "@/components/whatsapp-fab"
-import { WhatsAppChatPanel } from "@/components/whatsapp-chat-panel"
+import { WhatsAppWidget } from "@/components/whatsapp-widget"
 import { CookieBar } from "@/components/cookie-bar"
 import { ConsentAnalytics } from "@/components/consent-analytics"
 
@@ -41,8 +40,7 @@ export default function RootLayout({
           {children}
           <BackToTopButton />
           <ShopifyAutoWireInit />
-          <WhatsAppFab />
-          <WhatsAppChatPanel />
+          <WhatsAppWidget />
           <CookieBar />
           <ConsentAnalytics />
         </CartProvider>

@@ -565,9 +565,9 @@ const rawNavigationItems: NavItem[] = [
   },
   { title: "Game Processing", href: "/game-processing" },
   { title: "Spitbraai Hire", href: "/spitbraai-hire" },
+  { title: "Recipes", href: "/recipes" },
   { title: "About Us", href: "/about" },
   { title: "Contact", href: "/contact" },
-  { title: "Recipes", href: "/recipes" },
 ]
 
 export const navigationItems: NavItem[] = applyViewAllHrefs(rawNavigationItems)
@@ -577,40 +577,37 @@ export const occasionTags: OccasionTag[] = [
     id: "1",
     title: "Great for Braai",
     handle: "braai",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/BRAAI-9U0G6AsFuPt1J5l2qWGxl3vmdRjIGC.jpg",
+    image: "/images/braai.jpg",
   },
   {
     id: "6",
     title: "Bulk & Hampers",
     handle: "bulk",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/BULK-o58NaMtISvqeUMxVwXg3O5TtVGXjQ1.jpg",
+    image: "/images/bulk.jpg",
   },
   {
     id: "3",
     title: "Great for Roasts",
     handle: "roast",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ROASTS-866dtAECx01MsiK3lVF16Ovjb0HBYF.jpg",
+    image: "/images/roasts.jpg",
   },
   {
     id: "4",
     title: "Weeknight Quick & Easy",
     handle: "quick",
-    image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/QUICK%20%26%20EASY-aXnoXm5ZbqresrlWhDS1ERXxsK9VIb.jpg",
+    image: "/images/quick-20-26-20easy.jpg",
   },
   {
     id: "5",
     title: "Ready to Braai",
     handle: "ready-to-braai",
-    image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/READY%20TO%20BRAAI-j6Updq3zX9uYn38RusZv7Q5mEICIiW.jpg",
+    image: "/images/ready-20to-20braai.jpg",
   },
   {
     id: "2",
     title: "Great for Stew & Potjiekos",
     handle: "stew",
-    image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/STEW%20%26%20POTJIEKOS-QLypTEdYx2iOKKYZ7y7aEaEhvfGzkR.jpg",
+    image: "/images/stew-20-26-20potjiekos.jpg",
   },
 ]
 
