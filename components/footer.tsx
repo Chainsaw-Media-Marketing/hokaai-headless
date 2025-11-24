@@ -62,7 +62,6 @@ function Footer() {
     // Try modern clipboard API first
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(text).catch(() => {
-        // Fallback if modern API fails
         fallbackCopy(text)
       })
       return true
@@ -118,10 +117,10 @@ function Footer() {
               <div className="flex items-center space-x-3 relative">
                 <PhoneIcon />
                 <button
-                  onClick={() => handleCopyAndOpen("phone", "063 301 8293", "tel:+27633018293")}
+                  onClick={() => handleCopyAndOpen("phone", "012 991 2801", "tel:+27129912801")}
                   className="hover:text-brand-red transition-colors cursor-pointer text-left"
                 >
-                  063 301 8293
+                  012 991 2801
                 </button>
                 {copiedItem === "phone" && (
                   <span className="absolute -top-8 left-8 bg-brand-success text-white text-xs px-2 py-1 rounded shadow-lg">
@@ -208,7 +207,6 @@ function Footer() {
                   Recipes
                 </Link>
               </li>
-              {/* Delivery Information link */}
               <li>
                 <Link
                   href="/delivery-info"
@@ -297,11 +295,6 @@ function Footer() {
           </div>
         </div>
       </div>
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `console.log("[v0] WhatsApp widget restyled to official WhatsApp green.");console.log("[v0] Footer and contact page email/phone updated + copy behavior confirmed.");`,
-        }}
-      />
     </footer>
   )
 }
