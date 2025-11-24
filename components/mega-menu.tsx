@@ -138,12 +138,9 @@ const MEGAMENU_IMAGE_MAP: Record<string, string> = {
   "chilli-sticks": "https://cdn.shopify.com/s/files/1/0940/4763/3771/files/CHILLISTICKS.jpg?v=1761127599",
   "thai-sweet-chilli-sticks":
     "https://cdn.shopify.com/s/files/1/0940/4763/3771/files/THAISWEETCHILLISTICKS.jpg?v=1761127629",
-  "drywors-thin-sticks":
-    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DRYWORS%20THIN%20STICKS-jWkQz22PQmq4fpmhHjIsWEpxAncHWG.jpg",
-  "chilli-drywors-thin-sticks":
-    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/CHILLI%20DRYWORS%20THIN%20STICKS-57Mop8kPyadzde89ciSU9jx39Nny46.jpg",
-  "salami-thin-sticks":
-    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/SALAMI%20THIN%20STICKS-iNguNXxgOXugqRX9qwBiqeBgOnuyyO.jpg",
+  "drywors-thin-sticks": "/images/drywors-20thin-20sticks.jpg",
+  "chilli-drywors-thin-sticks": "/images/chilli-20drywors-20thin-20sticks.jpg",
+  "salami-thin-sticks": "/images/salami-20thin-20sticks.jpg",
   "venison-thin-sticks": "https://cdn.shopify.com/s/files/1/0940/4763/3771/files/VENISONTHINSTICKS.jpg?v=1761127284",
   "honey-bacon-biltong": "https://cdn.shopify.com/s/files/1/0940/4763/3771/files/HONEYBACONBILTONG.jpg?v=1761127235",
   "chilli-bacon-biltong":
@@ -153,7 +150,7 @@ const MEGAMENU_IMAGE_MAP: Record<string, string> = {
   "biltong-skille-crumbs": "https://cdn.shopify.com/s/files/1/0940/4763/3771/files/BILTONGCRUMBS.jpg?v=1761127942",
   "biltong-wagon-wheels": "https://cdn.shopify.com/s/files/1/0940/4763/3771/files/BILTONGWAGONWHEELS.jpg?v=1761127975",
   cabanossi: "https://cdn.shopify.com/s/files/1/0940/4763/3771/files/Cabanossi.jpg?v=1761123588",
-  salami: "https://cdn.shopify.com/s/files/1/0940/4763/3771/files/SALAMI.jpg?v=1761127025",
+  salami: "/images/salami.png",
   "pork-crackling": "https://cdn.shopify.com/s/files/1/0940/4763/3771/files/PORKCRACKLING.jpg?v=1761123743",
   "poeier-biltong-powder": "https://cdn.shopify.com/s/files/1/0940/4763/3771/files/POWDERBILTONG.jpg?v=1761126982",
 }
