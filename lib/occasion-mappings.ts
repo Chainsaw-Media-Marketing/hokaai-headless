@@ -10,6 +10,7 @@ export interface OccasionItemMapping {
     meat_type?: string
     cut_family?: string | string[]
     bulk_type?: string
+    braai_gear_family?: string
   }
   // For product type
   productHandle?: string
@@ -67,6 +68,13 @@ export const occasionItemMappings: Record<string, OccasionItemMapping> = {
       department: "butchery",
       meat_type: "pork",
       cut_family: ["chops", "ribs"],
+    },
+  },
+  "Great for Braai → Wood & Charcoal": {
+    type: "filter",
+    filters: {
+      department: "braai-gear",
+      braai_gear_family: "wood-charcoal",
     },
   },
 
@@ -316,6 +324,9 @@ export function getOccasionItemUrl(categoryTitle: string, itemTitle: string): st
   }
   if (filters.bulk_type) {
     params.append("bulk_type", filters.bulk_type)
+  }
+  if (filters.braai_gear_family) {
+    params.append("braai_gear_family", filters.braai_gear_family)
   }
 
   const url = `/collections/butchery?${params.toString()}`

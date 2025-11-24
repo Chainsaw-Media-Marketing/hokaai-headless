@@ -267,6 +267,10 @@ export const viewAllMappings: Record<string, ViewAllMapping> = {
     collection: "braai-gear",
     filters: { department: "braai-gear", braai_gear_family: "cleaners-scoops" },
   },
+  "View All Wood & Charcoal": {
+    collection: "braai-gear",
+    filters: { department: "braai-gear", braai_gear_family: "wood-charcoal" },
+  },
 }
 
 // Helper function to build URL from mapping

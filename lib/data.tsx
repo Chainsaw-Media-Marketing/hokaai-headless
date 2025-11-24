@@ -470,6 +470,7 @@ const rawNavigationItems: NavItem[] = [
           { title: "Pots & Potjie Care" },
           { title: "Tools & Thermometers" },
           { title: "Cleaners & Scoops" },
+          { title: "Wood & Charcoal" },
         ],
       },
       {
@@ -491,6 +492,10 @@ const rawNavigationItems: NavItem[] = [
           { title: "Chicken Flatties", href: "/occasions/braai/chicken-flatties" },
           { title: "Sosaties", href: "/occasions/braai/sosaties" },
           { title: "Pork Chops & Ribs", href: "/occasions/braai/pork-chops-ribs" },
+          {
+            title: "Wood & Charcoal",
+            href: "/collections/braai-gear?department=braai-gear&braai_gear_family=wood-charcoal",
+          },
         ],
       },
       {

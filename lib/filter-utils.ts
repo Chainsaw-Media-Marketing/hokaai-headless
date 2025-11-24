@@ -412,6 +412,7 @@ export function getFilterDisplayLabel(slug: string): string {
     "grids-tongs": "Grids & Tongs",
     "pots-potjie-care": "Pots & Potjie Care",
     "tools-thermometers": "Tools & Thermometers",
+    "wood-charcoal": "Wood & Charcoal",
 
     // Deli Type
     "bacon-biltong": "Bacon Biltong",
