@@ -174,19 +174,20 @@ export function CartDrawer() {
     }
   }
 
-  if (!state.isOpen) return null
-
   return (
     <>
       <div
-        className="fixed inset-0 bg-black/50 z-40"
+        className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ${
+          state.isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
         onClick={() => dispatch({ type: "CLOSE_CART" })}
         aria-hidden="true"
       />
 
-      {/* Drawer */}
       <div
-        className="fixed top-0 right-0 h-full w-96 max-w-[90vw] bg-white z-50 flex flex-col shadow-2xl"
+        className={`fixed top-0 right-0 h-full w-96 max-w-[90vw] bg-white z-50 flex flex-col shadow-2xl transform transition-transform duration-300 ${
+          state.isOpen ? "translate-x-0 ease-out" : "translate-x-full ease-in"
+        }`}
         data-diag={`itemCount:${state.itemCount} lineCount:${state.lineCount || 0}`}
       >
         {/* Header */}
