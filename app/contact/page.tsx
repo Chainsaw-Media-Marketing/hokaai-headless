@@ -303,7 +303,7 @@ ${message}`
                     <div>
                       <h3 className="font-heading font-semibold text-brand-primary mb-1">Store Hours</h3>
                       <div className="text-body text-slate-700 space-y-1">
-                        <p>Monday - Friday: 8:00 AM - 6:00 PM</p>
+                        <p>Monday - Friday: 8:30 AM - 6:00 PM</p>
                         <p>Saturday: 8:00 AM - 4:00 PM</p>
                         <p>Sunday: 9:00 AM - 1:00 PM</p>
                       </div>

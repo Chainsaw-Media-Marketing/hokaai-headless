@@ -148,7 +148,7 @@ function Footer() {
                 <ClockIcon />
                 <div>
                   <p className="font-semibold mb-1">Store Hours:</p>
-                  <p>Mon-Fri: 8:00 AM - 6:00 PM</p>
+                  <p>Mon-Fri: 8:30 AM - 6:00 PM</p>
                   <p>Sat: 8:00 AM - 4:00 PM</p>
                   <p>Sun: 9:00 AM - 1:00 PM</p>
                   <p className="font-semibold mt-2 mb-1">Delivery Hours:</p>
