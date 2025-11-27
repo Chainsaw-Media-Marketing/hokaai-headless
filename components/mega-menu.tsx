@@ -150,7 +150,8 @@ const MEGAMENU_IMAGE_MAP: Record<string, string> = {
   "biltong-skille-crumbs": "https://cdn.shopify.com/s/files/1/0940/4763/3771/files/BILTONGCRUMBS.jpg?v=1761127942",
   "biltong-wagon-wheels": "https://cdn.shopify.com/s/files/1/0940/4763/3771/files/BILTONGWAGONWHEELS.jpg?v=1761127975",
   cabanossi: "https://cdn.shopify.com/s/files/1/0940/4763/3771/files/Cabanossi.jpg?v=1761123588",
-  salami: "/images/salami.png",
+  salami: "/images/salami-20homemade.jpg",
+  "salami-sticks": "/images/salami-20sticks.jpg",
   "pork-crackling": "https://cdn.shopify.com/s/files/1/0940/4763/3771/files/PORKCRACKLING.jpg?v=1761123743",
   "poeier-biltong-powder": "https://cdn.shopify.com/s/files/1/0940/4763/3771/files/POWDERBILTONG.jpg?v=1761126982",
 }
