@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Minus, ShoppingCart, Info } from 'lucide-react'
+import { Minus, ShoppingCart, Info } from "lucide-react"
 import { PlusIcon } from "@/components/icons/Plus"
 import type { Product, ShopifyVariant } from "@/lib/types"
 import { addToCartAndHydrate } from "@/lib/cart-actions"
@@ -26,30 +26,86 @@ const shouldShowVariantSelector = (variants?: ShopifyVariant[]): boolean => {
   return true
 }
 
+function getWeightInKg(variant: ShopifyVariant | null): number {
+  if (!variant) return 0
+
+  // Convert variant weight to kg based on weightUnit
+  if (variant.weight && variant.weight > 0) {
+    if (variant.weightUnit === "GRAMS") {
+      return variant.weight / 1000
+    } else if (variant.weightUnit === "KILOGRAMS") {
+      return variant.weight
+    }
+  }
+
+  return 0
+}
+
+function getDefaultVariantForProduct(product: Product): ShopifyVariant | null {
+  if (!product.variants || product.variants.length === 0) return null
+
+  // Determine if this is a per-kg product
+  const usePricePerKg = product.price_per_kg && product.price_per_kg > 0
+
+  if (usePricePerKg) {
+    // Per-kg product: prefer lightest variant with valid weight
+
+    // Filter variants with valid weight > 0
+    const variantsWithWeight = product.variants
+      .map((v) => ({ variant: v, weightInKg: getWeightInKg(v) }))
+      .filter((item) => item.weightInKg > 0)
+
+    if (variantsWithWeight.length === 0) {
+      // No valid weights, fallback to original behavior
+      return product.variants.find((v) => v.availableForSale) || product.variants[0]
+    }
+
+    // First, try to find lightest available variant
+    const availableWithWeight = variantsWithWeight.filter((item) => item.variant.availableForSale)
+
+    if (availableWithWeight.length > 0) {
+      // Sort by weight ascending and return the lightest
+      availableWithWeight.sort((a, b) => a.weightInKg - b.weightInKg)
+      return availableWithWeight[0].variant
+    }
+
+    // If no available variants with weight, return lightest regardless of availability
+    variantsWithWeight.sort((a, b) => a.weightInKg - b.weightInKg)
+    return variantsWithWeight[0].variant
+  }
+
+  // Unit-price product: use original behavior
+  return product.variants.find((v) => v.availableForSale) || product.variants[0]
+}
+
 export function ProductDetails({ product }: ProductDetailsProps) {
-  const [selectedVariant, setSelectedVariant] = useState<ShopifyVariant | null>(() => {
-    if (!product.variants || product.variants.length === 0) return null
-    // Default to first available variant, or first variant if none available
-    return product.variants.find((v) => v.availableForSale) || product.variants[0]
-  })
+  const [selectedVariant, setSelectedVariant] = useState<ShopifyVariant | null>(() =>
+    getDefaultVariantForProduct(product),
+  )
   const [quantity, setQuantity] = useState(1)
   const [householdSize, setHouseholdSize] = useState<string>("not-specified")
   const [specialRequests, setSpecialRequests] = useState<string>("")
   const [isAdding, setIsAdding] = useState(false)
-  
+
   const [moisturePreference, setMoisturePreference] = useState<string>("")
   const [fatPreference, setFatPreference] = useState<string>("")
 
+  useEffect(() => {
+    const nextDefaultVariant = getDefaultVariantForProduct(product)
+    setSelectedVariant(nextDefaultVariant)
+    setQuantity(1)
+  }, [product])
+
   const isBiltong = (() => {
     if (!product.deli_type) return false
-    
+
     if (Array.isArray(product.deli_type)) {
       return product.deli_type.includes("biltong")
     }
-    
+
     if (typeof product.deli_type === "string") {
       if (product.deli_type === "biltong") return true
-      
+
       try {
         const parsed = JSON.parse(product.deli_type)
         if (Array.isArray(parsed)) {
@@ -59,7 +115,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         return false
       }
     }
-    
+
     return false
   })()
 
@@ -117,21 +173,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     }).format(price)
   }
 
-  const getWeightInKg = (variant: ShopifyVariant | null): number | null => {
-    if (!variant) return null
-
-    // Convert variant weight to kg based on weightUnit
-    if (variant.weight && variant.weight > 0) {
-      if (variant.weightUnit === "GRAMS") {
-        return variant.weight / 1000
-      } else if (variant.weightUnit === "KILOGRAMS") {
-        return variant.weight
-      }
-    }
-
-    return null
-  }
-
   const usePricePerKg = product.price_per_kg && product.price_per_kg > 0
   const weightInKg = getWeightInKg(selectedVariant)
 
@@ -179,7 +220,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       value,
       currency,
     })
-  }, [product.id, product])
+  }, [product])
 
   const handleAddToCart = async () => {
     if (!selectedVariant?.id) return
@@ -187,9 +228,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     try {
       setIsAdding(true)
 
-      const value = usePricePerKg && weightInKg && weightInKg > 0 
-        ? pricePerKg * weightInKg * quantity 
-        : Number.parseFloat(selectedVariant.price.amount) * quantity
+      const value =
+        usePricePerKg && weightInKg && weightInKg > 0
+          ? pricePerKg * weightInKg * quantity
+          : Number.parseFloat(selectedVariant.price.amount) * quantity
       const currency = selectedVariant.price.currencyCode || "ZAR"
 
       trackMetaPixelEvent("AddToCart", {
