@@ -289,7 +289,7 @@ function Footer() {
               </ul>
             </div>
             <div className="md:col-span-2 flex flex-col md:flex-row justify-between items-start md:items-center">
-              <p className="text-sm text-gray-400">© {currentYear} Hokaai Vleismark BK. All rights reserved.</p>
+              <p className="text-sm text-gray-400">© {currentYear} HOKAAI VLEISMARK CC. All rights reserved.</p>
               <p className="text-xs text-gray-500 mt-2 md:mt-0">CK Number: 1994/00211923</p>
             </div>
           </div>
