@@ -8,6 +8,7 @@ import { NewsletterManager } from "@/components/newsletter-popup"
 import { TestimonialCarousel } from "@/components/testimonial-carousel"
 import { WavyDivider } from "@/components/wavy-divider"
 import { sampleReviews, occasionTags } from "@/lib/data"
+import { MobileValueProposition } from "@/components/mobile-value-proposition"
 
 export default function HomePage() {
   return (
@@ -18,16 +19,18 @@ export default function HomePage() {
         {/* Hero Banner */}
         <HeroBanner />
 
+        <MobileValueProposition />
+
         {/* Promo Band */}
         <PromoBand />
 
         {/* Shop by Occasion */}
-        <section className="py-16">
+        <section className="py-8 lg:py-16">
           <div className="container mx-auto px-6 lg:px-8">
             <div className="lg:max-w-[65%] lg:mx-auto">
-              <div className="text-center mb-12">
-                <h2 className="text-h2 text-brand-primary mb-4">Shop by Occasion</h2>
-                <p className="text-body text-slate-700 max-w-2xl mx-auto">
+              <div className="text-center mb-8 lg:mb-12">
+                <h2 className="text-2xl lg:text-h2 text-brand-primary mb-2 lg:mb-4">Shop by Occasion</h2>
+                <p className="text-body text-slate-700 max-w-2xl mx-auto hidden lg:block">
                   Find the perfect cuts for every cooking style and occasion
                 </p>
               </div>
@@ -36,15 +39,17 @@ export default function HomePage() {
           </div>
         </section>
 
-        <WavyDivider />
+        <div className="hidden lg:block">
+          <WavyDivider />
+        </div>
 
         {/* Featured Collection: Deli & Biltong */}
-        <section className="py-16 section-alt">
+        <section className="py-8 lg:py-16 section-alt">
           <div className="container mx-auto px-6 lg:px-8">
             <div className="lg:max-w-[65%] lg:mx-auto">
-              <div className="text-center mb-12">
-                <h2 className="text-h2 text-brand-primary mb-4">Deli & Biltong</h2>
-                <p className="text-body text-slate-700 max-w-2xl mx-auto">
+              <div className="text-center mb-8 lg:mb-12">
+                <h2 className="text-2xl lg:text-h2 text-brand-primary mb-2 lg:mb-4">Deli & Biltong</h2>
+                <p className="text-body text-slate-700 max-w-2xl mx-auto hidden lg:block">
                   Traditional South African dried meats and deli specialties
                 </p>
               </div>
@@ -54,11 +59,11 @@ export default function HomePage() {
         </section>
 
         {/* Testimonials */}
-        <section className="py-16 section-alt">
+        <section className="py-8 lg:py-16 section-alt">
           <div className="container mx-auto px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-h2 text-brand-primary mb-4">What Our Customers Say</h2>
-              <p className="text-body text-slate-700 max-w-2xl mx-auto">
+            <div className="text-center mb-8 lg:mb-12">
+              <h2 className="text-2xl lg:text-h2 text-brand-primary mb-2 lg:mb-4">What Our Customers Say</h2>
+              <p className="text-body text-slate-700 max-w-2xl mx-auto hidden lg:block">
                 Hear from our satisfied customers about their experience with Hokaai Meat Market
               </p>
             </div>

@@ -61,7 +61,7 @@ const getOccasionUrl = (occasionHandle: string, occasionTitle: string): string =
 
 export function OccasionTiles({ occasions }: OccasionTilesProps) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
       {occasions.map((occasion) => (
         <Link
           key={occasion.id}
@@ -76,7 +76,7 @@ export function OccasionTiles({ occasions }: OccasionTilesProps) {
           />
           <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-all duration-300" />
           <div className="absolute inset-0 flex items-center justify-center z-10">
-            <h3 className="font-heading font-semibold text-xl md:text-2xl text-white text-center px-4 drop-shadow-lg">
+            <h3 className="font-heading font-semibold text-2xl md:text-2xl text-white text-center px-4 drop-shadow-lg">
               {occasion.title}
             </h3>
           </div>
