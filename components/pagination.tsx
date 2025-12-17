@@ -8,9 +8,16 @@ interface PaginationProps {
   totalPages: number
   baseUrl: string
   className?: string
+  mobileSimple?: boolean
 }
 
-export function Pagination({ currentPage, totalPages, baseUrl, className = "" }: PaginationProps) {
+export function Pagination({
+  currentPage,
+  totalPages,
+  baseUrl,
+  className = "",
+  mobileSimple = false,
+}: PaginationProps) {
   const router = useRouter()
 
   if (totalPages <= 1) return null
@@ -34,6 +41,48 @@ export function Pagination({ currentPage, totalPages, baseUrl, className = "" }:
 
     const url = buildPageUrl(page)
     router.push(url)
+  }
+
+  if (mobileSimple) {
+    return (
+      <nav role="navigation" aria-label="Pagination" className={`flex items-center justify-center gap-4 ${className}`}>
+        {currentPage > 1 ? (
+          <button
+            onClick={() => handlePageClick(currentPage - 1)}
+            className="flex items-center gap-2 px-6 py-3 text-base font-medium text-white bg-brand-red hover:bg-brand-red/90 rounded-lg transition-colors min-h-[44px]"
+            aria-label="Go to previous page"
+          >
+            <ChevronLeft className="w-5 h-5" />
+            Prev
+          </button>
+        ) : (
+          <span className="flex items-center gap-2 px-6 py-3 text-base font-medium text-slate-400 bg-slate-100 rounded-lg cursor-not-allowed min-h-[44px]">
+            <ChevronLeft className="w-5 h-5" />
+            Prev
+          </span>
+        )}
+
+        <span className="text-slate-600 font-medium">
+          {currentPage} / {totalPages}
+        </span>
+
+        {currentPage < totalPages ? (
+          <button
+            onClick={() => handlePageClick(currentPage + 1)}
+            className="flex items-center gap-2 px-6 py-3 text-base font-medium text-white bg-brand-red hover:bg-brand-red/90 rounded-lg transition-colors min-h-[44px]"
+            aria-label="Go to next page"
+          >
+            Next
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        ) : (
+          <span className="flex items-center gap-2 px-6 py-3 text-base font-medium text-slate-400 bg-slate-100 rounded-lg cursor-not-allowed min-h-[44px]">
+            Next
+            <ChevronRight className="w-5 h-5" />
+          </span>
+        )}
+      </nav>
+    )
   }
 
   const getPageNumbers = () => {

@@ -375,7 +375,6 @@ export function CollectionPageClient({
 
         <div className="flex-1">
           <div className="mb-6">
-            {/* Active Filters Display (Read-only) */}
             <div className="lg:hidden mb-4">
               <CollectionFilterSidebar
                 initialFilters={activeFilters}
@@ -383,6 +382,18 @@ export function CollectionPageClient({
                 onFiltersChange={handleFiltersChange}
                 collectionHandle={collectionHandle}
               />
+
+              <div className="mt-3">
+                <p className="text-slate-600 text-sm text-center">
+                  {displayTotal === 0 ? (
+                    "No products"
+                  ) : (
+                    <>
+                      Showing {displayStart}–{displayEnd} of {displayTotal}
+                    </>
+                  )}
+                </p>
+              </div>
 
               {hasActiveFilters && (
                 <div className="mt-3 flex flex-wrap gap-2">
@@ -417,7 +428,7 @@ export function CollectionPageClient({
               )}
             </div>
 
-            <div className="flex items-center justify-between">
+            <div className="hidden lg:flex items-center justify-between">
               <p className="text-slate-700">
                 {displayTotal === 0 ? (
                   "No products"
@@ -429,7 +440,7 @@ export function CollectionPageClient({
               </p>
 
               <div className="flex items-center gap-3">
-                <div className="hidden lg:flex items-center gap-1 border border-slate-300 rounded-lg p-1">
+                <div className="flex items-center gap-1 border border-slate-300 rounded-lg p-1">
                   <button
                     onClick={() => setGridDensity("comfortable")}
                     className={`p-2 rounded transition-colors ${
@@ -470,7 +481,12 @@ export function CollectionPageClient({
           </div>
 
           {totalPages > 1 && (
-            <Pagination currentPage={currentPage} totalPages={totalPages} baseUrl={collectionUrl} className="mb-6" />
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              baseUrl={collectionUrl}
+              className="mb-6 hidden lg:flex"
+            />
           )}
 
           <ProductGrid
@@ -481,7 +497,21 @@ export function CollectionPageClient({
           />
 
           {totalPages > 1 && (
-            <Pagination currentPage={currentPage} totalPages={totalPages} baseUrl={collectionUrl} className="mt-8" />
+            <>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                baseUrl={collectionUrl}
+                className="mt-8 hidden lg:flex"
+              />
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                baseUrl={collectionUrl}
+                className="mt-8 lg:hidden"
+                mobileSimple
+              />
+            </>
           )}
 
           {filteredProducts.length === 0 && (
