@@ -8,7 +8,6 @@ import { NewsletterManager } from "@/components/newsletter-popup"
 import { TestimonialCarousel } from "@/components/testimonial-carousel"
 import { WavyDivider } from "@/components/wavy-divider"
 import { sampleReviews, occasionTags } from "@/lib/data"
-import { MobileValueProposition } from "@/components/mobile-value-proposition"
 
 export default function HomePage() {
   return (
@@ -18,8 +17,6 @@ export default function HomePage() {
       <main>
         {/* Hero Banner */}
         <HeroBanner />
-
-        <MobileValueProposition />
 
         {/* Promo Band */}
         <PromoBand />
@@ -38,6 +35,11 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* Mobile-only wavy divider between Shop by Occasion and Deli sections */}
+        <div className="lg:hidden">
+          <WavyDivider height={50} />
+        </div>
 
         <div className="hidden lg:block">
           <WavyDivider />
