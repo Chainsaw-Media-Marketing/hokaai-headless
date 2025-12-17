@@ -16,8 +16,8 @@ export function HeroBanner() {
         >
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
 
-          <div className="absolute inset-0 flex items-start justify-center py-12">
-            <div className="container mx-auto px-6">
+          <div className="absolute inset-0 flex items-start justify-center">
+            <div className="container mx-auto px-6 pt-10 pb-8">
               <div className="text-center">
                 <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-white mb-3 text-balance [text-shadow:0_2px_8px_rgba(0,0,0,0.55)]">
                   Premium Quality Meats
@@ -49,10 +49,10 @@ export function HeroBanner() {
           <div className="absolute inset-0 flex items-start sm:items-center justify-center">
             <div className="container mx-auto px-6 lg:px-8 pt-10 pb-8">
               <div className="max-w-2xl">
-                <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white mb-4 text-balance [text-shadow:0_2px_8px_rgba(0,0,0,0.55)]">
+                <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 text-balance [text-shadow:0_2px_8px_rgba(0,0,0,0.55)]">
                   Premium Quality Meats
                 </h1>
-                <p className="text-lg sm:text-xl lg:text-2xl text-white/90 mb-8 text-pretty [text-shadow:0_2px_8px_rgba(0,0,0,0.55)]">
+                <p className="text-lg sm:text-xl text-white/90 mb-8 text-pretty [text-shadow:0_2px_8px_rgba(0,0,0,0.55)]">
                   Discover our full range of fresh cuts, deli specialties, and braai essentials
                 </p>
 
