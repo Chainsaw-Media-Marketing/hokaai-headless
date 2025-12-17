@@ -26,7 +26,7 @@ export default function HomePage() {
           <div className="container mx-auto px-6 lg:px-8">
             <div className="lg:max-w-[65%] lg:mx-auto">
               <div className="text-center mb-8 lg:mb-12">
-                <h2 className="text-2xl lg:text-h2 text-brand-primary mb-2 lg:mb-4">Shop by Occasion</h2>
+                <h2 className="text-2xl lg:text-6xl text-brand-primary mb-2 lg:mb-4">Shop by Occasion</h2>
                 <p className="text-body text-slate-700 max-w-2xl mx-auto hidden lg:block">
                   Find the perfect cuts for every cooking style and occasion
                 </p>
@@ -50,7 +50,7 @@ export default function HomePage() {
           <div className="container mx-auto px-6 lg:px-8">
             <div className="lg:max-w-[65%] lg:mx-auto">
               <div className="text-center mb-8 lg:mb-12">
-                <h2 className="text-2xl lg:text-h2 text-brand-primary mb-2 lg:mb-4">Deli & Biltong</h2>
+                <h2 className="text-2xl lg:text-6xl text-brand-primary mb-2 lg:mb-4">Deli & Biltong</h2>
                 <p className="text-body text-slate-700 max-w-2xl mx-auto hidden lg:block">
                   Traditional South African dried meats and deli specialties
                 </p>
@@ -64,7 +64,7 @@ export default function HomePage() {
         <section className="py-8 lg:py-16 section-alt">
           <div className="container mx-auto px-6 lg:px-8">
             <div className="text-center mb-8 lg:mb-12">
-              <h2 className="text-2xl lg:text-h2 text-brand-primary mb-2 lg:mb-4">What Our Customers Say</h2>
+              <h2 className="text-2xl lg:text-6xl text-brand-primary mb-2 lg:mb-4">What Our Customers Say</h2>
               <p className="text-body text-slate-700 max-w-2xl mx-auto hidden lg:block">
                 Hear from our satisfied customers about their experience with Hokaai Meat Market
               </p>
