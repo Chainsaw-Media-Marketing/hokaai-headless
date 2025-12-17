@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react"
 export function HeroBanner() {
   return (
     <Link href="/collections/all" className="block relative overflow-hidden group">
-      <div className="h-[180px] sm:h-[320px] lg:h-[380px] relative">
+      <div className="h-[220px] sm:h-[320px] lg:h-[380px] relative">
         {/* Mobile version - zoomed in more */}
         <div
           className="w-full h-full bg-cover relative transition-transform duration-500 group-hover:scale-[1.025] sm:hidden"
