@@ -60,28 +60,59 @@ const getOccasionUrl = (occasionHandle: string, occasionTitle: string): string =
 }
 
 export function OccasionTiles({ occasions }: OccasionTilesProps) {
+  const mobileOccasions = occasions.filter((occ) =>
+    ["Ready to Braai", "Bulk & Hampers", "Weeknight Quick & Easy"].includes(occ.title),
+  )
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-      {occasions.map((occasion) => (
-        <Link
-          key={occasion.id}
-          href={getOccasionUrl(occasion.handle, occasion.title)}
-          className="group relative overflow-hidden rounded-2xl aspect-[4/3] block"
-        >
-          <Image
-            src={occasion.image || "/placeholder.svg"}
-            alt={occasion.title}
-            fill
-            className="object-cover group-hover:scale-110 transition-transform duration-500"
-          />
-          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-all duration-300" />
-          <div className="absolute inset-0 flex items-center justify-center z-10">
-            <h3 className="font-heading font-semibold text-2xl md:text-2xl text-white text-center px-4 drop-shadow-lg">
-              {occasion.title}
-            </h3>
-          </div>
-        </Link>
-      ))}
-    </div>
+    <>
+      {/* Mobile: 2-column grid with 3 filtered tiles and shorter aspect ratio */}
+      <div className="grid grid-cols-2 gap-4 lg:hidden">
+        {mobileOccasions.map((occasion) => (
+          <Link
+            key={occasion.id}
+            href={getOccasionUrl(occasion.handle, occasion.title)}
+            className="group relative overflow-hidden rounded-2xl aspect-[3/2] block"
+          >
+            <Image
+              src={occasion.image || "/placeholder.svg"}
+              alt={occasion.title}
+              fill
+              className="object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-all duration-300" />
+            <div className="absolute inset-0 flex items-center justify-center z-10">
+              <h3 className="font-heading font-semibold text-lg text-white text-center px-2 drop-shadow-lg">
+                {occasion.title}
+              </h3>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* Desktop: Original 3-column grid with all occasions */}
+      <div className="hidden lg:grid lg:grid-cols-3 gap-6">
+        {occasions.map((occasion) => (
+          <Link
+            key={occasion.id}
+            href={getOccasionUrl(occasion.handle, occasion.title)}
+            className="group relative overflow-hidden rounded-2xl aspect-[4/3] block"
+          >
+            <Image
+              src={occasion.image || "/placeholder.svg"}
+              alt={occasion.title}
+              fill
+              className="object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-all duration-300" />
+            <div className="absolute inset-0 flex items-center justify-center z-10">
+              <h3 className="font-heading font-semibold text-2xl text-white text-center px-4 drop-shadow-lg">
+                {occasion.title}
+              </h3>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </>
   )
 }
