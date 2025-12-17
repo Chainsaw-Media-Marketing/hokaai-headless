@@ -189,7 +189,7 @@ export function ProductCard({
   return (
     <div className="card group">
       <Link href={productLink} onClick={handleProductClick}>
-        <div className="aspect-video lg:aspect-square relative overflow-hidden rounded-t-2xl">
+        <div className="aspect-[4/3] lg:aspect-square relative overflow-hidden rounded-t-2xl">
           <Image
             src={product.image || "/placeholder.svg"}
             alt={product.title}

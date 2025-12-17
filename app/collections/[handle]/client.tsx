@@ -376,12 +376,55 @@ export function CollectionPageClient({
         <div className="flex-1">
           <div className="mb-6">
             <div className="lg:hidden mb-4">
-              <CollectionFilterSidebar
-                initialFilters={activeFilters}
-                availableFilters={availableFilters}
-                onFiltersChange={handleFiltersChange}
-                collectionHandle={collectionHandle}
-              />
+              <div className="flex gap-2 mb-3">
+                <button
+                  onClick={() => setIsMobileFilterOpen(!isMobileFilterOpen)}
+                  className="flex-1 px-4 py-2.5 bg-brand-primary text-white font-medium rounded-lg hover:bg-brand-primary/90 transition-colors"
+                >
+                  Filters
+                </button>
+                <button
+                  onClick={() => {
+                    const selectElement = document.getElementById("mobile-sort-select") as HTMLSelectElement
+                    if (selectElement) {
+                      selectElement.focus()
+                      selectElement.click()
+                    }
+                  }}
+                  className="flex-1 px-4 py-2.5 bg-brand-primary text-white font-medium rounded-lg hover:bg-brand-primary/90 transition-colors"
+                >
+                  Sort
+                </button>
+              </div>
+
+              <select
+                id="mobile-sort-select"
+                value={sortBy}
+                onChange={(e) =>
+                  handleSortChange(e.target.value as "featured" | "price-low" | "price-high" | "name-az" | "name-za")
+                }
+                className="w-full px-4 py-2 border border-slate-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-success mb-3"
+              >
+                <option value="featured">Featured</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="name-az">Name: A to Z</option>
+                <option value="name-za">Name: Z to A</option>
+              </select>
+
+              {isMobileFilterOpen && (
+                <div className="mb-3">
+                  <CollectionFilterSidebar
+                    initialFilters={activeFilters}
+                    availableFilters={availableFilters}
+                    onFiltersChange={(filters) => {
+                      handleFiltersChange(filters)
+                      setIsMobileFilterOpen(false)
+                    }}
+                    collectionHandle={collectionHandle}
+                  />
+                </div>
+              )}
 
               <div className="mt-3">
                 <p className="text-slate-600 text-sm text-center">
@@ -479,6 +522,16 @@ export function CollectionPageClient({
               </div>
             </div>
           </div>
+
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              baseUrl={collectionUrl}
+              className="mb-6 lg:hidden"
+              mobileSimple
+            />
+          )}
 
           {totalPages > 1 && (
             <Pagination
