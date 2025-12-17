@@ -19,7 +19,7 @@ export function HeroBanner() {
           <div className="absolute inset-0 flex items-start justify-center">
             <div className="container mx-auto px-6 pt-10 pb-8">
               <div className="text-center">
-                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-white mb-3 text-balance [text-shadow:0_2px_8px_rgba(0,0,0,0.55)]">
+                <h1 className="text-h1 max-sm:text-3xl font-bold text-white mb-3 text-balance [text-shadow:0_2px_8px_rgba(0,0,0,0.55)]">
                   Premium Quality Meats
                 </h1>
                 <p className="text-base sm:text-xl text-white/90 mb-6 text-pretty [text-shadow:0_2px_8px_rgba(0,0,0,0.55)]">
@@ -49,7 +49,7 @@ export function HeroBanner() {
           <div className="absolute inset-0 flex items-start sm:items-center justify-center">
             <div className="container mx-auto px-6 lg:px-8 pt-10 pb-8">
               <div className="max-w-2xl">
-                <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 text-balance [text-shadow:0_2px_8px_rgba(0,0,0,0.55)]">
+                <h1 className="text-h1 font-bold text-white mb-4 text-balance [text-shadow:0_2px_8px_rgba(0,0,0,0.55)]">
                   Premium Quality Meats
                 </h1>
                 <p className="text-lg sm:text-xl text-white/90 mb-8 text-pretty [text-shadow:0_2px_8px_rgba(0,0,0,0.55)]">
