@@ -9,16 +9,16 @@ export function HeroBanner() {
         <div
           className="w-full h-full bg-cover relative transition-transform duration-500 group-hover:scale-[1.025] sm:hidden"
           style={{
-            backgroundImage: `url(/homepage-hero-banner.webp), url(/homepage-hero-banner.jpg)`,
+            backgroundImage: `url(/hero-banner-mobile.webp)`,
             backgroundColor: "#8B5A3C",
-            backgroundPosition: "left 35%",
+            backgroundPosition: "center",
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
 
-          <div className="absolute inset-0 flex items-center">
-            <div className="container mx-auto px-6 lg:px-8">
-              <div className="max-w-2xl">
+          <div className="absolute inset-0 flex items-center justify-center py-8">
+            <div className="container mx-auto px-6">
+              <div className="text-center">
                 <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-white mb-3 text-balance [text-shadow:0_2px_8px_rgba(0,0,0,0.55)]">
                   Premium Quality Meats
                 </h1>
