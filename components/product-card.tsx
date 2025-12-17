@@ -274,7 +274,7 @@ export function ProductCard({
             )}
             <Button
               size="sm"
-              className="w-full bg-brand-red hover:bg-brand-red/90 text-white rounded-lg"
+              className="w-full h-11 bg-brand-red hover:bg-brand-red/90 text-white rounded-lg"
               disabled={!selectedVariant?.availableForSale || isAdding}
               onClick={handleAddToCart}
             >
@@ -283,7 +283,7 @@ export function ProductCard({
           </div>
         ) : (
           <Link href={productLink} onClick={handleProductClick}>
-            <Button variant="secondary" size="sm" className="w-full">
+            <Button variant="secondary" size="sm" className="w-full h-11">
               {showCategoryLink ? "Shop Category" : "View"}
             </Button>
           </Link>

@@ -27,7 +27,10 @@ export function PromoBand() {
             Local delivery from Faerie Glen. Free delivery within 5 km, or on orders over R1 000 in Pretoria &
             Centurion.
           </span>
-          <Link href="/delivery-info" className="underline hover:no-underline whitespace-nowrap">
+          <Link
+            href="/delivery-info"
+            className="underline hover:no-underline whitespace-nowrap inline-flex items-center px-3 py-2 rounded"
+          >
             See details
           </Link>
         </div>

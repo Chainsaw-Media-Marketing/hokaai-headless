@@ -92,7 +92,7 @@ function Header() {
               >
                 <button
                   onClick={() => setIsSearchOpen(true)}
-                  className="p-2 text-white hover:text-red-400 transition-all duration-500 ease-in-out"
+                  className="p-3 text-white hover:text-red-400 transition-all duration-500 ease-in-out"
                   aria-label="Search"
                 >
                   <SearchIcon />
@@ -158,7 +158,7 @@ function Header() {
 
                 <button
                   onClick={() => goToAccount()}
-                  className="hidden sm:flex p-2 text-white hover:text-red-400 transition-colors"
+                  className="hidden sm:flex p-3 text-white hover:text-red-400 transition-colors"
                   aria-label="Account"
                 >
                   <UserIcon />
@@ -166,7 +166,7 @@ function Header() {
 
                 <button
                   onClick={() => dispatch({ type: "TOGGLE_CART" })}
-                  className="relative p-2 text-white hover:text-red-400 transition-colors"
+                  className="relative p-3 text-white hover:text-red-400 transition-colors"
                   aria-label="Shopping cart"
                 >
                   <ShoppingCart className="h-5 w-5" />
@@ -179,7 +179,7 @@ function Header() {
 
                 <button
                   onClick={() => setIsMobileMenuOpen(true)}
-                  className="lg:hidden p-2 text-white hover:text-red-400 transition-colors"
+                  className="lg:hidden p-3 text-white hover:text-red-400 transition-colors"
                   aria-label="Open menu"
                 >
                   <MenuIcon />
