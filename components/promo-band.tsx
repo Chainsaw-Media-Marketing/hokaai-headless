@@ -21,9 +21,9 @@ export function PromoBand() {
   return (
     <div className="bg-brand-red text-white py-2 md:py-4">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-center space-x-2 text-center lg:hidden">
+        <div className="flex items-center justify-center gap-2 text-center lg:hidden">
           <Truck />
-          <span className="font-semibold text-sm">Free delivery in Pta & Centurion</span>
+          <span className="font-semibold text-sm">Free delivery Pta & Centurion</span>
           <Link href="/delivery-info" className="underline hover:no-underline whitespace-nowrap text-sm">
             Details
           </Link>

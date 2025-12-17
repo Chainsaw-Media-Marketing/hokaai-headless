@@ -8,7 +8,6 @@ interface OccasionTilesProps {
 }
 
 const getOccasionUrl = (occasionHandle: string, occasionTitle: string): string => {
-  // Map the occasion handle to the corresponding View All key in occasion-mappings
   const viewAllKeyMap: Record<string, string> = {
     braai: "Great for Braai → View All",
     stew: "Great for Stew & Potjiekos → View All",
@@ -28,7 +27,6 @@ const getOccasionUrl = (occasionHandle: string, occasionTitle: string): string =
     return "/collections/butchery"
   }
 
-  // Build filter URL using the same logic as the mega menu
   const params = new URLSearchParams()
   const filters = mapping.filters!
 
@@ -66,7 +64,6 @@ export function OccasionTiles({ occasions }: OccasionTilesProps) {
 
   return (
     <>
-      {/* Mobile: 2-column grid with 3 filtered tiles and shorter aspect ratio */}
       <div className="grid grid-cols-2 gap-4 lg:hidden">
         {mobileOccasions.map((occasion) => (
           <Link
@@ -88,6 +85,18 @@ export function OccasionTiles({ occasions }: OccasionTilesProps) {
             </div>
           </Link>
         ))}
+
+        <Link
+          href="https://www.hokaaimeatmarket.co.za/collections/butchery?occasion=braai%2Cready-to-braai%2Cstew%2Croast%2Cquick%2Cbulk%2Csnack"
+          className="group relative overflow-hidden rounded-2xl aspect-[3/2] block bg-brand-red"
+        >
+          <div className="absolute inset-0 bg-brand-red group-hover:bg-brand-red/90 transition-all duration-300" />
+          <div className="absolute inset-0 flex items-center justify-center z-10">
+            <h3 className="font-heading font-semibold text-lg text-white text-center px-2 drop-shadow-lg">
+              View All by Occasion
+            </h3>
+          </div>
+        </Link>
       </div>
 
       {/* Desktop: Original 3-column grid with all occasions */}

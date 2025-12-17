@@ -4,20 +4,18 @@ import { ArrowRight } from "lucide-react"
 export function HeroBanner() {
   return (
     <Link href="/collections/all" className="block relative overflow-hidden group">
-      <div className="h-[220px] sm:h-[320px] lg:h-[380px] relative">
+      <div className="h-[180px] sm:h-[320px] lg:h-[380px] relative">
         {/* Mobile version - zoomed in more */}
         <div
           className="w-full h-full bg-cover relative transition-transform duration-500 group-hover:scale-[1.025] sm:hidden"
           style={{
             backgroundImage: `url(/homepage-hero-banner.webp), url(/homepage-hero-banner.jpg)`,
             backgroundColor: "#8B5A3C",
-            backgroundPosition: "left 35%", // Updated to left 35% to keep sosaties visible on mobile
+            backgroundPosition: "left 35%",
           }}
         >
-          {/* Overlay gradient for better text readability */}
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
 
-          {/* Content */}
           <div className="absolute inset-0 flex items-center">
             <div className="container mx-auto px-6 lg:px-8">
               <div className="max-w-2xl">
@@ -28,7 +26,7 @@ export function HeroBanner() {
                   Fresh cuts & braai essentials
                 </p>
 
-                <div className="inline-flex items-center gap-2 bg-brand-primary hover:bg-brand-primary-dark text-white px-8 py-4 rounded-lg font-semibold transition-colors shadow-lg group-hover:shadow-xl">
+                <div className="inline-flex items-center gap-2 bg-brand-red hover:bg-brand-red/90 text-white px-8 py-4 rounded-lg font-semibold transition-colors shadow-lg group-hover:shadow-xl">
                   <span>Go to Shop</span>
                   <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </div>
@@ -43,13 +41,11 @@ export function HeroBanner() {
           style={{
             backgroundImage: `url(/homepage-hero-banner.webp), url(/homepage-hero-banner.jpg)`,
             backgroundColor: "#8B5A3C",
-            backgroundPosition: "left 40%", // Updated to left 40% to anchor image on left side
+            backgroundPosition: "left 40%",
           }}
         >
-          {/* Overlay gradient for better text readability */}
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
 
-          {/* Content */}
           <div className="absolute inset-0 flex items-center">
             <div className="container mx-auto px-6 lg:px-8">
               <div className="max-w-2xl">
