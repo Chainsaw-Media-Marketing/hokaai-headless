@@ -316,30 +316,21 @@ export function CollectionPageClient({
   )
 
   const handleSortChange = useCallback(
-    (newSortBy: "featured" | "price-low" | "price-high" | "name-az" | "name-za") => {
-      console.log("[v0] handleSortChange called with:", newSortBy)
-      console.log("[v0] Current sortBy state:", sortBy)
-
-      setSortBy(newSortBy)
-      setIsMobileSortOpen(false)
-
+    (value: string) => {
       const params = new URLSearchParams(searchParams.toString())
 
-      if (newSortBy === "featured") {
+      if (value === "featured") {
         params.delete("sort")
-        console.log("[v0] Featured selected - removing sort param")
-      } else {
-        params.set("sort", newSortBy)
-        console.log("[v0] Setting sort param to:", newSortBy)
+        setSortBy("featured")
+      } else if (value === "price-low" || value === "price-high" || value === "name-az" || value === "name-za") {
+        params.set("sort", value)
+        setSortBy(value as "price-low" | "price-high" | "name-az" | "name-za")
       }
 
-      params.delete("page")
-
-      const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname
-      console.log("[v0] Pushing new URL:", newUrl)
+      const newUrl = `${pathname}${params.toString() ? `?${params.toString()}` : ""}`
       router.push(newUrl)
     },
-    [pathname, router, searchParams, sortBy],
+    [searchParams, pathname, router],
   )
 
   const getActiveFilterLabels = useMemo(() => {
@@ -428,7 +419,7 @@ export function CollectionPageClient({
                   ].map((option) => (
                     <button
                       key={option.value}
-                      onClick={() => handleSortChange(option.value as typeof sortBy)}
+                      onClick={() => handleSortChange(option.value)}
                       className={`w-full px-4 py-3 text-left flex items-center justify-between min-h-[44px] transition-colors ${
                         sortBy === option.value
                           ? "bg-brand-red text-white font-semibold"
@@ -524,9 +515,7 @@ export function CollectionPageClient({
 
                 <select
                   value={sortBy}
-                  onChange={(e) =>
-                    handleSortChange(e.target.value as "featured" | "price-low" | "price-high" | "name-az" | "name-za")
-                  }
+                  onChange={(e) => handleSortChange(e.target.value)}
                   className="px-4 py-2 border border-slate-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-success"
                 >
                   <option value="featured">Featured</option>
