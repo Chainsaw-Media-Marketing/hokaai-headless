@@ -390,12 +390,22 @@ export function CollectionPageClient({
           />
         </aside>
 
+        {/* Mobile Sidebar */}
+        <CollectionFilterSidebar
+          initialFilters={activeFilters}
+          availableFilters={availableFilters}
+          onFiltersChange={handleFiltersChange}
+          collectionHandle={collectionHandle}
+          isMobileOpen={isMobileFilterOpen}
+          setIsMobileOpen={setIsMobileFilterOpen}
+        />
+
         <div className="flex-1">
           <div className="mb-6">
             <div className="lg:hidden mb-4">
               <div className="flex gap-2 mb-3">
                 <button
-                  onClick={() => setIsMobileFilterOpen(!isMobileFilterOpen)}
+                  onClick={() => setIsMobileFilterOpen(true)}
                   className="flex-1 px-4 py-2.5 bg-brand-primary text-white font-medium rounded-lg hover:bg-brand-primary/90 transition-colors"
                 >
                   Filters
@@ -422,7 +432,10 @@ export function CollectionPageClient({
                   ].map((option) => (
                     <button
                       key={option.value}
-                      onClick={() => handleSortChange(option.value as typeof sortBy)}
+                      onClick={() => {
+                        console.log("[v0] Sort option clicked:", option.value)
+                        handleSortChange(option.value as typeof sortBy)
+                      }}
                       className={`w-full px-4 py-3 text-left flex items-center justify-between min-h-[44px] transition-colors ${
                         sortBy === option.value
                           ? "bg-brand-red text-white font-semibold"
@@ -435,32 +448,6 @@ export function CollectionPageClient({
                   ))}
                 </div>
               )}
-
-              {isMobileFilterOpen && (
-                <div className="mb-3">
-                  <CollectionFilterSidebar
-                    initialFilters={activeFilters}
-                    availableFilters={availableFilters}
-                    onFiltersChange={(filters) => {
-                      handleFiltersChange(filters)
-                      setIsMobileFilterOpen(false)
-                    }}
-                    collectionHandle={collectionHandle}
-                  />
-                </div>
-              )}
-
-              <div className="mt-3">
-                <p className="text-slate-600 text-sm text-center">
-                  {displayTotal === 0 ? (
-                    "No products"
-                  ) : (
-                    <>
-                      Showing {displayStart}–{displayEnd} of {displayTotal}
-                    </>
-                  )}
-                </p>
-              </div>
 
               {hasActiveFilters && (
                 <div className="mt-3 flex flex-wrap gap-2">

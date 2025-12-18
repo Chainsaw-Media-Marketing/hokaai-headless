@@ -35,6 +35,8 @@ interface CollectionFilterSidebarProps {
   }
   onFiltersChange: (filters: FilterState) => void
   collectionHandle?: string
+  isMobileOpen?: boolean
+  setIsMobileOpen?: (open: boolean) => void
 }
 
 export function CollectionFilterSidebar({
@@ -42,6 +44,8 @@ export function CollectionFilterSidebar({
   availableFilters,
   onFiltersChange,
   collectionHandle,
+  isMobileOpen: externalIsMobileOpen,
+  setIsMobileOpen: externalSetIsMobileOpen,
 }: CollectionFilterSidebarProps) {
   const router = useRouter()
   const [expandedGroups, setExpandedGroups] = useState<string[]>(collectionHandle === "all" ? ["Department"] : [])
@@ -59,10 +63,12 @@ export function CollectionFilterSidebar({
     },
   )
   const [pendingFilters, setPendingFilters] = useState<FilterState>(selectedFilters)
-  const [isMobileOpen, setIsMobileOpen] = useState(false)
-
+  const [internalIsMobileOpen, setInternalIsMobileOpen] = useState(false)
   const isUpdatingFromParent = useRef(false)
   const previousFiltersRef = useRef<string>(JSON.stringify(selectedFilters))
+
+  const isMobileOpen = externalIsMobileOpen !== undefined ? externalIsMobileOpen : internalIsMobileOpen
+  const setIsMobileOpen = externalSetIsMobileOpen || setInternalIsMobileOpen
 
   useEffect(() => {
     if (initialFilters) {
