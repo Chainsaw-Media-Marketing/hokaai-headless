@@ -79,7 +79,7 @@ export function MobileMenuDrawer({ isOpen, onClose, navigationItems }: MobileMen
           <img src="/images/hokaai-logo.png" alt="Hokaai Meat Market" className="h-6 w-auto" />
           <button
             onClick={onClose}
-            className="p-2 text-white hover:text-red-400 transition-colors"
+            className="p-3 text-white hover:text-red-400 transition-colors"
             aria-label="Close menu"
           >
             <XIcon />

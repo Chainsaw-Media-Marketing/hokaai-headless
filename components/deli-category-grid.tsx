@@ -1,6 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 
 interface DeliCategory {
   title: string
@@ -13,53 +14,62 @@ const deliCategories: DeliCategory[] = [
   {
     title: "Biltong",
     description: "Traditional dried meat in various cuts and flavors",
-    image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/BILTONG%20DEFAULT-NXUzgJad3tamNwFTP1YJtPkx5QbGL0.jpg",
+    image: "/images/biltong-20default.jpg",
     href: "/collections/deli-biltong?department=deli-biltong&deli_type=biltong",
   },
   {
     title: "Droëwors",
     description: "Authentic South African dried sausage",
-    image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ORIGINAL%20DRYWORS-l3656iPF0NlUhsPKxTLnXH00kBaJ6i.jpg",
+    image: "/images/original-20drywors.jpg",
     href: "/collections/deli-biltong?department=deli-biltong&deli_type=droewors",
   },
   {
     title: "Sticks",
     description: "Flavorful meat sticks in various styles",
-    image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/BILTONG%20STICKS-PD7btCslWdDzuI640u6e94PFapQDLD.jpg",
+    image: "/images/biltong-20sticks.jpg",
     href: "/collections/deli-biltong?department=deli-biltong&deli_type=sticks",
   },
   {
     title: "Bacon Biltong",
     description: "Delicious bacon-style biltong varieties",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/BACON%20BILTONG-dmybDXDY3Sdr61Mf5oOYnxSYJLE6fA.jpg",
+    image: "/images/bacon-20biltong.jpg",
     href: "/collections/deli-biltong?department=deli-biltong&deli_type=bacon-biltong",
   },
 ]
 
 export function DeliCategoryGrid() {
+  const mainDeliUrl = "/collections/deli-biltong"
+
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-      {deliCategories.map((category) => (
-        <Link key={category.title} href={category.href} className="group">
-          <Card className="overflow-hidden transition-all hover:shadow-lg">
-            <div className="relative aspect-square overflow-hidden">
-              <Image
-                src={category.image || "/placeholder.svg"}
-                alt={category.title}
-                fill
-                className="object-cover transition-transform group-hover:scale-105"
-              />
-            </div>
-            <CardContent className="p-4 text-center">
-              <h3 className="font-semibold text-lg text-brand-primary mb-2">{category.title}</h3>
-              <p className="text-sm text-slate-600">{category.description}</p>
-            </CardContent>
-          </Card>
-        </Link>
-      ))}
-    </div>
+    <>
+      <div className="lg:hidden text-center">
+        <p className="text-sm text-slate-600 mb-6">Traditional South African dried meats and deli specialties</p>
+        <Button asChild size="lg" className="h-12 px-8 bg-brand-red hover:bg-brand-red/90 text-white">
+          <Link href={mainDeliUrl}>Shop Deli & Biltong</Link>
+        </Button>
+      </div>
+
+      {/* Desktop: Original multi-category grid */}
+      <div className="hidden lg:grid lg:grid-cols-4 gap-6">
+        {deliCategories.map((category) => (
+          <Link key={category.title} href={category.href} className="group">
+            <Card className="overflow-hidden transition-all hover:shadow-lg">
+              <div className="relative aspect-square overflow-hidden">
+                <Image
+                  src={category.image || "/placeholder.svg"}
+                  alt={category.title}
+                  fill
+                  className="object-cover transition-transform group-hover:scale-105"
+                />
+              </div>
+              <CardContent className="p-4 text-center">
+                <h3 className="font-semibold text-lg text-brand-primary mb-2">{category.title}</h3>
+                <p className="text-sm text-slate-600">{category.description}</p>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
+    </>
   )
 }

@@ -7,7 +7,7 @@ import { CollectionFilterSidebar } from "@/components/collection-filter-sidebar"
 import { Pagination } from "@/components/pagination"
 import { productMatchesFilters, sanitizeFilters, type FilterState } from "@/lib/filter-utils"
 import type { Product } from "@/lib/types"
-import { LayoutGrid, Grid3x3, X } from "lucide-react"
+import { LayoutGrid, Grid3x3, X, Check } from "lucide-react"
 
 const PRODUCTS_PER_PAGE = 36
 
@@ -31,11 +31,26 @@ export function CollectionPageClient({
   const router = useRouter()
 
   const prevFiltersRef = useRef<string>("")
+  const sortPopoverRef = useRef<HTMLDivElement>(null)
 
   const [activeFilters, setActiveFilters] = useState<FilterState>(sanitizeFilters(initialFilters))
   const [gridDensity, setGridDensity] = useState<"comfortable" | "compact">("comfortable")
   const [sortBy, setSortBy] = useState<"featured" | "price-low" | "price-high" | "name-az" | "name-za">("featured")
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
+  const [isMobileSortOpen, setIsMobileSortOpen] = useState(false)
+  const [mobileGridCols, setMobileGridCols] = useState<1 | 2>(2)
+
+  useEffect(() => {
+    const stored = localStorage.getItem("hk_mobile_grid_cols")
+    if (stored === "1" || stored === "2") {
+      setMobileGridCols(Number.parseInt(stored) as 1 | 2)
+    }
+  }, [])
+
+  const handleMobileGridChange = useCallback((cols: 1 | 2) => {
+    setMobileGridCols(cols)
+    localStorage.setItem("hk_mobile_grid_cols", cols.toString())
+  }, [])
 
   const currentPage = useMemo(() => {
     const pageParam = searchParams.get("page")
@@ -117,6 +132,21 @@ export function CollectionPageClient({
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" })
   }, [currentPage])
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sortPopoverRef.current && !sortPopoverRef.current.contains(event.target as Node)) {
+        setIsMobileSortOpen(false)
+      }
+    }
+
+    if (isMobileSortOpen) {
+      document.addEventListener("mousedown", handleClickOutside)
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside)
+      }
+    }
+  }, [isMobileSortOpen])
 
   const availableFilters = useMemo(() => {
     const meatTypeCounts = new Map<string, number>()
@@ -234,7 +264,6 @@ export function CollectionPageClient({
 
   const handleFiltersChange = useCallback(
     (filters: FilterState) => {
-      // Only normalize department to max 1 value
       const normalized = {
         ...filters,
         department: filters.department.slice(0, 1),
@@ -300,23 +329,23 @@ export function CollectionPageClient({
   )
 
   const handleSortChange = useCallback(
-    (newSortBy: "featured" | "price-low" | "price-high" | "name-az" | "name-za") => {
-      setSortBy(newSortBy)
-
+    (value: string) => {
       const params = new URLSearchParams(searchParams.toString())
 
-      if (newSortBy === "featured") {
+      if (value === "featured") {
         params.delete("sort")
-      } else {
-        params.set("sort", newSortBy)
+        setSortBy("featured")
+      } else if (value === "price-low" || value === "price-high" || value === "name-az" || value === "name-za") {
+        params.set("sort", value)
+        setSortBy(value as "price-low" | "price-high" | "name-az" | "name-za")
       }
 
-      params.delete("page")
-
-      const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname
+      const newUrl = `${pathname}${params.toString() ? `?${params.toString()}` : ""}`
       router.push(newUrl)
+
+      setIsMobileSortOpen(false)
     },
-    [pathname, searchParams, router],
+    [searchParams, pathname, router],
   )
 
   const getActiveFilterLabels = useMemo(() => {
@@ -375,14 +404,83 @@ export function CollectionPageClient({
 
         <div className="flex-1">
           <div className="mb-6">
-            {/* Active Filters Display (Read-only) */}
-            <div className="lg:hidden mb-4">
-              <CollectionFilterSidebar
-                initialFilters={activeFilters}
-                availableFilters={availableFilters}
-                onFiltersChange={handleFiltersChange}
-                collectionHandle={collectionHandle}
-              />
+            <div className="lg:hidden space-y-3">
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setIsMobileFilterOpen(true)}
+                  className="flex-1 px-4 py-2.5 bg-brand-primary text-white font-medium rounded-lg hover:bg-brand-primary/90 transition-colors"
+                >
+                  Filters {hasActiveFilters && `(${getActiveFilterLabels.length})`}
+                </button>
+                <button
+                  onClick={() => setIsMobileSortOpen(!isMobileSortOpen)}
+                  className="flex-1 px-4 py-2.5 bg-brand-primary text-white font-medium rounded-lg hover:bg-brand-primary/90 transition-colors"
+                >
+                  Sort
+                </button>
+                <div className="flex items-center gap-1 border-2 border-brand-primary rounded-lg p-0.5">
+                  <button
+                    onClick={() => handleMobileGridChange(2)}
+                    className={`p-2.5 rounded transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center ${
+                      mobileGridCols === 2 ? "bg-brand-red text-white" : "text-slate-600 hover:bg-slate-100"
+                    }`}
+                    aria-label="2-column view"
+                    aria-pressed={mobileGridCols === 2}
+                  >
+                    <Grid3x3 className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => handleMobileGridChange(1)}
+                    className={`p-2.5 rounded transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center ${
+                      mobileGridCols === 1 ? "bg-brand-red text-white" : "text-slate-600 hover:bg-slate-100"
+                    }`}
+                    aria-label="1-column view"
+                    aria-pressed={mobileGridCols === 1}
+                  >
+                    <LayoutGrid className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              {isMobileSortOpen && (
+                <div
+                  ref={sortPopoverRef}
+                  className="mb-3 bg-white border border-slate-300 rounded-xl shadow-lg overflow-hidden"
+                >
+                  {[
+                    { value: "featured", label: "Featured" },
+                    { value: "price-low", label: "Price: Low to High" },
+                    { value: "price-high", label: "Price: High to Low" },
+                    { value: "name-az", label: "Name: A to Z" },
+                    { value: "name-za", label: "Name: Z to A" },
+                  ].map((option) => (
+                    <button
+                      key={option.value}
+                      onClick={() => handleSortChange(option.value)}
+                      className={`w-full px-4 py-3 text-left flex items-center justify-between min-h-[44px] transition-colors ${
+                        sortBy === option.value
+                          ? "bg-brand-red text-white font-semibold"
+                          : "text-slate-700 hover:bg-slate-50"
+                      }`}
+                    >
+                      <span>{option.label}</span>
+                      {sortBy === option.value && <Check className="w-5 h-5" />}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <div className="mt-3">
+                <p className="text-slate-600 text-sm text-center">
+                  {displayTotal === 0 ? (
+                    "No products"
+                  ) : (
+                    <>
+                      Showing {displayStart}–{displayEnd} of {displayTotal}
+                    </>
+                  )}
+                </p>
+              </div>
 
               {hasActiveFilters && (
                 <div className="mt-3 flex flex-wrap gap-2">
@@ -417,7 +515,7 @@ export function CollectionPageClient({
               )}
             </div>
 
-            <div className="flex items-center justify-between">
+            <div className="hidden lg:flex items-center justify-between">
               <p className="text-slate-700">
                 {displayTotal === 0 ? (
                   "No products"
@@ -429,7 +527,7 @@ export function CollectionPageClient({
               </p>
 
               <div className="flex items-center gap-3">
-                <div className="hidden lg:flex items-center gap-1 border border-slate-300 rounded-lg p-1">
+                <div className="flex items-center gap-1 border border-slate-300 rounded-lg p-1">
                   <button
                     onClick={() => setGridDensity("comfortable")}
                     className={`p-2 rounded transition-colors ${
@@ -454,9 +552,7 @@ export function CollectionPageClient({
 
                 <select
                   value={sortBy}
-                  onChange={(e) =>
-                    handleSortChange(e.target.value as "featured" | "price-low" | "price-high" | "name-az" | "name-za")
-                  }
+                  onChange={(e) => handleSortChange(e.target.value)}
                   className="px-4 py-2 border border-slate-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-success"
                 >
                   <option value="featured">Featured</option>
@@ -470,44 +566,45 @@ export function CollectionPageClient({
           </div>
 
           {totalPages > 1 && (
-            <Pagination currentPage={currentPage} totalPages={totalPages} baseUrl={collectionUrl} className="mb-6" />
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              baseUrl={collectionUrl}
+              className="mb-6 lg:hidden"
+              mobileSimple
+            />
           )}
 
           <ProductGrid
             products={paginatedProducts}
-            showQuickAdd
             gridDensity={gridDensity}
             collectionUrl={collectionUrl}
+            mobileGridCols={mobileGridCols}
           />
 
           {totalPages > 1 && (
-            <Pagination currentPage={currentPage} totalPages={totalPages} baseUrl={collectionUrl} className="mt-8" />
-          )}
-
-          {filteredProducts.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-slate-500 text-lg mb-4">No products match your filters.</p>
-              <button
-                onClick={() =>
-                  handleFiltersChange({
-                    meatType: [],
-                    cutFamily: [],
-                    occasion: [],
-                    department: [],
-                    deliType: [],
-                    spiceFamily: [],
-                    braaiGearFamily: [],
-                    groceryFamily: [],
-                    bulkType: [],
-                  })
-                }
-                className="text-brand-red hover:underline font-medium"
-              >
-                Clear Filters
-              </button>
-            </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              baseUrl={collectionUrl}
+              className="mt-8"
+              mobileSimple={false}
+            />
           )}
         </div>
+      </div>
+
+      <div className="lg:hidden">
+        <CollectionFilterSidebar
+          initialFilters={activeFilters}
+          availableFilters={availableFilters}
+          onFiltersChange={(filters) => {
+            handleFiltersChange(filters)
+          }}
+          collectionHandle={collectionHandle}
+          isMobileOpen={isMobileFilterOpen}
+          onMobileClose={() => setIsMobileFilterOpen(false)}
+        />
       </div>
     </main>
   )

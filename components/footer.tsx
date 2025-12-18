@@ -100,8 +100,8 @@ function Footer() {
 
   return (
     <footer className="bg-black text-white">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="container mx-auto px-4 py-8 lg:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Contact Info */}
           <div>
             <h3 className="font-heading font-semibold text-xl mb-6">Contact Us</h3>
@@ -220,7 +220,7 @@ function Footer() {
           </div>
 
           {/* Online Store */}
-          <div>
+          <div className="hidden lg:block">
             <h3 className="font-heading font-semibold text-xl mb-6">Online Store</h3>
             <div className="space-y-4">
               <p className="text-sm text-gray-200">Secure card payments via PayGate</p>
@@ -238,13 +238,13 @@ function Footer() {
           {/* Newsletter */}
           <div>
             <h3 className="font-heading font-semibold text-xl mb-6">Stay Updated</h3>
-            <p className="text-sm text-gray-200 mb-4">
+            <p className="text-sm text-gray-200 mb-4 lg:block">
               Get the latest news, recipes, and special offers delivered to your inbox.
             </p>
             <NewsletterFooterForm />
             <p className="text-xs text-gray-400 mt-2">By subscribing, you agree to our privacy policy.</p>
 
-            <div className="mt-6 flex justify-center">
+            <div className="mt-6 flex justify-center lg:justify-center">
               <SocialIcons className="text-white" size={24} />
             </div>
           </div>

@@ -189,18 +189,18 @@ export function ProductCard({
   return (
     <div className="card group">
       <Link href={productLink} onClick={handleProductClick}>
-        <div className="aspect-square relative overflow-hidden rounded-t-2xl">
+        <div className="aspect-[4/3] lg:aspect-square relative overflow-hidden rounded-t-2xl bg-white">
           <Image
             src={product.image || "/placeholder.svg"}
             alt={product.title}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            className="object-contain lg:object-cover group-hover:scale-105 transition-transform duration-300"
           />
         </div>
       </Link>
 
-      <div className="p-3">
-        <div className="mb-2 flex flex-wrap gap-1.5">
+      <div className="p-2.5 lg:p-3">
+        <div className="mb-2 hidden lg:flex flex-wrap gap-1.5">
           {isButchery && (
             <>
               {product.meat_type && (
@@ -231,7 +231,7 @@ export function ProductCard({
           )}
         </div>
 
-        <div className="mb-0.5 min-h-[20px]">
+        <div className="mb-0.5 min-h-[20px] hidden lg:block">
           {product.tags.map((tag) => (
             <span
               key={tag}
@@ -243,21 +243,21 @@ export function ProductCard({
         </div>
 
         <Link href={productLink} onClick={handleProductClick}>
-          <h3 className="font-heading font-semibold text-lg text-brand-primary mb-1 group-hover:text-brand-red transition-colors line-clamp-2">
+          <h3 className="font-heading font-semibold text-base lg:text-lg text-brand-primary mb-1 group-hover:text-brand-red transition-colors line-clamp-2">
             {product.title}
           </h3>
         </Link>
 
-        <div className="mb-2">
+        <div className="mb-1.5 lg:mb-2">
           <p className="text-slate-700 text-sm">From {formatPrice(minPrice)}</p>
           {product.price_per_kg && <p className="text-slate-500 text-xs">{formatPrice(product.price_per_kg)} / kg</p>}
         </div>
 
-        {showQuickAdd ? (
-          <div className="flex flex-col space-y-2">
+        {showQuickAdd || (!showCategoryLink && typeof window !== "undefined") ? (
+          <div className="flex flex-col space-y-1.5 lg:space-y-2">
             {showVariantSelector && (
               <select
-                className="w-full px-3 py-2 border border-slate-400 rounded-lg text-sm"
+                className="w-full px-3 py-1.5 lg:py-2 border border-slate-400 rounded-lg text-sm"
                 value={selectedVariant?.id || ""}
                 onChange={(e) => {
                   const variant = product.variants?.find((v) => v.id === e.target.value)
@@ -274,7 +274,7 @@ export function ProductCard({
             )}
             <Button
               size="sm"
-              className="w-full bg-brand-red hover:bg-brand-red/90 text-white rounded-lg"
+              className="w-full h-11 bg-brand-red hover:bg-brand-red/90 text-white rounded-lg"
               disabled={!selectedVariant?.availableForSale || isAdding}
               onClick={handleAddToCart}
             >
@@ -283,7 +283,7 @@ export function ProductCard({
           </div>
         ) : (
           <Link href={productLink} onClick={handleProductClick}>
-            <Button variant="secondary" size="sm" className="w-full">
+            <Button variant="secondary" size="sm" className="w-full h-11">
               {showCategoryLink ? "Shop Category" : "View"}
             </Button>
           </Link>

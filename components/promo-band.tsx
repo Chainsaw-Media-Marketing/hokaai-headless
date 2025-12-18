@@ -21,13 +21,25 @@ export function PromoBand() {
   return (
     <div className="bg-brand-red text-white py-2 md:py-4">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-center space-x-3 text-center">
+        <div className="flex items-center justify-center gap-2 text-center lg:hidden">
           <Truck />
-          <span className="font-semibold text-sm md:text-base">
+          <span className="font-semibold text-sm">Free delivery Pta & Centurion</span>
+          <Link href="/delivery-info" className="underline hover:no-underline whitespace-nowrap text-sm">
+            Details
+          </Link>
+        </div>
+
+        {/* Desktop: Original full text */}
+        <div className="hidden lg:flex items-center justify-center space-x-3 text-center">
+          <Truck />
+          <span className="font-semibold text-base">
             Local delivery from Faerie Glen. Free delivery within 5 km, or on orders over R1 000 in Pretoria &
             Centurion.
           </span>
-          <Link href="/delivery-info" className="underline hover:no-underline whitespace-nowrap">
+          <Link
+            href="/delivery-info"
+            className="underline hover:no-underline whitespace-nowrap inline-flex items-center px-3 py-2 rounded"
+          >
             See details
           </Link>
         </div>
