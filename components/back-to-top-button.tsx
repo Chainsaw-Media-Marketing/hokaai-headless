@@ -40,7 +40,7 @@ export function BackToTopButton() {
   return (
     <button
       onClick={scrollToTop}
-      className="fixed bottom-32 right-4 lg:bottom-8 lg:right-8 bg-brand-primary hover:bg-slate-800 text-white p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-105 z-40"
+      className="fixed bottom-[76px] right-4 w-12 h-12 lg:bottom-8 lg:right-8 lg:w-auto lg:h-auto bg-brand-primary hover:bg-slate-800 text-white p-3 lg:p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-105 z-40 flex items-center justify-center"
       aria-label="Back to top"
     >
       <ChevronUp className="h-6 w-6" />
