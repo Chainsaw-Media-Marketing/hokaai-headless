@@ -253,7 +253,7 @@ export function ProductCard({
           {product.price_per_kg && <p className="text-slate-500 text-xs">{formatPrice(product.price_per_kg)} / kg</p>}
         </div>
 
-        {showQuickAdd ? (
+        {showQuickAdd || (!showCategoryLink && typeof window !== "undefined") ? (
           <div className="flex flex-col space-y-1.5 lg:space-y-2">
             {showVariantSelector && (
               <select
@@ -272,14 +272,34 @@ export function ProductCard({
                 ))}
               </select>
             )}
-            <Button
-              size="sm"
-              className="w-full h-11 bg-brand-red hover:bg-brand-red/90 text-white rounded-lg"
-              disabled={!selectedVariant?.availableForSale || isAdding}
-              onClick={handleAddToCart}
-            >
-              {isAdding ? "Adding..." : "Add"}
-            </Button>
+            <div className="lg:hidden">
+              <Button
+                size="sm"
+                className="w-full h-11 bg-brand-red hover:bg-brand-red/90 text-white rounded-lg"
+                disabled={!selectedVariant?.availableForSale || isAdding}
+                onClick={handleAddToCart}
+              >
+                {isAdding ? "Adding..." : "Add"}
+              </Button>
+            </div>
+            <div className="hidden lg:block">
+              {showQuickAdd ? (
+                <Button
+                  size="sm"
+                  className="w-full h-11 bg-brand-red hover:bg-brand-red/90 text-white rounded-lg"
+                  disabled={!selectedVariant?.availableForSale || isAdding}
+                  onClick={handleAddToCart}
+                >
+                  {isAdding ? "Adding..." : "Add"}
+                </Button>
+              ) : (
+                <Link href={productLink} onClick={handleProductClick}>
+                  <Button variant="secondary" size="sm" className="w-full h-11">
+                    View
+                  </Button>
+                </Link>
+              )}
+            </div>
           </div>
         ) : (
           <Link href={productLink} onClick={handleProductClick}>
