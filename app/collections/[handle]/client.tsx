@@ -38,6 +38,19 @@ export function CollectionPageClient({
   const [sortBy, setSortBy] = useState<"featured" | "price-low" | "price-high" | "name-az" | "name-za">("featured")
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
   const [isMobileSortOpen, setIsMobileSortOpen] = useState(false)
+  const [mobileGridCols, setMobileGridCols] = useState<1 | 2>(2)
+
+  useEffect(() => {
+    const stored = localStorage.getItem("hk_mobile_grid_cols")
+    if (stored === "1" || stored === "2") {
+      setMobileGridCols(Number.parseInt(stored) as 1 | 2)
+    }
+  }, [])
+
+  const handleMobileGridChange = useCallback((cols: 1 | 2) => {
+    setMobileGridCols(cols)
+    localStorage.setItem("hk_mobile_grid_cols", cols.toString())
+  }, [])
 
   const currentPage = useMemo(() => {
     const pageParam = searchParams.get("page")
@@ -389,13 +402,13 @@ export function CollectionPageClient({
 
         <div className="flex-1">
           <div className="mb-6">
-            <div className="lg:hidden mb-4">
-              <div className="flex gap-3 mb-3">
+            <div className="lg:hidden space-y-3">
+              <div className="flex gap-2">
                 <button
-                  onClick={() => setIsMobileFilterOpen(!isMobileFilterOpen)}
+                  onClick={() => setIsMobileFilterOpen(true)}
                   className="flex-1 px-4 py-2.5 bg-brand-primary text-white font-medium rounded-lg hover:bg-brand-primary/90 transition-colors"
                 >
-                  Filters
+                  Filters {hasActiveFilters && `(${getActiveFilterLabels.length})`}
                 </button>
                 <button
                   onClick={() => setIsMobileSortOpen(!isMobileSortOpen)}
@@ -403,6 +416,28 @@ export function CollectionPageClient({
                 >
                   Sort
                 </button>
+                <div className="flex items-center gap-1 border-2 border-brand-primary rounded-lg p-0.5">
+                  <button
+                    onClick={() => handleMobileGridChange(2)}
+                    className={`p-2.5 rounded transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center ${
+                      mobileGridCols === 2 ? "bg-brand-red text-white" : "text-slate-600 hover:bg-slate-100"
+                    }`}
+                    aria-label="2-column view"
+                    aria-pressed={mobileGridCols === 2}
+                  >
+                    <Grid3x3 className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => handleMobileGridChange(1)}
+                    className={`p-2.5 rounded transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center ${
+                      mobileGridCols === 1 ? "bg-brand-red text-white" : "text-slate-600 hover:bg-slate-100"
+                    }`}
+                    aria-label="1-column view"
+                    aria-pressed={mobileGridCols === 1}
+                  >
+                    <LayoutGrid className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
 
               {isMobileSortOpen && (
@@ -538,7 +573,12 @@ export function CollectionPageClient({
             />
           )}
 
-          <ProductGrid products={paginatedProducts} gridDensity={gridDensity} collectionUrl={collectionUrl} />
+          <ProductGrid
+            products={paginatedProducts}
+            gridDensity={gridDensity}
+            collectionUrl={collectionUrl}
+            mobileGridCols={mobileGridCols}
+          />
 
           {totalPages > 1 && (
             <Pagination

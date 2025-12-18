@@ -6,6 +6,7 @@ interface ProductGridProps {
   showQuickAdd?: boolean
   gridDensity?: "comfortable" | "compact"
   collectionUrl?: string
+  mobileGridCols?: 1 | 2
 }
 
 export function ProductGrid({
@@ -13,6 +14,7 @@ export function ProductGrid({
   showQuickAdd = false,
   gridDensity = "comfortable",
   collectionUrl,
+  mobileGridCols = 2,
 }: ProductGridProps) {
   if (products.length === 0) {
     return (
@@ -22,10 +24,12 @@ export function ProductGrid({
     )
   }
 
+  const mobileColClass = mobileGridCols === 1 ? "grid-cols-1" : "grid-cols-2"
+
   const gridClasses =
     gridDensity === "compact"
-      ? "grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-4"
-      : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+      ? `grid ${mobileColClass} lg:grid-cols-4 gap-6 lg:gap-4`
+      : `grid ${mobileColClass} lg:grid-cols-3 gap-6`
 
   return (
     <div className={gridClasses}>
