@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback, useRef } from "react"
 import { useRouter, usePathname, useSearchParams } from "next/navigation"
-import CollectionFilterSidebar from "@/components/collection-filter-sidebar"
+import { CollectionFilterSidebar } from "@/components/collection-filter-sidebar"
 import ProductGrid from "@/components/product-grid"
 import Pagination from "@/components/pagination"
 import type { Product, FilterOption } from "@/lib/types"
@@ -454,3 +454,5 @@ export default function CollectionClient({
     </div>
   )
 }
+
+export { CollectionClient as CollectionPageClient }
