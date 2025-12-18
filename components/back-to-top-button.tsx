@@ -10,10 +10,10 @@ const ChevronUp = ({ className }: { className?: string }) => (
 
 export function BackToTopButton() {
   const [isVisible, setIsVisible] = useState(false)
+  const [newsletterVisible, setNewsletterVisible] = useState(false)
 
   useEffect(() => {
     const toggleVisibility = () => {
-      // Show button when page is scrolled down 300px
       if (window.scrollY > 300) {
         setIsVisible(true)
       } else {
@@ -24,6 +24,18 @@ export function BackToTopButton() {
     window.addEventListener("scroll", toggleVisibility)
 
     return () => window.removeEventListener("scroll", toggleVisibility)
+  }, [])
+
+  useEffect(() => {
+    const checkNewsletterButton = () => {
+      const newsletterBtn = document.querySelector('[data-floating-button="newsletter"]')
+      setNewsletterVisible(!!newsletterBtn)
+    }
+
+    checkNewsletterButton()
+    const interval = setInterval(checkNewsletterButton, 500)
+
+    return () => clearInterval(interval)
   }, [])
 
   const scrollToTop = () => {
@@ -40,7 +52,10 @@ export function BackToTopButton() {
   return (
     <button
       onClick={scrollToTop}
-      className="fixed bottom-[76px] right-4 w-12 h-12 lg:bottom-8 lg:right-8 lg:w-auto lg:h-auto bg-brand-primary hover:bg-slate-800 text-white p-3 lg:p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-105 z-40 flex items-center justify-center"
+      data-floating-button="back-to-top"
+      className={`fixed right-4 w-12 h-12 lg:bottom-8 lg:right-8 lg:w-auto lg:h-auto bg-brand-primary hover:bg-slate-800 text-white p-3 lg:p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-105 z-40 flex items-center justify-center ${
+        newsletterVisible ? "bottom-[136px]" : "bottom-[76px]"
+      }`}
       aria-label="Back to top"
     >
       <ChevronUp className="h-6 w-6" />

@@ -3,10 +3,11 @@ import type { Metadata } from "next"
 import "./globals.css"
 import { Oswald, Open_Sans } from "next/font/google"
 import { CartProvider } from "@/lib/cart-context"
+import { BackToTopButton } from "@/components/back-to-top-button"
 import { ShopifyAutoWireInit } from "@/components/shopify-auto-wire-init"
+import { WhatsAppWidget } from "@/components/whatsapp-widget"
 import { CookieBar } from "@/components/cookie-bar"
 import { ConsentAnalytics } from "@/components/consent-analytics"
-import { FloatingActionStack } from "@/components/floating-action-stack"
 
 const oswald = Oswald({
   subsets: ["latin"],
@@ -37,8 +38,9 @@ export default function RootLayout({
       <body className="font-body antialiased">
         <CartProvider>
           {children}
-          <FloatingActionStack />
+          <BackToTopButton />
           <ShopifyAutoWireInit />
+          <WhatsAppWidget />
           <CookieBar />
           <ConsentAnalytics />
         </CartProvider>

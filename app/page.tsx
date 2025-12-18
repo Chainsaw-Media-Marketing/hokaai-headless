@@ -1,54 +1,15 @@
-"use client"
-
-import { useState, useEffect } from "react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { HeroBanner } from "@/components/hero-banner"
 import { DeliCategoryGrid } from "@/components/deli-category-grid"
 import { OccasionTiles } from "@/components/occasion-tiles"
 import { PromoBand } from "@/components/promo-band"
-import { NewsletterPopup } from "@/components/newsletter-popup"
-import { FloatingActionStack } from "@/components/floating-action-stack"
+import { NewsletterManager } from "@/components/newsletter-popup"
 import { TestimonialCarousel } from "@/components/testimonial-carousel"
 import { WavyDivider } from "@/components/wavy-divider"
 import { sampleReviews, occasionTags } from "@/lib/data"
 
 export default function HomePage() {
-  const [showPopup, setShowPopup] = useState(false)
-  const [showFloatingButton, setShowFloatingButton] = useState(false)
-
-  useEffect(() => {
-    const hasSignedUp = localStorage.getItem("newsletter-signed-up") === "true"
-    const hasSeenPopup = localStorage.getItem("newsletter-popup-seen") === "true"
-
-    if (!hasSignedUp) {
-      if (!hasSeenPopup) {
-        const timer = setTimeout(() => {
-          setShowPopup(true)
-        }, 3000)
-
-        return () => clearTimeout(timer)
-      } else {
-        setShowFloatingButton(true)
-      }
-    }
-  }, [])
-
-  const handleSignupComplete = () => {
-    setShowPopup(false)
-    setShowFloatingButton(false)
-  }
-
-  const handlePopupClose = () => {
-    setShowPopup(false)
-    setShowFloatingButton(true)
-  }
-
-  const handleFloatingButtonClick = () => {
-    setShowFloatingButton(false)
-    setShowPopup(true)
-  }
-
   return (
     <div className="min-h-screen">
       <Header />
@@ -115,9 +76,7 @@ export default function HomePage() {
 
       <Footer />
 
-      {showPopup && <NewsletterPopup onSignupComplete={handleSignupComplete} onClose={handlePopupClose} />}
-
-      <FloatingActionStack showNewsletter={showFloatingButton} onNewsletterClick={handleFloatingButtonClick} />
+      <NewsletterManager />
     </div>
   )
 }
