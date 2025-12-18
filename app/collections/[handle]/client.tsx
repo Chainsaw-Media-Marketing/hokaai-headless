@@ -578,6 +578,7 @@ export function CollectionPageClient({
             gridDensity={gridDensity}
             collectionUrl={collectionUrl}
             mobileGridCols={mobileGridCols}
+            showQuickAdd={true}
           />
 
           {totalPages > 1 && (
