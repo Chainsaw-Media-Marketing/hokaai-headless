@@ -1,42 +1,41 @@
 "use client"
 
-import { useState, useMemo, useCallback, useEffect, useRef } from "react"
-import { usePathname, useSearchParams, useRouter } from "next/navigation"
-import { ProductGrid } from "@/components/product-grid"
-import { CollectionFilterSidebar } from "@/components/collection-filter-sidebar"
-import { Pagination } from "@/components/pagination"
-import { productMatchesFilters, sanitizeFilters, type FilterState } from "@/lib/filter-utils"
-import type { Product } from "@/lib/types"
+import { useState, useEffect, useMemo, useCallback, useRef } from "react"
+import { useRouter, usePathname, useSearchParams } from "next/navigation"
+import CollectionFilterSidebar from "@/components/collection-filter-sidebar"
+import ProductGrid from "@/components/product-grid"
+import Pagination from "@/components/pagination"
+import type { Product, FilterOption } from "@/lib/types"
+import { Check } from "lucide-react"
 import { LayoutGrid, Grid3x3, X } from "lucide-react"
 
 const PRODUCTS_PER_PAGE = 36
 
-interface CollectionPageClientProps {
-  title: string
-  description: string
-  products: Product[]
-  initialFilters: FilterState
+interface CollectionClientProps {
+  initialProducts: Product[]
+  totalCount: number
   collectionHandle: string
+  availableFilters: FilterOption
+  collectionTitle: string
 }
 
-export function CollectionPageClient({
-  title,
-  description,
-  products,
-  initialFilters,
+export default function CollectionClient({
+  initialProducts,
+  totalCount,
   collectionHandle,
-}: CollectionPageClientProps) {
+  availableFilters,
+  collectionTitle,
+}: CollectionClientProps) {
+  const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const router = useRouter()
-
-  const prevFiltersRef = useRef<string>("")
-
-  const [activeFilters, setActiveFilters] = useState<FilterState>(sanitizeFilters(initialFilters))
-  const [gridDensity, setGridDensity] = useState<"comfortable" | "compact">("comfortable")
   const [sortBy, setSortBy] = useState<"featured" | "price-low" | "price-high" | "name-az" | "name-za">("featured")
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
   const [isMobileSortOpen, setIsMobileSortOpen] = useState(false)
+  const sortPopoverRef = useRef<HTMLDivElement>(null)
+
+  const [activeFilters, setActiveFilters] = useState<{ [key: string]: string[] }>({})
+  const [gridDensity, setGridDensity] = useState<"comfortable" | "compact">("comfortable")
 
   const currentPage = useMemo(() => {
     const pageParam = searchParams.get("page")
@@ -62,19 +61,12 @@ export function CollectionPageClient({
     const paramsWithoutPage = new URLSearchParams(searchParams.toString())
     paramsWithoutPage.delete("page")
 
-    const filtersFromUrl: FilterState = {
-      meatType: parseFilterValue(searchParams.get("meat_type")),
-      cutFamily: parseFilterValue(searchParams.get("cut_family")),
-      occasion: parseFilterValue(searchParams.get("occasion")),
-      department: parseFilterValue(searchParams.get("department")),
-      deliType: parseFilterValue(searchParams.get("deli_type")),
-      spiceFamily: parseFilterValue(searchParams.get("spice_family")),
-      braaiGearFamily: parseFilterValue(searchParams.get("braai_gear_family")),
-      groceryFamily: parseFilterValue(searchParams.get("grocery_family")),
-      bulkType: parseFilterValue(searchParams.get("bulk_type")),
-    }
+    const filtersFromUrl: { [key: string]: string[] } = {}
+    Object.keys(availableFilters).forEach((key) => {
+      filtersFromUrl[key] = parseFilterValue(searchParams.get(key))
+    })
 
-    const sanitized = sanitizeFilters(filtersFromUrl)
+    const sanitized = filtersFromUrl
 
     const currentFiltersJson = JSON.stringify(activeFilters)
     const newFiltersJson = JSON.stringify(sanitized)
@@ -82,17 +74,7 @@ export function CollectionPageClient({
     if (currentFiltersJson !== newFiltersJson) {
       setActiveFilters(sanitized)
     }
-  }, [
-    searchParams.get("meat_type"),
-    searchParams.get("cut_family"),
-    searchParams.get("occasion"),
-    searchParams.get("department"),
-    searchParams.get("deli_type"),
-    searchParams.get("spice_family"),
-    searchParams.get("braai_gear_family"),
-    searchParams.get("grocery_family"),
-    searchParams.get("bulk_type"),
-  ])
+  }, [searchParams, availableFilters])
 
   useEffect(() => {
     if (typeof window === "undefined" || !window.sessionStorage) return
@@ -119,127 +101,28 @@ export function CollectionPageClient({
     window.scrollTo({ top: 0, behavior: "smooth" })
   }, [currentPage])
 
-  const availableFilters = useMemo(() => {
-    const meatTypeCounts = new Map<string, number>()
-    const cutFamilyCounts = new Map<string, number>()
-    const occasionCounts = new Map<string, number>()
-    const departmentCounts = new Map<string, number>()
-    const deliTypeCounts = new Map<string, number>()
-    const spiceFamilyCounts = new Map<string, number>()
-    const braaiGearFamilyCounts = new Map<string, number>()
-    const groceryFamilyCounts = new Map<string, number>()
-    const bulkTypeCounts = new Map<string, number>()
+  const getActiveFilterLabels = useMemo(() => {
+    const labels: string[] = []
 
-    products.forEach((product) => {
-      if (product.meat_type) {
-        meatTypeCounts.set(product.meat_type, (meatTypeCounts.get(product.meat_type) || 0) + 1)
-      }
-      if (product.cut_family) {
-        cutFamilyCounts.set(product.cut_family, (cutFamilyCounts.get(product.cut_family) || 0) + 1)
-      }
-      if (product.occasion) {
-        product.occasion.forEach((oc) => occasionCounts.set(oc, (occasionCounts.get(oc) || 0) + 1))
-      }
-      if (product.department) {
-        departmentCounts.set(product.department, (departmentCounts.get(product.department) || 0) + 1)
-      }
-      if (product.deli_type) {
-        deliTypeCounts.set(product.deli_type, (deliTypeCounts.get(product.deli_type) || 0) + 1)
-      }
-      if (product.spice_family) {
-        spiceFamilyCounts.set(product.spice_family, (spiceFamilyCounts.get(product.spice_family) || 0) + 1)
-      }
-      if (product.braai_gear_family) {
-        braaiGearFamilyCounts.set(
-          product.braai_gear_family,
-          (braaiGearFamilyCounts.get(product.braai_gear_family) || 0) + 1,
-        )
-      }
-      if (product.grocery_family) {
-        groceryFamilyCounts.set(product.grocery_family, (groceryFamilyCounts.get(product.grocery_family) || 0) + 1)
-      }
-      if (product.bulk_type) {
-        bulkTypeCounts.set(product.bulk_type, (bulkTypeCounts.get(product.bulk_type) || 0) + 1)
+    Object.keys(activeFilters).forEach((key) => {
+      if (activeFilters[key].length > 0) {
+        labels.push(...activeFilters[key])
       }
     })
 
-    return {
-      meatTypes: Array.from(meatTypeCounts.entries())
-        .map(([value, count]) => ({ value, label: value, count }))
-        .sort((a, b) => a.label.localeCompare(b.label)),
-      cutFamilies: Array.from(cutFamilyCounts.entries())
-        .map(([value, count]) => ({ value, label: value, count }))
-        .sort((a, b) => a.label.localeCompare(b.label)),
-      occasions: Array.from(occasionCounts.entries())
-        .map(([value, count]) => ({ value, label: value, count }))
-        .sort((a, b) => a.label.localeCompare(b.label)),
-      departments: Array.from(departmentCounts.entries())
-        .map(([value, count]) => ({ value, label: value, count }))
-        .sort((a, b) => a.label.localeCompare(b.label)),
-      deliTypes: Array.from(deliTypeCounts.entries())
-        .map(([value, count]) => ({ value, label: value, count }))
-        .sort((a, b) => a.label.localeCompare(b.label)),
-      spiceFamilies: Array.from(spiceFamilyCounts.entries())
-        .map(([value, count]) => ({ value, label: value, count }))
-        .sort((a, b) => a.label.localeCompare(b.label)),
-      braaiGearFamilies: Array.from(braaiGearFamilyCounts.entries())
-        .map(([value, count]) => ({ value, label: value, count }))
-        .sort((a, b) => a.label.localeCompare(b.label)),
-      groceryFamilies: Array.from(groceryFamilyCounts.entries())
-        .map(([value, count]) => ({ value, label: value, count }))
-        .sort((a, b) => a.label.localeCompare(b.label)),
-      bulkTypes: Array.from(bulkTypeCounts.entries())
-        .map(([value, count]) => ({ value, label: value, count }))
-        .sort((a, b) => a.label.localeCompare(b.label)),
-    }
-  }, [products])
+    return labels
+  }, [activeFilters])
 
-  const filteredProducts = useMemo(() => {
-    return products.filter((product) => productMatchesFilters(product, activeFilters))
-  }, [products, activeFilters])
+  const hasActiveFilters = getActiveFilterLabels.length > 0
 
-  const sortedProducts = useMemo(() => {
-    const sorted = [...filteredProducts]
-
-    switch (sortBy) {
-      case "name-az":
-        return sorted.sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: "base" }))
-      case "name-za":
-        return sorted.sort((a, b) => b.title.localeCompare(a.title, undefined, { sensitivity: "base" }))
-      case "price-low":
-        return sorted.sort((a, b) => {
-          const priceA = a.minVariantPrice ?? (a.variants?.[0] ? Number.parseFloat(a.variants[0].price.amount) : 0)
-          const priceB = b.minVariantPrice ?? (b.variants?.[0] ? Number.parseFloat(b.variants[0].price.amount) : 0)
-          return priceA - priceB
-        })
-      case "price-high":
-        return sorted.sort((a, b) => {
-          const priceA = a.minVariantPrice ?? (a.variants?.[0] ? Number.parseFloat(a.variants[0].price.amount) : 0)
-          const priceB = b.minVariantPrice ?? (b.variants?.[0] ? Number.parseFloat(b.variants[0].price.amount) : 0)
-          return priceB - priceA
-        })
-      case "featured":
-      default:
-        return sorted
-    }
-  }, [filteredProducts, sortBy])
-
-  const totalPages = Math.ceil(sortedProducts.length / PRODUCTS_PER_PAGE)
-  const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE
-  const endIndex = startIndex + PRODUCTS_PER_PAGE
-  const paginatedProducts = sortedProducts.slice(startIndex, endIndex)
-
-  const displayStart = sortedProducts.length === 0 ? 0 : startIndex + 1
-  const displayEnd = Math.min(endIndex, sortedProducts.length)
-  const displayTotal = sortedProducts.length
+  const collectionUrl = useMemo(() => {
+    const params = searchParams.toString()
+    return params ? `${pathname}?${params}` : pathname
+  }, [pathname, searchParams.toString()])
 
   const handleFiltersChange = useCallback(
-    (filters: FilterState) => {
-      // Only normalize department to max 1 value
-      const normalized = {
-        ...filters,
-        department: filters.department.slice(0, 1),
-      }
+    (filters: { [key: string]: string[] }) => {
+      const normalized = filters
 
       const allFiltersEmpty = Object.values(normalized).every((arr) => arr.length === 0)
 
@@ -253,41 +136,11 @@ export function CollectionPageClient({
 
       params.set("page", "1")
 
-      if (normalized.meatType.length > 0) {
-        params.set("meat_type", normalized.meatType.join(","))
-      }
-
-      if (normalized.cutFamily.length > 0) {
-        params.set("cut_family", normalized.cutFamily.join(","))
-      }
-
-      if (normalized.occasion.length > 0) {
-        params.set("occasion", normalized.occasion.join(","))
-      }
-
-      if (normalized.department.length > 0) {
-        params.set("department", normalized.department.join(","))
-      }
-
-      if (normalized.deliType.length > 0) {
-        params.set("deli_type", normalized.deliType.join(","))
-      }
-
-      if (normalized.spiceFamily.length > 0) {
-        params.set("spice_family", normalized.spiceFamily.join(","))
-      }
-
-      if (normalized.braaiGearFamily.length > 0) {
-        params.set("braai_gear_family", normalized.braaiGearFamily.join(","))
-      }
-
-      if (normalized.groceryFamily.length > 0) {
-        params.set("grocery_family", normalized.groceryFamily.join(","))
-      }
-
-      if (normalized.bulkType.length > 0) {
-        params.set("bulk_type", normalized.bulkType.join(","))
-      }
+      Object.keys(normalized).forEach((key) => {
+        if (normalized[key].length > 0) {
+          params.set(key, normalized[key].join(","))
+        }
+      })
 
       const currentSort = searchParams.get("sort")
       if (currentSort && currentSort !== "featured") {
@@ -303,6 +156,7 @@ export function CollectionPageClient({
   const handleSortChange = useCallback(
     (newSortBy: "featured" | "price-low" | "price-high" | "name-az" | "name-za") => {
       setSortBy(newSortBy)
+      setIsMobileSortOpen(false)
 
       const params = new URLSearchParams(searchParams.toString())
 
@@ -320,52 +174,23 @@ export function CollectionPageClient({
     [pathname, searchParams, router],
   )
 
-  const getActiveFilterLabels = useMemo(() => {
-    const labels: string[] = []
-
-    if (activeFilters.meatType.length > 0) {
-      labels.push(...activeFilters.meatType)
-    }
-    if (activeFilters.cutFamily.length > 0) {
-      labels.push(...activeFilters.cutFamily)
-    }
-    if (activeFilters.occasion.length > 0) {
-      labels.push(...activeFilters.occasion)
-    }
-    if (activeFilters.department.length > 0) {
-      labels.push(...activeFilters.department)
-    }
-    if (activeFilters.deliType.length > 0) {
-      labels.push(...activeFilters.deliType)
-    }
-    if (activeFilters.spiceFamily.length > 0) {
-      labels.push(...activeFilters.spiceFamily)
-    }
-    if (activeFilters.braaiGearFamily.length > 0) {
-      labels.push(...activeFilters.braaiGearFamily)
-    }
-    if (activeFilters.groceryFamily.length > 0) {
-      labels.push(...activeFilters.groceryFamily)
-    }
-    if (activeFilters.bulkType.length > 0) {
-      labels.push(...activeFilters.bulkType)
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sortPopoverRef.current && !sortPopoverRef.current.contains(event.target as Node)) {
+        setIsMobileSortOpen(false)
+      }
     }
 
-    return labels
-  }, [activeFilters])
-
-  const hasActiveFilters = getActiveFilterLabels.length > 0
-
-  const collectionUrl = useMemo(() => {
-    const params = searchParams.toString()
-    return params ? `${pathname}?${params}` : pathname
-  }, [pathname, searchParams.toString()])
+    if (isMobileSortOpen) {
+      document.addEventListener("mousedown", handleClickOutside)
+      return () => document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [isMobileSortOpen])
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <div className="flex flex-col lg:flex-row gap-8">
-        {/* Desktop Sidebar */}
-        <aside className="hidden lg:block lg:w-64 flex-shrink-0">
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex gap-8">
+        <aside className="hidden lg:block w-64 flex-shrink-0">
           <CollectionFilterSidebar
             initialFilters={activeFilters}
             availableFilters={availableFilters}
@@ -384,31 +209,65 @@ export function CollectionPageClient({
                 >
                   Filters
                 </button>
-                <button
-                  onClick={() => setIsMobileSortOpen(!isMobileSortOpen)}
-                  className="flex-1 px-4 py-2.5 bg-brand-primary text-white font-medium rounded-lg hover:bg-brand-primary/90 transition-colors"
-                >
-                  Sort
-                </button>
-              </div>
+                <div className="flex-1 relative" ref={sortPopoverRef}>
+                  <button
+                    onClick={() => setIsMobileSortOpen(!isMobileSortOpen)}
+                    className="w-full px-4 py-2.5 bg-brand-primary text-white font-medium rounded-lg hover:bg-brand-primary/90 transition-colors"
+                  >
+                    Sort
+                  </button>
 
-              {isMobileSortOpen && (
-                <select
-                  id="mobile-sort-select"
-                  value={sortBy}
-                  onChange={(e) => {
-                    handleSortChange(e.target.value as "featured" | "price-low" | "price-high" | "name-az" | "name-za")
-                    setIsMobileSortOpen(false)
-                  }}
-                  className="w-full px-4 py-2 border border-slate-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-success mb-3"
-                >
-                  <option value="featured">Featured</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="name-az">Name: A to Z</option>
-                  <option value="name-za">Name: Z to A</option>
-                </select>
-              )}
+                  {isMobileSortOpen && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden z-50">
+                      <button
+                        onClick={() => handleSortChange("featured")}
+                        className="w-full px-4 py-3 text-left hover:bg-slate-50 active:bg-slate-100 transition-colors flex items-center justify-between min-h-[44px]"
+                      >
+                        <span className={sortBy === "featured" ? "font-semibold text-brand-red" : "text-slate-700"}>
+                          Featured
+                        </span>
+                        {sortBy === "featured" && <Check className="w-5 h-5 text-brand-red" />}
+                      </button>
+                      <button
+                        onClick={() => handleSortChange("price-low")}
+                        className="w-full px-4 py-3 text-left hover:bg-slate-50 active:bg-slate-100 transition-colors flex items-center justify-between min-h-[44px] border-t border-slate-100"
+                      >
+                        <span className={sortBy === "price-low" ? "font-semibold text-brand-red" : "text-slate-700"}>
+                          Price: Low to High
+                        </span>
+                        {sortBy === "price-low" && <Check className="w-5 h-5 text-brand-red" />}
+                      </button>
+                      <button
+                        onClick={() => handleSortChange("price-high")}
+                        className="w-full px-4 py-3 text-left hover:bg-slate-50 active:bg-slate-100 transition-colors flex items-center justify-between min-h-[44px] border-t border-slate-100"
+                      >
+                        <span className={sortBy === "price-high" ? "font-semibold text-brand-red" : "text-slate-700"}>
+                          Price: High to Low
+                        </span>
+                        {sortBy === "price-high" && <Check className="w-5 h-5 text-brand-red" />}
+                      </button>
+                      <button
+                        onClick={() => handleSortChange("name-az")}
+                        className="w-full px-4 py-3 text-left hover:bg-slate-50 active:bg-slate-100 transition-colors flex items-center justify-between min-h-[44px] border-t border-slate-100"
+                      >
+                        <span className={sortBy === "name-az" ? "font-semibold text-brand-red" : "text-slate-700"}>
+                          Name: A to Z
+                        </span>
+                        {sortBy === "name-az" && <Check className="w-5 h-5 text-brand-red" />}
+                      </button>
+                      <button
+                        onClick={() => handleSortChange("name-za")}
+                        className="w-full px-4 py-3 text-left hover:bg-slate-50 active:bg-slate-100 transition-colors flex items-center justify-between min-h-[44px] border-t border-slate-100"
+                      >
+                        <span className={sortBy === "name-za" ? "font-semibold text-brand-red" : "text-slate-700"}>
+                          Name: Z to A
+                        </span>
+                        {sortBy === "name-za" && <Check className="w-5 h-5 text-brand-red" />}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
 
               {isMobileFilterOpen && (
                 <div className="mb-3">
@@ -426,11 +285,12 @@ export function CollectionPageClient({
 
               <div className="mt-3">
                 <p className="text-slate-600 text-sm text-center">
-                  {displayTotal === 0 ? (
+                  {totalCount === 0 ? (
                     "No products"
                   ) : (
                     <>
-                      Showing {displayStart}–{displayEnd} of {displayTotal}
+                      Showing {(currentPage - 1) * PRODUCTS_PER_PAGE + 1}–
+                      {Math.min(currentPage * PRODUCTS_PER_PAGE, totalCount)} of {totalCount}
                     </>
                   )}
                 </p>
@@ -471,11 +331,12 @@ export function CollectionPageClient({
 
             <div className="hidden lg:flex items-center justify-between">
               <p className="text-slate-700">
-                {displayTotal === 0 ? (
+                {totalCount === 0 ? (
                   "No products"
                 ) : (
                   <>
-                    Showing {displayStart}–{displayEnd} of {displayTotal}
+                    Showing {(currentPage - 1) * PRODUCTS_PER_PAGE + 1}–
+                    {Math.min(currentPage * PRODUCTS_PER_PAGE, totalCount)} of {totalCount}
                   </>
                 )}
               </p>
@@ -521,43 +382,43 @@ export function CollectionPageClient({
             </div>
           </div>
 
-          {totalPages > 1 && (
+          {totalCount > PRODUCTS_PER_PAGE && (
             <Pagination
               currentPage={currentPage}
-              totalPages={totalPages}
+              totalPages={Math.ceil(totalCount / PRODUCTS_PER_PAGE)}
               baseUrl={collectionUrl}
               className="mb-6 lg:hidden"
               mobileSimple
             />
           )}
 
-          {totalPages > 1 && (
+          {totalCount > PRODUCTS_PER_PAGE && (
             <Pagination
               currentPage={currentPage}
-              totalPages={totalPages}
+              totalPages={Math.ceil(totalCount / PRODUCTS_PER_PAGE)}
               baseUrl={collectionUrl}
               className="mb-6 hidden lg:flex"
             />
           )}
 
           <ProductGrid
-            products={paginatedProducts}
+            products={initialProducts.slice((currentPage - 1) * PRODUCTS_PER_PAGE, currentPage * PRODUCTS_PER_PAGE)}
             showQuickAdd
             gridDensity={gridDensity}
             collectionUrl={collectionUrl}
           />
 
-          {totalPages > 1 && (
+          {totalCount > PRODUCTS_PER_PAGE && (
             <>
               <Pagination
                 currentPage={currentPage}
-                totalPages={totalPages}
+                totalPages={Math.ceil(totalCount / PRODUCTS_PER_PAGE)}
                 baseUrl={collectionUrl}
                 className="mt-8 hidden lg:flex"
               />
               <Pagination
                 currentPage={currentPage}
-                totalPages={totalPages}
+                totalPages={Math.ceil(totalCount / PRODUCTS_PER_PAGE)}
                 baseUrl={collectionUrl}
                 className="mt-8 lg:hidden"
                 mobileSimple
@@ -565,7 +426,7 @@ export function CollectionPageClient({
             </>
           )}
 
-          {filteredProducts.length === 0 && (
+          {totalCount === 0 && (
             <div className="text-center py-12">
               <p className="text-slate-500 text-lg mb-4">No products match your filters.</p>
               <button
@@ -590,6 +451,6 @@ export function CollectionPageClient({
           )}
         </div>
       </div>
-    </main>
+    </div>
   )
 }
