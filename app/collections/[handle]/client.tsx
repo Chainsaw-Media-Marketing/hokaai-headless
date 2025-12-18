@@ -317,6 +317,9 @@ export function CollectionPageClient({
 
   const handleSortChange = useCallback(
     (newSortBy: "featured" | "price-low" | "price-high" | "name-az" | "name-za") => {
+      console.log("[v0] handleSortChange called with:", newSortBy)
+      console.log("[v0] Current sortBy state:", sortBy)
+
       setSortBy(newSortBy)
       setIsMobileSortOpen(false)
 
@@ -324,16 +327,19 @@ export function CollectionPageClient({
 
       if (newSortBy === "featured") {
         params.delete("sort")
+        console.log("[v0] Featured selected - removing sort param")
       } else {
         params.set("sort", newSortBy)
+        console.log("[v0] Setting sort param to:", newSortBy)
       }
 
       params.delete("page")
 
       const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname
+      console.log("[v0] Pushing new URL:", newUrl)
       router.push(newUrl)
     },
-    [pathname, router, searchParams],
+    [pathname, router, searchParams, sortBy],
   )
 
   const getActiveFilterLabels = useMemo(() => {
