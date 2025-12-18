@@ -36,6 +36,7 @@ export function CollectionPageClient({
   const [gridDensity, setGridDensity] = useState<"comfortable" | "compact">("comfortable")
   const [sortBy, setSortBy] = useState<"featured" | "price-low" | "price-high" | "name-az" | "name-za">("featured")
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
+  const [isMobileSortOpen, setIsMobileSortOpen] = useState(false)
 
   const currentPage = useMemo(() => {
     const pageParam = searchParams.get("page")
@@ -384,33 +385,30 @@ export function CollectionPageClient({
                   Filters
                 </button>
                 <button
-                  onClick={() => {
-                    const selectElement = document.getElementById("mobile-sort-select") as HTMLSelectElement
-                    if (selectElement) {
-                      selectElement.focus()
-                      selectElement.click()
-                    }
-                  }}
+                  onClick={() => setIsMobileSortOpen(!isMobileSortOpen)}
                   className="flex-1 px-4 py-2.5 bg-brand-primary text-white font-medium rounded-lg hover:bg-brand-primary/90 transition-colors"
                 >
                   Sort
                 </button>
               </div>
 
-              <select
-                id="mobile-sort-select"
-                value={sortBy}
-                onChange={(e) =>
-                  handleSortChange(e.target.value as "featured" | "price-low" | "price-high" | "name-az" | "name-za")
-                }
-                className="w-full px-4 py-2 border border-slate-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-success mb-3"
-              >
-                <option value="featured">Featured</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="name-az">Name: A to Z</option>
-                <option value="name-za">Name: Z to A</option>
-              </select>
+              {isMobileSortOpen && (
+                <select
+                  id="mobile-sort-select"
+                  value={sortBy}
+                  onChange={(e) => {
+                    handleSortChange(e.target.value as "featured" | "price-low" | "price-high" | "name-az" | "name-za")
+                    setIsMobileSortOpen(false)
+                  }}
+                  className="w-full px-4 py-2 border border-slate-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-success mb-3"
+                >
+                  <option value="featured">Featured</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                  <option value="name-az">Name: A to Z</option>
+                  <option value="name-za">Name: Z to A</option>
+                </select>
+              )}
 
               {isMobileFilterOpen && (
                 <div className="mb-3">

@@ -189,12 +189,12 @@ export function ProductCard({
   return (
     <div className="card group">
       <Link href={productLink} onClick={handleProductClick}>
-        <div className="aspect-[4/3] lg:aspect-square relative overflow-hidden rounded-t-2xl">
+        <div className="aspect-[4/3] lg:aspect-square relative overflow-hidden rounded-t-2xl bg-slate-50">
           <Image
             src={product.image || "/placeholder.svg"}
             alt={product.title}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            className="object-contain lg:object-cover group-hover:scale-105 transition-transform duration-300"
           />
         </div>
       </Link>
