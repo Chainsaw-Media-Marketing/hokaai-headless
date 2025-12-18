@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 
 const Mail = ({ className }: { className?: string }) => (
@@ -43,14 +43,11 @@ export function NewsletterPopup({ onSignupComplete, onClose }: NewsletterPopupPr
         const data = await response.json()
 
         if (data.success) {
-          console.log("[v0] Newsletter popup — subscription successful via API.")
           setIsSubmitted(true)
           setEmail("")
 
-          // Mark as signed up in localStorage
           localStorage.setItem("newsletter-signed-up", "true")
 
-          // Close popup after 2 seconds
           setTimeout(() => {
             onSignupComplete()
           }, 2000)
@@ -58,7 +55,7 @@ export function NewsletterPopup({ onSignupComplete, onClose }: NewsletterPopupPr
           setError(data.error || "Subscription failed. Please try again.")
         }
       } catch (error) {
-        console.error("[v0] Newsletter subscription error:", error)
+        console.error("Newsletter subscription error:", error)
         setError("Network error. Please try again.")
       } finally {
         setLoading(false)
@@ -67,7 +64,6 @@ export function NewsletterPopup({ onSignupComplete, onClose }: NewsletterPopupPr
   }
 
   const handleClose = () => {
-    // Mark that user has seen the popup but didn't sign up
     localStorage.setItem("newsletter-popup-seen", "true")
     onClose()
   }
@@ -123,64 +119,5 @@ export function NewsletterPopup({ onSignupComplete, onClose }: NewsletterPopupPr
         </form>
       </div>
     </div>
-  )
-}
-
-export function NewsletterFloatingButton({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className="fixed bottom-[136px] right-4 w-12 h-12 lg:bottom-6 lg:right-6 lg:w-auto lg:h-auto bg-brand-red hover:bg-red-700 text-white p-3 lg:p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-105 z-40 flex items-center justify-center"
-      aria-label="Subscribe to newsletter"
-    >
-      <Mail className="h-6 w-6" />
-    </button>
-  )
-}
-
-export function NewsletterManager() {
-  const [showPopup, setShowPopup] = useState(false)
-  const [showFloatingButton, setShowFloatingButton] = useState(false)
-
-  useEffect(() => {
-    // Check if user has already signed up or seen the popup
-    const hasSignedUp = localStorage.getItem("newsletter-signed-up") === "true"
-    const hasSeenPopup = localStorage.getItem("newsletter-popup-seen") === "true"
-
-    if (!hasSignedUp) {
-      if (!hasSeenPopup) {
-        // Show popup after 3 seconds
-        const timer = setTimeout(() => {
-          setShowPopup(true)
-        }, 3000)
-
-        return () => clearTimeout(timer)
-      } else {
-        // User has seen popup but didn't sign up, show floating button
-        setShowFloatingButton(true)
-      }
-    }
-  }, [])
-
-  const handleSignupComplete = () => {
-    setShowPopup(false)
-    setShowFloatingButton(false)
-  }
-
-  const handlePopupClose = () => {
-    setShowPopup(false)
-    setShowFloatingButton(true)
-  }
-
-  const handleFloatingButtonClick = () => {
-    setShowFloatingButton(false)
-    setShowPopup(true)
-  }
-
-  return (
-    <>
-      {showPopup && <NewsletterPopup onSignupComplete={handleSignupComplete} onClose={handlePopupClose} />}
-      {showFloatingButton && <NewsletterFloatingButton onClick={handleFloatingButtonClick} />}
-    </>
   )
 }
