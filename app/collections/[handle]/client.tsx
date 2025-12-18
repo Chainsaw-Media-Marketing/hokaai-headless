@@ -342,6 +342,8 @@ export function CollectionPageClient({
 
       const newUrl = `${pathname}${params.toString() ? `?${params.toString()}` : ""}`
       router.push(newUrl)
+
+      setIsMobileSortOpen(false)
     },
     [searchParams, pathname, router],
   )
@@ -578,7 +580,6 @@ export function CollectionPageClient({
             gridDensity={gridDensity}
             collectionUrl={collectionUrl}
             mobileGridCols={mobileGridCols}
-            showQuickAdd={true}
           />
 
           {totalPages > 1 && (
