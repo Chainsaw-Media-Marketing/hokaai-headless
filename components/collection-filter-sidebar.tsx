@@ -36,7 +36,7 @@ interface CollectionFilterSidebarProps {
   onFiltersChange: (filters: FilterState) => void
   collectionHandle?: string
   isMobileOpen?: boolean
-  setIsMobileOpen?: (open: boolean) => void
+  onMobileClose?: () => void
 }
 
 export function CollectionFilterSidebar({
@@ -44,8 +44,8 @@ export function CollectionFilterSidebar({
   availableFilters,
   onFiltersChange,
   collectionHandle,
-  isMobileOpen: externalIsMobileOpen,
-  setIsMobileOpen: externalSetIsMobileOpen,
+  isMobileOpen: externalMobileOpen,
+  onMobileClose,
 }: CollectionFilterSidebarProps) {
   const router = useRouter()
   const [expandedGroups, setExpandedGroups] = useState<string[]>(collectionHandle === "all" ? ["Department"] : [])
@@ -63,16 +63,13 @@ export function CollectionFilterSidebar({
     },
   )
   const [pendingFilters, setPendingFilters] = useState<FilterState>(selectedFilters)
-  const [internalIsMobileOpen, setInternalIsMobileOpen] = useState(false)
-  const isUpdatingFromParent = useRef(false)
-  const previousFiltersRef = useRef<string>(JSON.stringify(selectedFilters))
+  const [internalMobileOpen, setInternalMobileOpen] = useState(false)
+  const isMobileOpen = externalMobileOpen !== undefined ? externalMobileOpen : internalMobileOpen
 
-  const isMobileOpen = externalIsMobileOpen !== undefined ? externalIsMobileOpen : internalIsMobileOpen
-  const setIsMobileOpen = externalSetIsMobileOpen || setInternalIsMobileOpen
+  const previousFiltersRef = useRef<string>(JSON.stringify(selectedFilters))
 
   useEffect(() => {
     if (initialFilters) {
-      isUpdatingFromParent.current = true
       setSelectedFilters(initialFilters)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -80,12 +77,6 @@ export function CollectionFilterSidebar({
 
   useEffect(() => {
     const currentFiltersString = JSON.stringify(selectedFilters)
-
-    if (isUpdatingFromParent.current) {
-      isUpdatingFromParent.current = false
-      previousFiltersRef.current = currentFiltersString
-      return
-    }
 
     if (previousFiltersRef.current === currentFiltersString) {
       return
@@ -227,7 +218,11 @@ export function CollectionFilterSidebar({
     setSelectedFilters(pendingFilters)
     previousFiltersRef.current = JSON.stringify(pendingFilters)
     onFiltersChange(pendingFilters)
-    setIsMobileOpen(false)
+    if (onMobileClose) {
+      onMobileClose()
+    } else {
+      setInternalMobileOpen(false)
+    }
   }
 
   const handleMobileClear = () => {
@@ -437,12 +432,18 @@ export function CollectionFilterSidebar({
       {/* Mobile Drawer */}
       {isMobileOpen && (
         <>
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 lg:hidden" onClick={() => setIsMobileOpen(false)} />
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-50 lg:hidden"
+            onClick={() => (onMobileClose ? onMobileClose() : setInternalMobileOpen(false))}
+          />
           <div className="fixed top-0 right-0 h-full w-80 max-w-[90vw] bg-white z-50 lg:hidden overflow-y-auto flex flex-col">
             <div className="p-4 border-b border-slate-200">
               <div className="flex items-center justify-between">
                 <h2 className="font-heading font-semibold text-xl text-brand-primary">Filters</h2>
-                <button onClick={() => setIsMobileOpen(false)} className="p-2 hover:bg-slate-100 rounded">
+                <button
+                  onClick={() => (onMobileClose ? onMobileClose() : setInternalMobileOpen(false))}
+                  className="p-2 hover:bg-slate-100 rounded"
+                >
                   <X className="h-5 w-5" />
                 </button>
               </div>
