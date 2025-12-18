@@ -56,7 +56,7 @@ export function HeroBanner() {
                   Discover our full range of fresh cuts, deli specialties, and braai essentials
                 </p>
 
-                <div className="inline-flex items-center gap-2 bg-brand-primary hover:bg-brand-primary-dark text-white px-8 py-4 rounded-lg font-semibold transition-colors shadow-lg group-hover:shadow-xl">
+                <div className="inline-flex items-center gap-2 bg-brand-red hover:bg-brand-red/90 text-white px-8 py-4 rounded-lg font-semibold transition-colors shadow-lg group-hover:shadow-xl">
                   <span>Go to Shop</span>
                   <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </div>
