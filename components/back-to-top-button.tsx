@@ -53,7 +53,7 @@ export function BackToTopButton() {
     <button
       onClick={scrollToTop}
       data-floating-button="back-to-top"
-      className={`fixed right-4 w-12 h-12 lg:bottom-[160px] lg:right-6 lg:w-auto lg:h-auto bg-brand-primary hover:bg-slate-800 text-white p-3 lg:p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-105 z-50 flex items-center justify-center ${
+      className={`fixed right-4 w-12 h-12 lg:bottom-[92px] lg:right-6 lg:w-auto lg:h-auto bg-brand-primary hover:bg-slate-800 text-white p-3 lg:p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-105 z-50 flex items-center justify-center ${
         newsletterVisible ? "bottom-[136px]" : "bottom-[76px]"
       }`}
       aria-label="Back to top"
