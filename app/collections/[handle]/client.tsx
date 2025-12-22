@@ -8,11 +8,10 @@ import { Pagination } from "@/components/pagination"
 import { productMatchesFilters, sanitizeFilters, type FilterState } from "@/lib/filter-utils"
 import type { Product } from "@/lib/types"
 import { LayoutGrid, Grid3x3, X, Check } from "lucide-react"
-import Link from "next/link"
 
 const PRODUCTS_PER_PAGE = 36
 
-interface CollectionPageClientProps {
+interface CollectionClientProps {
   title: string
   description: string
   products: Product[]
@@ -21,12 +20,11 @@ interface CollectionPageClientProps {
 }
 
 export function CollectionPageClient({
-  title,
-  description,
-  products,
-  initialFilters,
+  products: allProducts,
   collectionHandle,
-}: CollectionPageClientProps) {
+  title: collectionTitle,
+  description: collectionDescription,
+}: CollectionClientProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -34,7 +32,7 @@ export function CollectionPageClient({
   const prevFiltersRef = useRef<string>("")
   const sortPopoverRef = useRef<HTMLDivElement>(null)
 
-  const [activeFilters, setActiveFilters] = useState<FilterState>(sanitizeFilters(initialFilters))
+  const [activeFilters, setActiveFilters] = useState<FilterState>(sanitizeFilters({}))
   const [gridDensity, setGridDensity] = useState<"comfortable" | "compact">("comfortable")
   const [sortBy, setSortBy] = useState<"featured" | "price-low" | "price-high" | "name-az" | "name-za">("featured")
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
@@ -160,7 +158,7 @@ export function CollectionPageClient({
     const groceryFamilyCounts = new Map<string, number>()
     const bulkTypeCounts = new Map<string, number>()
 
-    products.forEach((product) => {
+    allProducts.forEach((product) => {
       if (product.meat_type) {
         meatTypeCounts.set(product.meat_type, (meatTypeCounts.get(product.meat_type) || 0) + 1)
       }
@@ -222,11 +220,11 @@ export function CollectionPageClient({
         .map(([value, count]) => ({ value, label: value, count }))
         .sort((a, b) => a.label.localeCompare(b.label)),
     }
-  }, [products])
+  }, [allProducts])
 
   const filteredProducts = useMemo(() => {
-    return products.filter((product) => productMatchesFilters(product, activeFilters))
-  }, [products, activeFilters])
+    return allProducts.filter((product) => productMatchesFilters(product, activeFilters))
+  }, [allProducts, activeFilters])
 
   const sortedProducts = useMemo(() => {
     const sorted = [...filteredProducts]
@@ -390,16 +388,21 @@ export function CollectionPageClient({
     return params ? `${pathname}?${params}` : pathname
   }, [pathname, searchParams.toString()])
 
+  const handleShopAll = useCallback(() => {
+    router.push("/collections/all")
+  }, [router])
+
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Desktop Sidebar */}
-        <aside className="hidden lg:block lg:w-64 flex-shrink-0">
-          <Link href="/collections/all" className="block mb-6">
-            <button className="w-full px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors">
-              Shop All
-            </button>
-          </Link>
+        <aside className="hidden lg:block w-64 shrink-0 space-y-4">
+          <button
+            onClick={handleShopAll}
+            className="w-full px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
+          >
+            Shop All
+          </button>
 
           <CollectionFilterSidebar
             initialFilters={activeFilters}
@@ -412,11 +415,12 @@ export function CollectionPageClient({
         <div className="flex-1">
           <div className="mb-6">
             <div className="lg:hidden space-y-3">
-              <Link href="/collections/all" className="block">
-                <button className="w-full px-4 py-2.5 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors">
-                  Shop All
-                </button>
-              </Link>
+              <button
+                onClick={handleShopAll}
+                className="w-full px-4 py-2.5 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Shop All
+              </button>
 
               <div className="flex gap-2">
                 <button
