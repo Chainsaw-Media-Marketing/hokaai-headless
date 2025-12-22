@@ -7,76 +7,72 @@ import type { Product } from "@/lib/types"
 
 export const revalidate = 60
 
-const ALL_PRODUCTS_QUERY = /* GraphQL */ `
-  query AllProducts($first: Int = 250, $after: String) {
-    products(first: $first, after: $after) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
-      edges {
-        node {
-          id
-          handle
-          title
-          featuredImage { url altText }
-          priceRange { minVariantPrice { amount currencyCode } }
-          variants(first: 10) {
-            edges {
-              node {
-                id
-                title
-                availableForSale
-                priceV2 {
-                  amount
-                  currencyCode
+const COLLECTION_PRODUCTS_QUERY = /* GraphQL */ `
+  query CollectionProducts($handle: String!, $first: Int = 250, $after: String) {
+    collection(handle: $handle) {
+      id
+      title
+      description
+      products(first: $first, after: $after) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        edges {
+          node {
+            id
+            handle
+            title
+            featuredImage { url altText }
+            priceRange { minVariantPrice { amount currencyCode } }
+            variants(first: 10) {
+              edges {
+                node {
+                  id
+                  title
+                  availableForSale
+                  priceV2 {
+                    amount
+                    currencyCode
+                  }
+                  weight
+                  weightUnit
                 }
-                weight
-                weightUnit
               }
             }
-          }
-          meatType: metafield(namespace: "custom", key: "meat_type") {
-            value
-          }
-          cutFamily: metafield(namespace: "custom", key: "cut_family") {
-            value
-          }
-          occasion: metafield(namespace: "custom", key: "occasion") {
-            value
-          }
-          department: metafield(namespace: "custom", key: "department") {
-            value
-          }
-          bulkType: metafield(namespace: "custom", key: "bulk_type") {
-            value
-          }
-          deliType: metafield(namespace: "custom", key: "deli_type") {
-            value
-          }
-          spiceFamily: metafield(namespace: "custom", key: "spice_family") {
-            value
-          }
-          braaiGearFamily: metafield(namespace: "custom", key: "braai_gear_family") {
-            value
-          }
-          groceryFamily: metafield(namespace: "custom", key: "grocery_family") {
-            value
-          }
-          pricePerKg: metafield(namespace: "custom", key: "price_per_kg") {
-            value
+            meatType: metafield(namespace: "custom", key: "meat_type") {
+              value
+            }
+            cutFamily: metafield(namespace: "custom", key: "cut_family") {
+              value
+            }
+            occasion: metafield(namespace: "custom", key: "occasion") {
+              value
+            }
+            department: metafield(namespace: "custom", key: "department") {
+              value
+            }
+            bulkType: metafield(namespace: "custom", key: "bulk_type") {
+              value
+            }
+            deliType: metafield(namespace: "custom", key: "deli_type") {
+              value
+            }
+            spiceFamily: metafield(namespace: "custom", key: "spice_family") {
+              value
+            }
+            braaiGearFamily: metafield(namespace: "custom", key: "braai_gear_family") {
+              value
+            }
+            groceryFamily: metafield(namespace: "custom", key: "grocery_family") {
+              value
+            }
+            pricePerKg: metafield(namespace: "custom", key: "price_per_kg") {
+              value
+            }
           }
         }
       }
-    }
-  }
-`
-
-const COLLECTION_INFO_QUERY = /* GraphQL */ `
-  query CollectionInfo($handle: String!) {
-    collection(handle: $handle) {
-      title
-      description
     }
   }
 `
@@ -130,18 +126,34 @@ const toProduct = (p: any): Product => {
   return mappedProduct
 }
 
-async function fetchAllProducts(): Promise<Product[]> {
+async function fetchCollectionProducts(
+  handle: string,
+): Promise<{ products: Product[]; title: string; description: string }> {
   let allProducts: Product[] = []
   let hasNextPage = true
   let cursor: string | null = null
+  let title = handle
+  let description = ""
 
   while (hasNextPage) {
-    const data = await shopifyFetch<any>(ALL_PRODUCTS_QUERY, {
+    const data = await shopifyFetch<any>(COLLECTION_PRODUCTS_QUERY, {
+      handle,
       first: 250,
       after: cursor,
     })
 
-    const products = data?.products
+    const collection = data?.collection
+    if (!collection) {
+      console.error("[v0] Collection not found:", handle)
+      break
+    }
+
+    if (!cursor) {
+      title = collection.title ?? handle
+      description = collection.description ?? ""
+    }
+
+    const products = collection.products
     if (!products) break
 
     const pageProducts = (products.edges ?? []).map((e: any) => toProduct(e.node))
@@ -151,7 +163,7 @@ async function fetchAllProducts(): Promise<Product[]> {
     cursor = products.pageInfo?.endCursor ?? null
   }
 
-  return allProducts
+  return { products: allProducts, title, description }
 }
 
 function getInitialFiltersFromUrl(searchParams: { [key: string]: string | string[] | undefined }): FilterState {
@@ -219,12 +231,7 @@ export default async function CollectionPage(props: {
   const { handle } = await props.params
   const searchParams = await props.searchParams
 
-  const collectionData = await shopifyFetch<any>(COLLECTION_INFO_QUERY, { handle })
-  const col = collectionData?.collection
-  const products = await fetchAllProducts()
-
-  const title = col?.title ?? handle
-  const description = col?.description ?? ""
+  const { products, title, description } = await fetchCollectionProducts(handle)
 
   const initialFilters = getInitialFiltersFromUrl(searchParams)
 
