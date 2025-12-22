@@ -396,8 +396,8 @@ export function CollectionPageClient({
         {/* Desktop Sidebar */}
         <aside className="hidden lg:block lg:w-64 flex-shrink-0">
           <Link href="/collections/all" className="block mb-6">
-            <button className="w-full px-4 py-2 border-2 border-slate-300 text-slate-700 font-medium rounded-lg hover:bg-slate-50 transition-colors">
-              Shop all
+            <button className="w-full px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors">
+              Shop All
             </button>
           </Link>
 
@@ -413,8 +413,8 @@ export function CollectionPageClient({
           <div className="mb-6">
             <div className="lg:hidden space-y-3">
               <Link href="/collections/all" className="block">
-                <button className="w-full px-4 py-2.5 border-2 border-slate-300 text-slate-700 font-medium rounded-lg hover:bg-slate-50 transition-colors">
-                  Shop all
+                <button className="w-full px-4 py-2.5 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors">
+                  Shop All
                 </button>
               </Link>
 
