@@ -8,10 +8,11 @@ import { Pagination } from "@/components/pagination"
 import { productMatchesFilters, sanitizeFilters, type FilterState } from "@/lib/filter-utils"
 import type { Product } from "@/lib/types"
 import { LayoutGrid, Grid3x3, X, Check } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 const PRODUCTS_PER_PAGE = 36
 
-interface CollectionClientProps {
+interface CollectionPageClientProps {
   title: string
   description: string
   products: Product[]
@@ -20,11 +21,12 @@ interface CollectionClientProps {
 }
 
 export function CollectionPageClient({
-  products: allProducts,
+  title,
+  description,
+  products,
+  initialFilters,
   collectionHandle,
-  title: collectionTitle,
-  description: collectionDescription,
-}: CollectionClientProps) {
+}: CollectionPageClientProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -32,12 +34,18 @@ export function CollectionPageClient({
   const prevFiltersRef = useRef<string>("")
   const sortPopoverRef = useRef<HTMLDivElement>(null)
 
-  const [activeFilters, setActiveFilters] = useState<FilterState>(sanitizeFilters({}))
+  const [activeFilters, setActiveFilters] = useState<FilterState>(sanitizeFilters(initialFilters))
   const [gridDensity, setGridDensity] = useState<"comfortable" | "compact">("comfortable")
   const [sortBy, setSortBy] = useState<"featured" | "price-low" | "price-high" | "name-az" | "name-za">("featured")
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
   const [isMobileSortOpen, setIsMobileSortOpen] = useState(false)
   const [mobileGridCols, setMobileGridCols] = useState<1 | 2>(2)
+
+  const currentPage = useMemo(() => {
+    const pageParam = searchParams.get("page")
+    const page = pageParam ? Number.parseInt(pageParam, 10) : 1
+    return page > 0 ? page : 1
+  }, [searchParams])
 
   useEffect(() => {
     const stored = localStorage.getItem("hk_mobile_grid_cols")
@@ -51,11 +59,22 @@ export function CollectionPageClient({
     localStorage.setItem("hk_mobile_grid_cols", cols.toString())
   }, [])
 
-  const currentPage = useMemo(() => {
-    const pageParam = searchParams.get("page")
-    const page = pageParam ? Number.parseInt(pageParam, 10) : 1
-    return page > 0 ? page : 1
-  }, [searchParams])
+  const handleShopAll = useCallback(() => {
+    // Clear all filters
+    setActiveFilters({
+      meatType: [],
+      cutFamily: [],
+      occasion: [],
+      department: [],
+      deliType: [],
+      spiceFamily: [],
+      braaiGearFamily: [],
+      groceryFamily: [],
+      bulkType: [],
+    })
+    // Navigate to all collections
+    router.push("/collections/all")
+  }, [router])
 
   useEffect(() => {
     const sortParam = searchParams.get("sort")
@@ -158,7 +177,7 @@ export function CollectionPageClient({
     const groceryFamilyCounts = new Map<string, number>()
     const bulkTypeCounts = new Map<string, number>()
 
-    allProducts.forEach((product) => {
+    products.forEach((product) => {
       if (product.meat_type) {
         meatTypeCounts.set(product.meat_type, (meatTypeCounts.get(product.meat_type) || 0) + 1)
       }
@@ -220,11 +239,11 @@ export function CollectionPageClient({
         .map(([value, count]) => ({ value, label: value, count }))
         .sort((a, b) => a.label.localeCompare(b.label)),
     }
-  }, [allProducts])
+  }, [products])
 
   const filteredProducts = useMemo(() => {
-    return allProducts.filter((product) => productMatchesFilters(product, activeFilters))
-  }, [allProducts, activeFilters])
+    return products.filter((product) => productMatchesFilters(product, activeFilters))
+  }, [products, activeFilters])
 
   const sortedProducts = useMemo(() => {
     const sorted = [...filteredProducts]
@@ -388,22 +407,16 @@ export function CollectionPageClient({
     return params ? `${pathname}?${params}` : pathname
   }, [pathname, searchParams.toString()])
 
-  const handleShopAll = useCallback(() => {
-    router.push("/collections/all")
-  }, [router])
-
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Desktop Sidebar */}
-        <aside className="hidden lg:block w-64 shrink-0 space-y-4">
-          <button
-            onClick={handleShopAll}
-            className="w-full px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
-          >
-            Shop All
-          </button>
-
+        <aside className="hidden lg:block lg:w-64 flex-shrink-0">
+          <div className="lg:block hidden">
+            <Button onClick={handleShopAll} className="w-full mb-4 bg-red-600 hover:bg-red-700 text-white">
+              Shop All
+            </Button>
+          </div>
           <CollectionFilterSidebar
             initialFilters={activeFilters}
             availableFilters={availableFilters}
@@ -415,13 +428,11 @@ export function CollectionPageClient({
         <div className="flex-1">
           <div className="mb-6">
             <div className="lg:hidden space-y-3">
-              <button
-                onClick={handleShopAll}
-                className="w-full px-4 py-2.5 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
-              >
-                Shop All
-              </button>
-
+              <div className="lg:hidden mb-4">
+                <Button onClick={handleShopAll} className="w-full bg-red-600 hover:bg-red-700 text-white">
+                  Shop All
+                </Button>
+              </div>
               <div className="flex gap-2">
                 <button
                   onClick={() => setIsMobileFilterOpen(true)}
