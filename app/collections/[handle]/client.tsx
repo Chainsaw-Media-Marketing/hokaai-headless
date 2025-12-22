@@ -8,6 +8,7 @@ import { Pagination } from "@/components/pagination"
 import { productMatchesFilters, sanitizeFilters, type FilterState } from "@/lib/filter-utils"
 import type { Product } from "@/lib/types"
 import { LayoutGrid, Grid3x3, X, Check } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 const PRODUCTS_PER_PAGE = 36
 
@@ -40,6 +41,12 @@ export function CollectionPageClient({
   const [isMobileSortOpen, setIsMobileSortOpen] = useState(false)
   const [mobileGridCols, setMobileGridCols] = useState<1 | 2>(2)
 
+  const currentPage = useMemo(() => {
+    const pageParam = searchParams.get("page")
+    const page = pageParam ? Number.parseInt(pageParam, 10) : 1
+    return page > 0 ? page : 1
+  }, [searchParams])
+
   useEffect(() => {
     const stored = localStorage.getItem("hk_mobile_grid_cols")
     if (stored === "1" || stored === "2") {
@@ -52,11 +59,22 @@ export function CollectionPageClient({
     localStorage.setItem("hk_mobile_grid_cols", cols.toString())
   }, [])
 
-  const currentPage = useMemo(() => {
-    const pageParam = searchParams.get("page")
-    const page = pageParam ? Number.parseInt(pageParam, 10) : 1
-    return page > 0 ? page : 1
-  }, [searchParams])
+  const handleShopAll = useCallback(() => {
+    // Clear all filters
+    setActiveFilters({
+      meatType: [],
+      cutFamily: [],
+      occasion: [],
+      department: [],
+      deliType: [],
+      spiceFamily: [],
+      braaiGearFamily: [],
+      groceryFamily: [],
+      bulkType: [],
+    })
+    // Navigate to all collections
+    router.push("/collections/all")
+  }, [router])
 
   useEffect(() => {
     const sortParam = searchParams.get("sort")
@@ -394,6 +412,11 @@ export function CollectionPageClient({
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Desktop Sidebar */}
         <aside className="hidden lg:block lg:w-64 flex-shrink-0">
+          <div className="lg:block hidden">
+            <Button onClick={handleShopAll} className="w-full mb-4 bg-red-600 hover:bg-red-700 text-white">
+              Shop All
+            </Button>
+          </div>
           <CollectionFilterSidebar
             initialFilters={activeFilters}
             availableFilters={availableFilters}
@@ -405,6 +428,11 @@ export function CollectionPageClient({
         <div className="flex-1">
           <div className="mb-6">
             <div className="lg:hidden space-y-3">
+              <div className="lg:hidden mb-4">
+                <Button onClick={handleShopAll} className="w-full bg-red-600 hover:bg-red-700 text-white">
+                  Shop All
+                </Button>
+              </div>
               <div className="flex gap-2">
                 <button
                   onClick={() => setIsMobileFilterOpen(true)}
