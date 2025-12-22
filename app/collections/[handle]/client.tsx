@@ -8,6 +8,7 @@ import { Pagination } from "@/components/pagination"
 import { productMatchesFilters, sanitizeFilters, type FilterState } from "@/lib/filter-utils"
 import type { Product } from "@/lib/types"
 import { LayoutGrid, Grid3x3, X, Check } from "lucide-react"
+import Link from "next/link"
 
 const PRODUCTS_PER_PAGE = 36
 
@@ -394,6 +395,12 @@ export function CollectionPageClient({
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Desktop Sidebar */}
         <aside className="hidden lg:block lg:w-64 flex-shrink-0">
+          <Link href="/collections/all" className="block mb-6">
+            <button className="w-full px-4 py-2 border-2 border-slate-300 text-slate-700 font-medium rounded-lg hover:bg-slate-50 transition-colors">
+              Shop all
+            </button>
+          </Link>
+
           <CollectionFilterSidebar
             initialFilters={activeFilters}
             availableFilters={availableFilters}
@@ -405,6 +412,12 @@ export function CollectionPageClient({
         <div className="flex-1">
           <div className="mb-6">
             <div className="lg:hidden space-y-3">
+              <Link href="/collections/all" className="block">
+                <button className="w-full px-4 py-2.5 border-2 border-slate-300 text-slate-700 font-medium rounded-lg hover:bg-slate-50 transition-colors">
+                  Shop all
+                </button>
+              </Link>
+
               <div className="flex gap-2">
                 <button
                   onClick={() => setIsMobileFilterOpen(true)}
