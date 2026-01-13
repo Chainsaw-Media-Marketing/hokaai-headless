@@ -22,9 +22,48 @@ const openSans = Open_Sans({
 })
 
 export const metadata: Metadata = {
-  title: "Hokaai Meat Market - Premium Quality Meats",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://hokaai.co.za"),
+  title: {
+    default: "Hokaai Meat Market - Premium Quality Meats, Deli & Biltong",
+    template: "%s | Hokaai Meat Market",
+  },
   description:
-    "Family-run butchery offering premium quality meats, fresh cuts, and traditional South African specialties.",
+    "Order premium quality meats, deli and biltong online from Hokaai Meat Market. Local delivery in Gauteng. Fresh cuts, braai essentials and bulk hampers.",
+  keywords: [
+    "butchery",
+    "meat market",
+    "online meat delivery",
+    "Gauteng meat delivery",
+    "biltong",
+    "deli",
+    "braai meat",
+    "fresh meat",
+    "Pretoria butcher",
+    "Centurion meat",
+  ],
+  openGraph: {
+    type: "website",
+    locale: "en_ZA",
+    siteName: "Hokaai Meat Market",
+    title: "Hokaai Meat Market - Premium Quality Meats, Deli & Biltong",
+    description:
+      "Order premium quality meats, deli and biltong online from Hokaai Meat Market. Local delivery in Gauteng. Fresh cuts, braai essentials and bulk hampers.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Hokaai Meat Market - Premium Quality Meats, Deli & Biltong",
+    description:
+      "Order premium quality meats, deli and biltong online from Hokaai Meat Market. Local delivery in Gauteng. Fresh cuts, braai essentials and bulk hampers.",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon-32x32.jpg", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.jpg", sizes: "16x16", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.jpg", sizes: "180x180", type: "image/png" }],
+    shortcut: ["/favicon.ico"],
+  },
+  manifest: "/site.webmanifest",
   generator: "v0.app",
 }
 

@@ -8,6 +8,23 @@ import { NewsletterManager } from "@/components/newsletter-popup"
 import { TestimonialCarousel } from "@/components/testimonial-carousel"
 import { WavyDivider } from "@/components/wavy-divider"
 import { sampleReviews, occasionTags } from "@/lib/data"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Hokaai Meat Market - Premium Quality Meats, Deli & Biltong | Online Delivery in Gauteng",
+  description:
+    "Order premium quality meats, deli and biltong online from Hokaai Meat Market. Local delivery in Gauteng. Fresh cuts, braai essentials and bulk hampers. Free delivery in Pretoria & Centurion on orders over R1,000.",
+  openGraph: {
+    title: "Hokaai Meat Market - Premium Quality Meats, Deli & Biltong",
+    description:
+      "Order premium quality meats, deli and biltong online. Local delivery in Gauteng. Fresh cuts, braai essentials and bulk hampers.",
+  },
+  twitter: {
+    title: "Hokaai Meat Market - Premium Quality Meats, Deli & Biltong",
+    description:
+      "Order premium quality meats, deli and biltong online. Local delivery in Gauteng. Fresh cuts, braai essentials and bulk hampers.",
+  },
+}
 
 export default function HomePage() {
   return (

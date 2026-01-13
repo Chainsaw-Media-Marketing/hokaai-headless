@@ -8,6 +8,7 @@ import { notFound } from "next/navigation"
 import { shopifyFetch } from "@/lib/shopify"
 import { PRODUCT_BY_HANDLE, PRODUCTS_BY_TAGS } from "@/lib/queries"
 import { mapShopifyProductToProduct } from "@/lib/map"
+import type { Metadata } from "next"
 
 interface ShopifyProductResponse {
   product: {
@@ -162,8 +163,47 @@ async function getSuggestedProducts() {
   }
 }
 
-export default async function ProductPage(props: { params: Promise<{ handle: string }> }) {
-  const { handle } = await props.params
+export async function generateMetadata(props: { params: { handle: string } }): Promise<Metadata> {
+  const { handle } = props.params
+  const shopifyProduct = await productByHandle(handle)
+
+  if (!shopifyProduct) {
+    return {
+      title: "Product Not Found",
+      description: "The requested product could not be found.",
+    }
+  }
+
+  const product = mapShopifyProductToProduct(shopifyProduct)
+  const price = product.variants[0]?.price?.amount
+  const imageUrl = product.images[0]?.url
+
+  return {
+    title: `${product.title}`,
+    description: product.descriptionHtml
+      ? product.descriptionHtml.replace(/<[^>]*>/g, "").substring(0, 160)
+      : `Shop ${product.title} at Hokaai Meat Market. Premium quality meats with local delivery in Gauteng.`,
+    openGraph: {
+      title: `${product.title} | Hokaai Meat Market`,
+      description: product.descriptionHtml
+        ? product.descriptionHtml.replace(/<[^>]*>/g, "").substring(0, 160)
+        : `Shop ${product.title} at Hokaai Meat Market.`,
+      images: imageUrl ? [{ url: imageUrl, width: 800, height: 800, alt: product.title }] : [],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${product.title} | Hokaai Meat Market`,
+      description: product.descriptionHtml
+        ? product.descriptionHtml.replace(/<[^>]*>/g, "").substring(0, 160)
+        : `Shop ${product.title} at Hokaai Meat Market.`,
+      images: imageUrl ? [imageUrl] : [],
+    },
+  }
+}
+
+export default async function ProductPage(props: { params: { handle: string } }) {
+  const { handle } = props.params
   const shopifyProduct = await productByHandle(handle)
 
   if (!shopifyProduct) {

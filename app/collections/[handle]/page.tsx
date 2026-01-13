@@ -4,6 +4,7 @@ import { Footer } from "@/components/footer"
 import { CollectionPageClient } from "./client"
 import { parseMetafieldValue, type FilterState } from "@/lib/filter-utils"
 import type { Product } from "@/lib/types"
+import type { Metadata } from "next"
 
 export const revalidate = 60
 
@@ -222,6 +223,25 @@ function getInitialFiltersFromUrl(searchParams: { [key: string]: string | string
   }
 
   return filters
+}
+
+export async function generateMetadata(props: { params: Promise<{ handle: string }> }): Promise<Metadata> {
+  const { handle } = await props.params
+  const { title, description } = await fetchCollectionProducts(handle)
+
+  return {
+    title,
+    description:
+      description || `Shop ${title} at Hokaai Meat Market. Premium quality meats with local delivery in Gauteng.`,
+    openGraph: {
+      title: `${title} | Hokaai Meat Market`,
+      description: description || `Shop ${title} at Hokaai Meat Market.`,
+    },
+    twitter: {
+      title: `${title} | Hokaai Meat Market`,
+      description: description || `Shop ${title} at Hokaai Meat Market.`,
+    },
+  }
 }
 
 export default async function CollectionPage(props: {
