@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Homepage -->
+  <url>
+    <loc>https://www.hokaaimeatmarket.co.za/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Shop (Main Collection Page) -->
+  <url>
+    <loc>https://www.hokaaimeatmarket.co.za/collections/all</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Game Processing -->
+  <url>
+    <loc>https://www.hokaaimeatmarket.co.za/game-processing</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Spitbraai Hire -->
+  <url>
+    <loc>https://www.hokaaimeatmarket.co.za/spitbraai-hire</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- About Us -->
+  <url>
+    <loc>https://www.hokaaimeatmarket.co.za/about</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Contact -->
+  <url>
+    <loc>https://www.hokaaimeatmarket.co.za/contact</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+</urlset>

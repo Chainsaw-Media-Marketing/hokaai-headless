@@ -13,16 +13,16 @@ import type { Metadata } from "next"
 export const metadata: Metadata = {
   title: "Hokaai Meat Market - Premium Quality Meats, Deli & Biltong | Online Delivery in Gauteng",
   description:
-    "Order premium quality meats, deli and biltong online from Hokaai Meat Market. Local delivery in Gauteng. Fresh cuts, braai essentials and bulk hampers. Free delivery in Pretoria & Centurion on orders over R1,000.",
+    "Order premium quality meats, deli and biltong online from Hokaai Meat Market in Pretoria. Local delivery in Gauteng. Fresh cuts, braai essentials and bulk hampers. Free delivery in Pretoria & Centurion on orders over R1,000.",
   openGraph: {
     title: "Hokaai Meat Market - Premium Quality Meats, Deli & Biltong",
     description:
-      "Order premium quality meats, deli and biltong online. Local delivery in Gauteng. Fresh cuts, braai essentials and bulk hampers.",
+      "Order premium quality meats, deli and biltong online from Pretoria. Local delivery in Gauteng. Fresh cuts, braai essentials and bulk hampers.",
   },
   twitter: {
     title: "Hokaai Meat Market - Premium Quality Meats, Deli & Biltong",
     description:
-      "Order premium quality meats, deli and biltong online. Local delivery in Gauteng. Fresh cuts, braai essentials and bulk hampers.",
+      "Order premium quality meats, deli and biltong online from Pretoria. Local delivery in Gauteng. Fresh cuts, braai essentials and bulk hampers.",
   },
 }
 
@@ -45,7 +45,8 @@ export default function HomePage() {
               <div className="text-center mb-8 lg:mb-12">
                 <h2 className="text-h2 max-sm:text-2xl text-brand-primary mb-2 lg:mb-4">Shop by Occasion</h2>
                 <p className="text-body text-slate-700 max-w-2xl mx-auto hidden lg:block">
-                  Find the perfect cuts for every cooking style and occasion
+                  Find the perfect cuts for every cooking style and occasion. Serving Pretoria, Centurion and
+                  surrounding areas.
                 </p>
               </div>
               <OccasionTiles occasions={occasionTags} />
