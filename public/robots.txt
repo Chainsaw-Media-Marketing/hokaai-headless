@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.hokaaimeatmarket.co.za/sitemap.xml
