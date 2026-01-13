@@ -24,8 +24,10 @@ const openSans = Open_Sans({
 export const metadata: Metadata = {
   title: "Hokaai Meat Market - Premium Quality Meats",
   description:
-    "Family-run butchery offering premium quality meats, fresh cuts, and traditional South African specialties.",
-  generator: "v0.app",
+    "Premium quality meats from Hokaai Meat Market. Shop fresh cuts, freezer packs and more online with local delivery available.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 }
 
 export default function RootLayout({
