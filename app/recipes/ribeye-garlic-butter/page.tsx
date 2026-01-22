@@ -36,7 +36,7 @@ export default function RibeyeGarlicButterPage() {
         <section className="container mx-auto px-6 lg:px-8 pt-8">
           <div className="mb-6 rounded-2xl overflow-hidden">
             <img
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Ribeye%20Steak%20with%20Garlic%20Butter%20%26%20Braai%20Spice-TslTqZ5VwfSEUlyCGhIz7h0yKgjHTx.png"
+              src="/images/ribeye-20steak-20with-20garlic-20butter-20-26-20braai-20spice.png"
               alt="Ribeye Steak with Garlic Butter & Braai Spice"
               className="w-full h-[300px] md:h-[400px] object-cover"
             />
@@ -98,8 +98,8 @@ export default function RibeyeGarlicButterPage() {
                   </h2>
                   <ul className="list-disc pl-6 mt-4 space-y-2 text-foreground/90">
                     <li>4 × 200 g Hokaai Beef Ribeye Steaks</li>
-                    <li>2 tsp Marina Original Braai Salt 400 g</li>
-                    <li>2 tsp Ina Paarman Meat Spice 200 ml</li>
+                    <li>2 tsp Marina Original Braai Salt</li>
+                    <li>2 tsp Ina Paarman Meat Spice</li>
                     <li>100 g butter</li>
                     <li>2 cloves garlic, crushed</li>
                     <li>1 tsp lemon juice</li>
@@ -114,14 +114,15 @@ export default function RibeyeGarlicButterPage() {
                   </h2>
                   <ol className="list-decimal pl-6 mt-4 space-y-3 text-foreground/90">
                     <li>
-                      <strong>Make butter:</strong> Melt butter gently; stir in garlic, parsley, lemon. Keep warm off
-                      heat.
+                      <strong>Make butter:</strong> Melt butter gently over low heat; remove from heat, then stir in
+                      garlic, parsley and lemon. Keep warm off heat.
                     </li>
                     <li>
                       <strong>Season:</strong> Pat steaks dry. Lightly oil, then season with Braai Salt + Meat Spice.
                     </li>
                     <li>
-                      <strong>Braai:</strong> Medium-hot coals (hand test ±5–6 sec) or cast-iron grid. Braai{" "}
+                      <strong>Braai:</strong> Medium-hot coals (hand test ±5–6 sec, coals glowing with light ash) or
+                      cast-iron grid. Braai{" "}
                       <strong>4–5 min per side</strong> for medium-rare, turning once.
                     </li>
                     <li>
@@ -143,7 +144,7 @@ export default function RibeyeGarlicButterPage() {
                     <span className="absolute left-0 -bottom-1 h-0.5 w-16 bg-[var(--color-brand-red)]" />
                   </h2>
                   <ul className="list-disc pl-6 mt-4 space-y-2 text-foreground/90">
-                    <li>Optional: drizzle Rooibaard Groen Trui for gentle heat.</li>
+                    <li>Optional: drizzle a mild green chilli sauce for gentle heat.</li>
                     <li>Serve with pap and chakalaka.</li>
                   </ul>
                 </div>
