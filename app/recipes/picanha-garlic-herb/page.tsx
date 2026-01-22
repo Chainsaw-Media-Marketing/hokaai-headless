@@ -36,7 +36,7 @@ export default function PicanhaGarlicHerbPage() {
         <section className="container mx-auto px-6 lg:px-8 pt-8">
           <div className="mb-6 rounded-2xl overflow-hidden">
             <img
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Picanha%20with%20Garlic-Herb%20Baste-uophh4Cm2bULWMSUApfbbCXIGktota.png"
+              src="/images/picanha-20with-20garlic-herb-20baste.png"
               alt="Picanha with Garlic-Herb Baste"
               className="w-full h-[300px] md:h-[400px] object-cover"
             />
@@ -97,7 +97,7 @@ export default function PicanhaGarlicHerbPage() {
                     <li>2 tsp Ina Paarman Lemon & Herb C&C 200 ml</li>
                     <li>2 tbsp olive oil</li>
                     <li>3 cloves garlic, minced</li>
-                    <li>1 tbsp fresh rosemary or thyme</li>
+                    <li>1 tbsp fresh thyme or 1–2 tsp finely chopped rosemary</li>
                   </ul>
                 </div>
 
@@ -112,22 +112,24 @@ export default function PicanhaGarlicHerbPage() {
                       garlic, rosemary.
                     </li>
                     <li>
-                      <strong>Season/baste:</strong> Brush all over; rest <strong>20–30 min</strong> at room temp.
+                      <strong>Season/baste:</strong> Brush all over; rest <strong>10–15 min</strong> while preparing the fire.
                     </li>
                     <li>
                       <strong>Sear fat:</strong> Start <strong>fat-side down</strong> over medium coals{" "}
                       <strong>2–3 min</strong> to render and crisp; manage flare-ups.
                     </li>
                     <li>
-                      <strong>Grill:</strong> Move to medium-high heat. Braai <strong>3–4 min per side</strong> to
-                      medium-rare. For a thick whole piece, use <strong>indirect</strong> heat 10–15 min to finish.
+                      <strong>Grill:</strong> Sear over direct medium-high heat <strong>3–4 min per side</strong>.
+                      For a thick whole piece, move to <strong>indirect</strong> heat and continue cooking 10–15 min
+                      until target temperature is reached.
                     </li>
                     <li>
                       <strong>Target temp:</strong> <strong>52–55 °C</strong> (MR) / <strong>58–60 °C</strong> (M).
                     </li>
                     <li>
                       <strong>Rest & finish:</strong> Rest <strong>10 min</strong>. Slice{" "}
-                      <strong>across the grain</strong>. Brush with Lemon & Herb C&C to serve.
+                      <strong>across the grain</strong>. Brush slices lightly with Lemon & Herb C&C as a finishing
+                      glaze, or serve the sauce on the side.
                     </li>
                   </ol>
                 </div>
