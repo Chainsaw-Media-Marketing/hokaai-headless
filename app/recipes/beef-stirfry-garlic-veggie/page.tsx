@@ -93,11 +93,15 @@ export default function BeefStirfryGarlicVeggiePage() {
                   </h2>
                   <ul className="list-disc pl-6 mt-4 space-y-2 text-foreground/90">
                     <li>2 × 250 g Hokaai Beef Stirfry</li>
-                    <li>1 tbsp Crown Six Gun Grill Seasoning</li>
+                    <li>2 Tbsp vegetable oil (divided)</li>
+                    <li>1 red bell pepper, thinly sliced</li>
+                    <li>2 medium carrots, julienned</li>
+                    <li>1 cup small broccoli florets</li>
+                    <li>4 spring onions, cut into 3 cm pieces (separate white and green parts)</li>
+                    <li>3 cloves garlic, minced</li>
+                    <li>1 Tbsp Crown Six Gun Grill Seasoning</li>
                     <li>1 tsp Ina Paarman Veggie Sprinkle</li>
-                    <li>2 tbsp oil</li>
-                    <li>1 packet stir-fry vegetables</li>
-                    <li>2 tbsp soy sauce (optional)</li>
+                    <li>2 Tbsp soy sauce (optional)</li>
                   </ul>
                 </div>
 
@@ -108,21 +112,21 @@ export default function BeefStirfryGarlicVeggiePage() {
                   </h2>
                   <ol className="list-decimal pl-6 mt-4 space-y-3 text-foreground/90">
                     <li>
-                      <strong>Heat:</strong> Wok or large pan <strong>very hot</strong>. Add 1 tbsp oil.
+                      <strong>Heat:</strong> Wok or large pan very hot. Add 1 Tbsp oil.
                     </li>
                     <li>
-                      <strong>Beef:</strong> Season lightly with Six Gun. Stir-fry half the beef{" "}
-                      <strong>60–90 sec</strong> till just browned; remove. Repeat with remaining oil + beef.
+                      <strong>Beef:</strong> Season beef lightly with Six Gun. Stir-fry half the beef{" "}
+                      <strong>60–90 sec</strong> until just browned; remove. Repeat with remaining oil and beef.
                     </li>
                     <li>
-                      <strong>Veg:</strong> Add veg; stir-fry <strong>3–4 min</strong> (tender-crisp).
+                      <strong>Veg:</strong> Add vegetables; stir-fry <strong>3–4 min</strong> until tender-crisp.
                     </li>
                     <li>
                       <strong>Combine:</strong> Return beef, add Veggie Sprinkle; toss <strong>30–60 sec</strong>.
-                      Optional: splash of soy for glaze.
+                      Optional splash of soy for glaze.
                     </li>
                     <li>
-                      <strong>Serve:</strong> Over noodles or rice. Do not overcook beef—keep it tender.
+                      <strong>Serve:</strong> Over rice or noodles. Do not overcook beef — keep it tender.
                     </li>
                   </ol>
                 </div>
@@ -133,7 +137,7 @@ export default function BeefStirfryGarlicVeggiePage() {
                     <span className="absolute left-0 -bottom-1 h-0.5 w-16 bg-[var(--color-brand-red)]" />
                   </h2>
                   <ul className="list-disc pl-6 mt-4 space-y-2 text-foreground/90">
-                    <li>Serve with noodles or rice.</li>
+                    <li>Serve immediately; stir-fry is best hot and fast.</li>
                   </ul>
                 </div>
               </div>
