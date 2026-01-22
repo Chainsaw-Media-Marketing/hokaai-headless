@@ -97,7 +97,7 @@ export default function BeefGoulashRedWineGarlicPage() {
                     <li>1 tsp Ina Paarman Masala Spice</li>
                     <li>1 onion + 1 red pepper, chopped</li>
                     <li>1 tbsp oil</li>
-                    <li>1 cup water or stock</li>
+                    <li>1–1½ cups water or stock</li>
                   </ul>
                 </div>
 
@@ -113,14 +113,14 @@ export default function BeefGoulashRedWineGarlicPage() {
                     </li>
                     <li>
                       <strong>Veg & spice:</strong> Add onion + red pepper; cook <strong>4–5 min</strong>. Stir in
-                      Masala Spice <strong>30 sec</strong>.
+                      Masala Spice and cook for <strong>30 seconds</strong> until fragrant (do not burn).
                     </li>
                     <li>
                       <strong>Liquids:</strong> Add Flippen Lekka Red Wine & Garlic sauce + <strong>1–1½ cups</strong>{" "}
                       water/stock. Scrape up brown bits.
                     </li>
                     <li>
-                      <strong>Simmer:</strong> Bring to a <strong>low simmer</strong>, lid <strong>ajar</strong>,{" "}
+                      <strong>Simmer:</strong> Bring to a <strong>very gentle simmer</strong>, lid <strong>ajar</strong>,{" "}
                       <strong>90–120 min</strong> until beef is tender. Stir now and then.
                     </li>
                     <li>
