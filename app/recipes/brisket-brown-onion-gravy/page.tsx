@@ -36,7 +36,7 @@ export default function BrisketBrownOnionGravyPage() {
         <section className="container mx-auto px-6 lg:px-8 pt-8">
           <div className="mb-6 rounded-2xl overflow-hidden">
             <img
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Slow%20Roasted%20Deboned%20Brisket%20with%20Brown-Onion%20Gravy-zxCHwtutlXAn2Keu4g1w02600LokTM.png"
+              src="/images/slow-20roasted-20deboned-20brisket-20with-20brown-onion-20gravy.png"
               alt="Slow Roasted Deboned Brisket with Brown-Onion Gravy"
               className="w-full h-[300px] md:h-[400px] object-cover"
             />
@@ -107,24 +107,31 @@ export default function BrisketBrownOnionGravyPage() {
                   </h2>
                   <ol className="list-decimal pl-6 mt-4 space-y-3 text-foreground/90">
                     <li>
-                      <strong>Brown onions:</strong> Oven <strong>160 °C</strong> (fan 150). In a roasting pan over
-                      medium stove heat, add oil and onions; cook <strong>8–10 min</strong> to deep golden.
+                      <strong>Sear brisket:</strong> Preheat oven to <strong>160 °C</strong> (fan 150). Season brisket
+                      generously with salt & pepper. Heat oil in a roasting pan over medium-high stove heat. Sear
+                      brisket <strong>4–5 min per side</strong> until well browned. Remove and set aside.
+                    </li>
+                    <li>
+                      <strong>Brown onions:</strong> In the same pan over medium heat, add onions; cook{" "}
+                      <strong>8–10 min</strong> to deep golden, scraping up browned bits from the brisket.
                     </li>
                     <li>
                       <strong>Pan base:</strong> Stir in Beef Stock Powder with <strong>½ cup (125 ml)</strong> hot
-                      water to deglaze.
+                      water to deglaze. Liquid should reach <strong>⅓–½ up the brisket</strong> once meat is added.
                     </li>
                     <li>
-                      <strong>Roast:</strong> Season brisket; nestle on onions. Cover tightly (lid/foil). Roast{" "}
-                      <strong>2½ hours</strong>, turning once at halfway.
+                      <strong>Roast:</strong> Nestle seared brisket on onions. Cover tightly (lid/foil). Roast{" "}
+                      <strong>3–3½ hours</strong>, turning once at halfway. Check liquid level occasionally and top up
+                      with hot water if reducing too much. Cook until <strong>fork-tender</strong> (fork slides in with
+                      little resistance).
                     </li>
                     <li>
                       <strong>Finish:</strong> Uncover; stir in Roast Beef Gravy. Roast <strong>25–30 min</strong>{" "}
-                      uncovered to thicken and glaze.
+                      uncovered—the gravy will thicken during this final roast to create a rich glaze.
                     </li>
                     <li>
-                      <strong>Rest & slice:</strong> Rest <strong>15 min</strong>. Slice{" "}
-                      <strong>against the grain</strong>; spoon over gravy.
+                      <strong>Rest & slice:</strong> Rest brisket <strong>15–20 min</strong>, loosely covered with foil.
+                      Slice <strong>against the grain</strong>; spoon over gravy.
                     </li>
                   </ol>
                 </div>
