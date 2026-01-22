@@ -14,7 +14,7 @@ export default function BrisketBrownOnionGravyPage() {
   const recipeData = {
     title: "Slow-Roasted Deboned Brisket with Brown-Onion Gravy",
     occasion: "Roast",
-    time: "3 h",
+    time: "4 h",
     serves: "6",
   }
 
