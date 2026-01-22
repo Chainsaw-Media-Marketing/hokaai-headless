@@ -36,7 +36,7 @@ export default function PicanhaGarlicHerbPage() {
         <section className="container mx-auto px-6 lg:px-8 pt-8">
           <div className="mb-6 rounded-2xl overflow-hidden">
             <img
-              src="/images/picanha-20with-20garlic-herb-20baste.png"
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Picanha%20with%20Garlic-Herb%20Baste-uophh4Cm2bULWMSUApfbbCXIGktota.png"
               alt="Picanha with Garlic-Herb Baste"
               className="w-full h-[300px] md:h-[400px] object-cover"
             />

@@ -36,7 +36,7 @@ export default function RibeyeGarlicButterPage() {
         <section className="container mx-auto px-6 lg:px-8 pt-8">
           <div className="mb-6 rounded-2xl overflow-hidden">
             <img
-              src="/images/ribeye-20steak-20with-20garlic-20butter-20-26-20braai-20spice.png"
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Ribeye%20Steak%20with%20Garlic%20Butter%20%26%20Braai%20Spice-TslTqZ5VwfSEUlyCGhIz7h0yKgjHTx.png"
               alt="Ribeye Steak with Garlic Butter & Braai Spice"
               className="w-full h-[300px] md:h-[400px] object-cover"
             />

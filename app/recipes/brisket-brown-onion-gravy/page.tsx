@@ -36,7 +36,7 @@ export default function BrisketBrownOnionGravyPage() {
         <section className="container mx-auto px-6 lg:px-8 pt-8">
           <div className="mb-6 rounded-2xl overflow-hidden">
             <img
-              src="/images/slow-20roasted-20deboned-20brisket-20with-20brown-onion-20gravy.png"
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Slow%20Roasted%20Deboned%20Brisket%20with%20Brown-Onion%20Gravy-zxCHwtutlXAn2Keu4g1w02600LokTM.png"
               alt="Slow Roasted Deboned Brisket with Brown-Onion Gravy"
               className="w-full h-[300px] md:h-[400px] object-cover"
             />
