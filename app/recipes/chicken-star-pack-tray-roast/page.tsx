@@ -98,6 +98,11 @@ export default function ChickenStarPackTrayRoastPage() {
                     <li>2 tbsp olive oil</li>
                     <li>2 lemons, wedges</li>
                     <li>3 sprigs rosemary</li>
+                    <li>4 medium potatoes, quartered</li>
+                    <li>4 carrots, cut into large chunks</li>
+                    <li>2 red onions, cut into thick wedges</li>
+                    <li>2 cloves garlic, crushed</li>
+                    <li>Salt & black pepper, to taste</li>
                   </ul>
                 </div>
 
@@ -108,15 +113,18 @@ export default function ChickenStarPackTrayRoastPage() {
                   </h2>
                   <ol className="list-decimal pl-6 mt-4 space-y-3 text-foreground/90">
                     <li>
-                      <strong>Marinate:</strong> Toss chicken with Lemon Marinade, Chicken Spice, and oil.
+                      <strong>Preheat:</strong> 200 °C (fan 190).
                     </li>
                     <li>
-                      <strong>Tray up:</strong> Add lemon wedges + rosemary. Spread in a single layer (skin-side up
-                      where applicable).
+                      <strong>Season:</strong> Toss chicken with Lemon Marinade, Chicken Spice and oil.
                     </li>
                     <li>
-                      <strong>Roast:</strong> <strong>200 °C</strong> (fan 190) for <strong>45–55 min</strong>, until
-                      skin is golden and the <strong>thickest piece hits 74 °C</strong> internal.
+                      <strong>Tray up:</strong> Add potatoes, carrots, onions, garlic, lemon wedges + rosemary. Spread
+                      in a single layer (skin-side up where applicable); don't crowd the tray.
+                    </li>
+                    <li>
+                      <strong>Roast:</strong> <strong>45–60 min</strong>, turning veg/basting once halfway, until skin
+                      is golden and the thickest piece reaches <strong>74 °C</strong> internal (or juices run clear).
                     </li>
                     <li>
                       <strong>Rest:</strong> 5–10 min. Spoon tray juices over to serve.
@@ -130,7 +138,8 @@ export default function ChickenStarPackTrayRoastPage() {
                     <span className="absolute left-0 -bottom-1 h-0.5 w-16 bg-[var(--color-brand-red)]" />
                   </h2>
                   <ul className="list-disc pl-6 mt-4 space-y-2 text-foreground/90">
-                    <li>Add potatoes to the tray for a full meal.</li>
+                    <li>If potatoes are large, cut smaller so they cook through in time.</li>
+                    <li>Add extra veg if you have space (pumpkin or peppers work well).</li>
                   </ul>
                 </div>
               </div>
