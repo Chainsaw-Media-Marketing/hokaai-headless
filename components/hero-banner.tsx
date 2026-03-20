@@ -14,7 +14,7 @@ export function HeroBanner() {
             backgroundPosition: "center",
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to right, rgba(0,0,0,0.70) 0%, rgba(0,0,0,0.50) 20%, transparent 45%)" }} />
 
           <div className="absolute inset-0 flex items-start justify-center">
             <div className="container mx-auto px-6 pt-10 pb-8">
@@ -39,12 +39,12 @@ export function HeroBanner() {
         <div
           className="w-full h-full bg-cover relative transition-transform duration-500 group-hover:scale-[1.025] hidden sm:block"
           style={{
-            backgroundImage: `url(/homepage-hero-banner.webp), url(/homepage-hero-banner.jpg)`,
+            backgroundImage: `url(/WEB-BANNER-UPDATED.webp)`,
             backgroundColor: "#8B5A3C",
             backgroundPosition: "left 40%",
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to right, rgba(0,0,0,0.70) 0%, rgba(0,0,0,0.50) 20%, transparent 45%)" }} />
 
           <div className="absolute inset-0 flex items-start sm:items-center justify-center">
             <div className="container mx-auto px-6 lg:px-8 pt-10 pb-8">
