@@ -39,7 +39,7 @@ export function HeroBanner() {
         <div
           className="w-full h-full bg-cover relative transition-transform duration-500 group-hover:scale-[1.025] hidden sm:block"
           style={{
-            backgroundImage: `url(/homepage-hero-banner.webp), url(/homepage-hero-banner.jpg)`,
+            backgroundImage: `url(/WEB-BANNER-UPDATED.webp)`,
             backgroundColor: "#8B5A3C",
             backgroundPosition: "left 40%",
           }}

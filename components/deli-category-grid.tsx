@@ -44,9 +44,11 @@ export function DeliCategoryGrid() {
     <>
       <div className="lg:hidden text-center">
         <p className="text-sm text-slate-600 mb-6">Traditional South African dried meats and deli specialties</p>
-        <Button asChild size="lg" className="h-12 px-8 bg-brand-red hover:bg-brand-red/90 text-white">
-          <Link href={mainDeliUrl}>Shop Deli & Biltong</Link>
-        </Button>
+        <Link href={mainDeliUrl}>
+          <Button size="lg" className="h-12 px-8 bg-brand-red hover:bg-brand-red/90 text-white">
+            Shop Deli & Biltong
+          </Button>
+        </Link>
       </div>
 
       {/* Desktop: Original multi-category grid */}
