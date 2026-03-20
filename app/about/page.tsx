@@ -190,9 +190,11 @@ export default function AboutPage() {
               <p className="text-lg text-foreground/90 mb-8">
                 Order your favourite cuts online — same trusted Hokaai quality, now delivered.
               </p>
-              <Button asChild size="lg" className="bg-brand-red hover:bg-red-700 text-white font-semibold px-8">
-                <Link href="/collections/butchery">Shop Butchery</Link>
-              </Button>
+              <Link href="/collections/butchery">
+                <Button size="lg" className="bg-brand-red hover:bg-red-700 text-white font-semibold px-8">
+                  Shop Butchery
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
