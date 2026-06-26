@@ -22,16 +22,6 @@ export default function DeliveryInfoPage() {
               <p className="text-lg text-slate-700">Here's how our local delivery from Hokaai Meat Market works.</p>
             </div>
 
-            {/* Section 1 - Free Local Delivery */}
-            <section className="mb-12">
-              <h2 className="text-2xl font-heading font-semibold text-brand-primary mb-6">Free local delivery</h2>
-              <div className="bg-white p-6 rounded-lg border border-slate-200">
-                <p className="text-slate-700">
-                  Free delivery within 5 km of Hokaai (Faerie Glen), regardless of order value.
-                </p>
-              </div>
-            </section>
-
             {/* Section 2 - Pretoria & Centurion */}
             <section className="mb-12">
               <h2 className="text-2xl font-heading font-semibold text-brand-primary mb-6">Pretoria & Centurion</h2>
@@ -51,27 +41,6 @@ export default function DeliveryInfoPage() {
                   Deliveries outside Pretoria & Centurion are shipped nationwide via express courier at a fixed flat
                   rate of R200.
                 </p>
-                <p className="text-slate-700">
-                  Final delivery cost is confirmed with you after checkout based on your address.
-                </p>
-              </div>
-            </section>
-
-            {/* Delivery Times */}
-            <section className="mb-12">
-              <h2 className="text-2xl font-heading font-semibold text-brand-primary mb-6">Delivery Times</h2>
-              <div className="space-y-4 text-slate-700">
-                <div className="bg-white p-6 rounded-lg border border-slate-200">
-                  <h3 className="font-semibold text-brand-primary mb-2">Standard delivery</h3>
-                  <p>Next business day.</p>
-                </div>
-                <div className="bg-white p-6 rounded-lg border border-slate-200">
-                  <h3 className="font-semibold text-brand-primary mb-2">Speedy delivery</h3>
-                  <p>Within 4 hours where available.</p>
-                </div>
-                <p className="text-sm text-slate-600 mt-4">
-                  Exact timing will be confirmed after the order is received.
-                </p>
               </div>
             </section>
 
@@ -82,16 +51,6 @@ export default function DeliveryInfoPage() {
                 <p className="text-slate-700">
                   You're welcome to collect your order in store at Hokaai Meat Market, Hokaai Shopping Centre, 558
                   Graaff-Reinet Street, Faerie Glen, Pretoria.
-                </p>
-              </div>
-            </section>
-
-            {/* Fresh Guarantee Section */}
-            <section>
-              <h2 className="text-2xl font-heading font-semibold text-brand-primary mb-6">Fresh Guarantee</h2>
-              <div className="bg-white p-6 rounded-lg border border-slate-200">
-                <p className="text-slate-700">
-                  All meat is cut fresh to order and delivered within 24 hours to ensure maximum freshness and quality.
                 </p>
               </div>
             </section>

@@ -33,8 +33,8 @@ export function PromoBand() {
         <div className="hidden lg:flex items-center justify-center space-x-3 text-center">
           <Truck />
           <span className="font-semibold text-base">
-            Local delivery from Faerie Glen. Free delivery within 5 km, or on orders over R1 500 in Pretoria &
-            Centurion. Nationwide courier available.
+            Local delivery from Faerie Glen. Free delivery on orders over R1 500 in Pretoria & Centurion. Nationwide
+            courier available.
           </span>
           <Link
             href="/delivery-info"
