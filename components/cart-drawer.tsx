@@ -236,7 +236,7 @@ export function CartDrawer() {
                 </div>
                 <p className="text-xs text-slate-600 mt-2">
                   {remainingForFreeDelivery > 0
-                    ? `You're ${formatPrice(remainingForFreeDelivery)} away from free delivery in Pretoria & Centurion on orders over R1 500.`
+                    ? `You're ${formatPrice(remainingForFreeDelivery)} away from free delivery in select areas of Pretoria & Centurion.`
                     : "Your order qualifies for free delivery in Pretoria & Centurion. Other areas charged at R5/km."}
                 </p>
               </div>
