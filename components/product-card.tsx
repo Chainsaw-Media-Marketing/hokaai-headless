@@ -7,6 +7,10 @@ import { Button } from "@/components/ui/button"
 import type { Product, ShopifyVariant } from "@/lib/types"
 import { addToCartAndHydrate } from "@/lib/cart-actions"
 import { trackMetaPixelEvent } from "@/lib/metaPixel"
+import { useCart } from "@/lib/cart-context"
+import { DeliveryCheckModal } from "@/components/delivery-check-modal"
+
+type PendingLines = Parameters<typeof addToCartAndHydrate>[0]["lines"]
 
 interface ProductCardProps {
   product: Product
@@ -97,6 +101,9 @@ export function ProductCard({
     return product.variants.find((v) => v.availableForSale) || product.variants[0]
   })
   const [isAdding, setIsAdding] = useState(false)
+  const { state } = useCart()
+  const [showDeliveryModal, setShowDeliveryModal] = useState(false)
+  const [pendingLines, setPendingLines] = useState<PendingLines | null>(null)
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-ZA", {
@@ -154,35 +161,64 @@ export function ProductCard({
     return null
   }
 
-  const handleAddToCart = async () => {
-    if (!selectedVariant?.id) return
-
+  const runAddToCart = async (lines: PendingLines) => {
     try {
       setIsAdding(true)
 
-      const value = Number.parseFloat(selectedVariant.price.amount)
-      const currency = selectedVariant.price.currencyCode || "ZAR"
+      if (selectedVariant) {
+        const value = Number.parseFloat(selectedVariant.price.amount)
+        const currency = selectedVariant.price.currencyCode || "ZAR"
 
-      trackMetaPixelEvent("AddToCart", {
-        content_ids: [selectedVariant.id],
-        content_type: "product",
-        value,
-        currency,
-        num_items: 1,
-      })
+        trackMetaPixelEvent("AddToCart", {
+          content_ids: [selectedVariant.id],
+          content_type: "product",
+          value,
+          currency,
+          num_items: 1,
+        })
+      }
 
-      await addToCartAndHydrate({
-        lines: [
-          {
-            variantId: selectedVariant.id,
-            quantity: 1,
-          },
-        ],
-      })
+      await addToCartAndHydrate({ lines })
     } catch (err) {
       console.error("[product-card] ADD ERR:", err)
     } finally {
       setIsAdding(false)
+    }
+  }
+
+  const handleAddToCart = async () => {
+    if (!selectedVariant?.id) return
+
+    const lines: PendingLines = [
+      {
+        variantId: selectedVariant.id,
+        quantity: 1,
+      },
+    ]
+
+    const needsVerification =
+      state.itemCount === 0 &&
+      typeof window !== "undefined" &&
+      !localStorage.getItem("hk_postal_verified")
+
+    if (needsVerification) {
+      setPendingLines(lines)
+      setShowDeliveryModal(true)
+      return
+    }
+
+    await runAddToCart(lines)
+  }
+
+  const resumePendingAdd = () => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("hk_postal_verified", "true")
+    }
+    setShowDeliveryModal(false)
+    const lines = pendingLines
+    setPendingLines(null)
+    if (lines) {
+      void runAddToCart(lines)
     }
   }
 
@@ -289,6 +325,12 @@ export function ProductCard({
           </Link>
         )}
       </div>
+
+      <DeliveryCheckModal
+        isOpen={showDeliveryModal}
+        onClose={resumePendingAdd}
+        onVerified={resumePendingAdd}
+      />
     </div>
   )
 }
