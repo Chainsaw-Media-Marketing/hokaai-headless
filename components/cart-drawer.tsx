@@ -93,7 +93,7 @@ export function CartDrawer() {
     return `R ${price.toFixed(2)}`
   }
 
-  const FREE_DELIVERY_THRESHOLD = 1000
+  const FREE_DELIVERY_THRESHOLD = 1500
   const remainingForFreeDelivery = Math.max(0, FREE_DELIVERY_THRESHOLD - state.total)
   const progressPercentage = Math.min(100, (state.total / FREE_DELIVERY_THRESHOLD) * 100)
 
@@ -236,7 +236,7 @@ export function CartDrawer() {
                 </div>
                 <p className="text-xs text-slate-600 mt-2">
                   {remainingForFreeDelivery > 0
-                    ? `You're ${formatPrice(remainingForFreeDelivery)} away from free delivery in Pretoria & Centurion on orders over R1 000.`
+                    ? `You're ${formatPrice(remainingForFreeDelivery)} away from free delivery in select areas of Pretoria & Centurion.`
                     : "Your order qualifies for free delivery in Pretoria & Centurion. Other areas charged at R5/km."}
                 </p>
               </div>

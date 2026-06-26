@@ -23,7 +23,7 @@ export function PromoBand() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-center gap-2 text-center lg:hidden">
           <Truck />
-          <span className="font-semibold text-sm">Free delivery Pta & Centurion</span>
+          <span className="font-semibold text-sm">Free delivery over R1 500 (Select Areas)</span>
           <Link href="/delivery-info" className="underline hover:no-underline whitespace-nowrap text-sm">
             Details
           </Link>
@@ -33,8 +33,8 @@ export function PromoBand() {
         <div className="hidden lg:flex items-center justify-center space-x-3 text-center">
           <Truck />
           <span className="font-semibold text-base">
-            Local delivery from Faerie Glen. Free delivery within 5 km, or on orders over R1 000 in Pretoria &
-            Centurion.
+            Local delivery from Faerie Glen. Free delivery on orders over R1 500 in select areas of Pretoria &
+            Centurion. Nationwide courier available.
           </span>
           <Link
             href="/delivery-info"
