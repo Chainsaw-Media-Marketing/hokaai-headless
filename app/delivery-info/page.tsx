@@ -36,8 +36,10 @@ export default function DeliveryInfoPage() {
             <section className="mb-12">
               <h2 className="text-2xl font-heading font-semibold text-brand-primary mb-6">Pretoria & Centurion</h2>
               <div className="bg-white p-6 rounded-lg border border-slate-200 space-y-4">
-                <p className="text-slate-700">Orders over R1 000 delivered free in the Pretoria & Centurion area.</p>
-                <p className="text-slate-700">Orders under R1 000 in Pretoria & Centurion are charged at R5 per km.</p>
+                <p className="text-slate-700">Orders over R1 500 delivered free in the Pretoria & Centurion area.</p>
+                <p className="text-slate-700">
+                  Orders under R1 500 in Pretoria & Centurion are charged at a flat rate of R50.
+                </p>
               </div>
             </section>
 
@@ -45,7 +47,10 @@ export default function DeliveryInfoPage() {
             <section className="mb-12">
               <h2 className="text-2xl font-heading font-semibold text-brand-primary mb-6">Other delivery areas</h2>
               <div className="bg-white p-6 rounded-lg border border-slate-200 space-y-4">
-                <p className="text-slate-700">Deliveries outside Pretoria & Centurion are charged at R5 per km.</p>
+                <p className="text-slate-700">
+                  Deliveries outside Pretoria & Centurion are shipped nationwide via express courier at a fixed flat
+                  rate of R200.
+                </p>
                 <p className="text-slate-700">
                   Final delivery cost is confirmed with you after checkout based on your address.
                 </p>
