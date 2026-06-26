@@ -6,7 +6,11 @@ import { Minus, ShoppingCart, Info } from "lucide-react"
 import { PlusIcon } from "@/components/icons/Plus"
 import type { Product, ShopifyVariant } from "@/lib/types"
 import { addToCartAndHydrate } from "@/lib/cart-actions"
+import { useCart } from "@/lib/cart-context"
+import { DeliveryCheckModal } from "@/components/delivery-check-modal"
 import { isBulkProduct } from "@/lib/product-flags"
+
+type PendingLines = Parameters<typeof addToCartAndHydrate>[0]["lines"]
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
 import { trackMetaPixelEvent } from "@/lib/metaPixel"
 
@@ -89,6 +93,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
   const [moisturePreference, setMoisturePreference] = useState<string>("")
   const [fatPreference, setFatPreference] = useState<string>("")
+
+  const { state } = useCart()
+  const [showDeliveryModal, setShowDeliveryModal] = useState(false)
+  const [pendingLines, setPendingLines] = useState<PendingLines | null>(null)
 
   useEffect(() => {
     const nextDefaultVariant = getDefaultVariantForProduct(product)
@@ -222,7 +230,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     })
   }, [product])
 
-  const handleAddToCart = async () => {
+  const runAddToCart = async (lines: PendingLines) => {
     if (!selectedVariant?.id) return
 
     try {
@@ -242,33 +250,62 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         num_items: quantity,
       })
 
-      const attributes: Array<{ key: string; value: string }> = []
-      if (isBulk && householdSize !== "not-specified") {
-        attributes.push({ key: "household_size", value: householdSize })
-      }
-      if (isHamper && specialRequests.trim().length > 0) {
-        attributes.push({ key: "special_requests", value: specialRequests.trim() })
-      }
-      if (isBiltong && moisturePreference) {
-        attributes.push({ key: "moisture_preference", value: moisturePreference })
-      }
-      if (isBiltong && fatPreference) {
-        attributes.push({ key: "fat_preference", value: fatPreference })
-      }
-
-      await addToCartAndHydrate({
-        lines: [
-          {
-            variantId: selectedVariant.id,
-            quantity,
-            attributes: attributes.length > 0 ? attributes : undefined,
-          },
-        ],
-      })
+      await addToCartAndHydrate({ lines })
     } catch (err) {
       console.error("[product-details] ADD ERR:", err)
     } finally {
       setIsAdding(false)
+    }
+  }
+
+  const handleAddToCart = async () => {
+    if (!selectedVariant?.id) return
+
+    const attributes: Array<{ key: string; value: string }> = []
+    if (isBulk && householdSize !== "not-specified") {
+      attributes.push({ key: "household_size", value: householdSize })
+    }
+    if (isHamper && specialRequests.trim().length > 0) {
+      attributes.push({ key: "special_requests", value: specialRequests.trim() })
+    }
+    if (isBiltong && moisturePreference) {
+      attributes.push({ key: "moisture_preference", value: moisturePreference })
+    }
+    if (isBiltong && fatPreference) {
+      attributes.push({ key: "fat_preference", value: fatPreference })
+    }
+
+    const lines: PendingLines = [
+      {
+        variantId: selectedVariant.id,
+        quantity,
+        attributes: attributes.length > 0 ? attributes : undefined,
+      },
+    ]
+
+    const needsVerification =
+      state.itemCount === 0 &&
+      typeof window !== "undefined" &&
+      !localStorage.getItem("hk_postal_verified")
+
+    if (needsVerification) {
+      setPendingLines(lines)
+      setShowDeliveryModal(true)
+      return
+    }
+
+    await runAddToCart(lines)
+  }
+
+  const resumePendingAdd = () => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("hk_postal_verified", "true")
+    }
+    setShowDeliveryModal(false)
+    const lines = pendingLines
+    setPendingLines(null)
+    if (lines) {
+      void runAddToCart(lines)
     }
   }
 
@@ -510,6 +547,12 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           <span className="text-sm font-semibold">Out of Stock</span>
         </div>
       )}
+
+      <DeliveryCheckModal
+        isOpen={showDeliveryModal}
+        onClose={resumePendingAdd}
+        onVerified={resumePendingAdd}
+      />
     </div>
   )
 }
