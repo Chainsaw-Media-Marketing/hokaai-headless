@@ -24,12 +24,25 @@ export default function DeliveryInfoPage() {
 
             {/* Section 2 - Pretoria & Centurion */}
             <section className="mb-12">
-              <h2 className="text-2xl font-heading font-semibold text-brand-primary mb-6">Pretoria & Centurion</h2>
+              <h2 className="text-2xl font-heading font-semibold text-brand-primary mb-6">
+                Pretoria & Centurion (Select Zones Only)
+              </h2>
               <div className="bg-white p-6 rounded-lg border border-slate-200 space-y-4">
                 <p className="text-slate-700">Orders over R1 500 delivered free in the Pretoria & Centurion area.</p>
                 <p className="text-slate-700">
                   Orders under R1 500 in Pretoria & Centurion are charged at a flat rate of R50.
                 </p>
+                <div className="mt-4 p-4 border rounded bg-opacity-10 text-sm">
+                  <p className="font-bold mb-2 text-xs uppercase tracking-wider">Eligible Local Postal Codes:</p>
+                  <p className="font-mono">
+                    0002 | 0022 | 0042 | 0043 | 0059 | 0060 | 0076 | 0081 | 0083 | 0084 <br />
+                    0101 | 0149 | 0154 | 0157 | 0169 | 0181 | 0182 | 0184 | 0186 | 1692
+                  </p>
+                  <p className="text-xs mt-3 italic opacity-80">
+                    *If your delivery postal code is not listed above, your order will automatically route to our
+                    Nationwide Courier rate of R200 at checkout.
+                  </p>
+                </div>
               </div>
             </section>
 
