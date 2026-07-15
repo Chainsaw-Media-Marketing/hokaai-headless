@@ -40,7 +40,7 @@ export default function DeliveryInfoPage() {
                   </p>
                   <p className="text-xs mt-3 italic opacity-80">
                     *If your delivery postal code is not listed above, your order will automatically route to our
-                    Nationwide Courier rate of R200 at checkout.
+                    Nationwide Courier rate of R350 at checkout.
                   </p>
                 </div>
               </div>
@@ -52,7 +52,7 @@ export default function DeliveryInfoPage() {
               <div className="bg-white p-6 rounded-lg border border-slate-200 space-y-4">
                 <p className="text-slate-700">
                   Deliveries outside Pretoria & Centurion are shipped nationwide via express courier at a fixed flat
-                  rate of R200.
+                  rate of R350.
                 </p>
               </div>
             </section>
