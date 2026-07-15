@@ -136,7 +136,7 @@ export function DeliveryCheckModal({ isOpen, onClose, onVerified }: DeliveryChec
             </h3>
             <p className="text-body text-slate-700 mb-6">
               You are outside our internal local delivery zone, but we&apos;ve got you covered. Your order will be
-              shipped fresh nationwide via express courier at a fixed flat rate of R200.
+              shipped fresh nationwide via express courier at a fixed flat rate of R350.
             </p>
             <Button size="lg" className="w-full" onClick={handleContinue}>
               Continue to Cart
