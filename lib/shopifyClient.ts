@@ -168,11 +168,60 @@ export async function addToCartClient(
  * Go to Shopify checkout
  * Redirects to stored checkoutUrl
  */
+function readCookie(name: string): string | null {
+  const prefix = `${name}=`
+  for (const part of document.cookie.split(";")) {
+    const trimmed = part.trim()
+    if (trimmed.startsWith(prefix)) {
+      const value = trimmed.slice(prefix.length)
+      return value ? decodeURIComponent(value) : null
+    }
+  }
+  return null
+}
+
+function buildTrackedCheckoutUrl(checkoutUrl: string): string {
+  try {
+    const url = new URL(checkoutUrl, window.location.origin)
+    const tracking: Record<string, string | null> = {
+      fbclid: new URLSearchParams(window.location.search).get("fbclid"),
+      _fbp: readCookie("_fbp"),
+      _fbc: readCookie("_fbc"),
+    }
+
+    let appended = false
+    for (const [key, value] of Object.entries(tracking)) {
+      if (value && !url.searchParams.has(key)) {
+        url.searchParams.set(key, value)
+        appended = true
+      }
+    }
+
+    return appended ? url.toString() : checkoutUrl
+  } catch (error) {
+    console.error("[Shopify Client] Failed to append Meta tracking params:", error)
+    return checkoutUrl
+  }
+}
+
 export function goToCheckout(checkoutUrl: string | null | undefined): void {
   if (!checkoutUrl) return
-  const target = typeof window !== "undefined" && window.top ? window.top : window
-  // same-tab, top-level navigation
-  target.location.href = checkoutUrl
+  if (typeof window === "undefined") return
+
+  let finalUrl = checkoutUrl
+  try {
+    finalUrl = buildTrackedCheckoutUrl(checkoutUrl)
+    const target = window.top ? window.top : window
+    // same-tab, top-level navigation
+    target.location.href = finalUrl
+  } catch (error) {
+    console.error("[Shopify Client] Checkout redirect failed, using raw URL:", error)
+    try {
+      ;(window.top ?? window).location.href = checkoutUrl
+    } catch {
+      window.location.href = checkoutUrl
+    }
+  }
 }
 
 /**
