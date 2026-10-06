@@ -4,9 +4,22 @@ import { useEffect, useState } from "react"
 import Script from "next/script"
 
 const STORAGE_KEY = "hk_cookie_consent"
+const FBCLID_STORAGE_KEY = "hk_fbclid"
 
 export function ConsentAnalytics() {
   const [enabled, setEnabled] = useState(false)
+
+  // Persist fbclid on initial load: client-side navigation drops it from the URL before checkout.
+  useEffect(() => {
+    try {
+      const fbclid = new URLSearchParams(window.location.search).get("fbclid")
+      if (fbclid) {
+        window.sessionStorage.setItem(FBCLID_STORAGE_KEY, fbclid)
+      }
+    } catch {
+      // sessionStorage can be unavailable (privacy mode, blocked storage); tracking is best-effort.
+    }
+  }, [])
 
   useEffect(() => {
     if (typeof window === "undefined") return

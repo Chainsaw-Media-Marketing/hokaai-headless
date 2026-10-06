@@ -183,8 +183,11 @@ function readCookie(name: string): string | null {
 function buildTrackedCheckoutUrl(checkoutUrl: string): string {
   try {
     const url = new URL(checkoutUrl, window.location.origin)
+    const fbclid =
+      new URLSearchParams(window.location.search).get("fbclid") ||
+      window.sessionStorage.getItem("hk_fbclid")
     const tracking: Record<string, string | null> = {
-      fbclid: new URLSearchParams(window.location.search).get("fbclid"),
+      fbclid,
       _fbp: readCookie("_fbp"),
       _fbc: readCookie("_fbc"),
     }
