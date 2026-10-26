@@ -8,6 +8,7 @@ import { ShopifyAutoWireInit } from "@/components/shopify-auto-wire-init"
 import { WhatsAppWidget } from "@/components/whatsapp-widget"
 import { CookieBar } from "@/components/cookie-bar"
 import { ConsentAnalytics } from "@/components/consent-analytics"
+import { Analytics } from "@vercel/analytics/next"
 
 const oswald = Oswald({
   subsets: ["latin"],
@@ -46,6 +47,7 @@ export default function RootLayout({
           <CookieBar />
           <ConsentAnalytics />
         </CartProvider>
+        <Analytics />
       </body>
     </html>
   )
