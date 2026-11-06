@@ -72,6 +72,15 @@ export function DeliCategoryGrid() {
           </Link>
         ))}
       </div>
+
+      <div className="hidden lg:flex justify-center mt-10">
+        <Link
+          href={mainDeliUrl}
+          className="btn-primary inline-flex items-center justify-center rounded-xl font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-success focus-visible:ring-offset-2 h-12 px-8 text-lg bg-brand-red hover:bg-brand-red/90 text-white"
+        >
+          Shop Deli & Biltong
+        </Link>
+      </div>
     </>
   )
 }
