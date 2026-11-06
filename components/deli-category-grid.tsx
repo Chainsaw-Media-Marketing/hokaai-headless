@@ -38,7 +38,7 @@ const deliCategories: DeliCategory[] = [
 ]
 
 export function DeliCategoryGrid() {
-  const mainDeliUrl = "/collections/deli-biltong"
+  const mainDeliUrl = "/collections/deli-biltong?department=deli-biltong"
 
   return (
     <>
