@@ -264,3 +264,11 @@
     display: none;
   }
 }
+
+@media (max-width: 1023.98px) {
+  body[data-sticky-atc] [data-floating-button] {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+  }
+}

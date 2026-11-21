@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Minus, ShoppingCart, Info } from "lucide-react"
 import { PlusIcon } from "@/components/icons/Plus"
@@ -9,6 +9,7 @@ import { addToCartAndHydrate } from "@/lib/cart-actions"
 import { useCart } from "@/lib/cart-context"
 import { DeliveryCheckModal } from "@/components/delivery-check-modal"
 import { isBulkProduct } from "@/lib/product-flags"
+import { ProductStickyBar } from "@/components/product-sticky-bar"
 
 type PendingLines = Parameters<typeof addToCartAndHydrate>[0]["lines"]
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
@@ -97,6 +98,43 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const { state } = useCart()
   const [showDeliveryModal, setShowDeliveryModal] = useState(false)
   const [pendingLines, setPendingLines] = useState<PendingLines | null>(null)
+
+  const addToCartRef = useRef<HTMLDivElement>(null)
+  const [stickyBarWanted, setStickyBarWanted] = useState(false)
+  const [cookieBannerShowing, setCookieBannerShowing] = useState(true)
+
+  useEffect(() => {
+    const target = addToCartRef.current
+    if (!target || typeof IntersectionObserver === "undefined") return
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setStickyBarWanted(!entry.isIntersecting && entry.boundingClientRect.top < 0)
+    })
+    observer.observe(target)
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    const readConsent = () => {
+      setCookieBannerShowing(!window.localStorage.getItem("hk_cookie_consent"))
+    }
+    readConsent()
+    window.addEventListener("hk-cookie-consent-change", readConsent)
+    return () => window.removeEventListener("hk-cookie-consent-change", readConsent)
+  }, [])
+
+  const stickyBarVisible = stickyBarWanted && !state.isOpen && !showDeliveryModal && !cookieBannerShowing
+
+  useEffect(() => {
+    if (stickyBarVisible) {
+      document.body.dataset.stickyAtc = "1"
+    } else {
+      delete document.body.dataset.stickyAtc
+    }
+    return () => {
+      delete document.body.dataset.stickyAtc
+    }
+  }, [stickyBarVisible])
 
   useEffect(() => {
     const nextDefaultVariant = getDefaultVariantForProduct(product)
@@ -515,7 +553,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       </div>
 
       {/* Action Buttons */}
-      <div className="order-9 lg:order-none space-y-4">
+      <div ref={addToCartRef} className="order-9 lg:order-none space-y-4">
         <Button
           size="lg"
           className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-semibold"
@@ -552,6 +590,16 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         isOpen={showDeliveryModal}
         onClose={resumePendingAdd}
         onVerified={resumePendingAdd}
+      />
+
+      <ProductStickyBar
+        visible={stickyBarVisible}
+        total={formatPrice(displayTotal)}
+        weightLabel={showVariantSelector ? selectedVariant?.title : undefined}
+        quantity={quantity}
+        onAddToCart={handleAddToCart}
+        disabled={!selectedVariant?.availableForSale || isAdding}
+        isAdding={isAdding}
       />
     </div>
   )
