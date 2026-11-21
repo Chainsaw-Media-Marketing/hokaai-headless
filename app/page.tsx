@@ -4,7 +4,6 @@ import { HeroBanner } from "@/components/hero-banner"
 import { DeliCategoryGrid } from "@/components/deli-category-grid"
 import { OccasionTiles } from "@/components/occasion-tiles"
 import { PromoBand } from "@/components/promo-band"
-import { NewsletterManager } from "@/components/newsletter-popup"
 import { TestimonialCarousel } from "@/components/testimonial-carousel"
 import { WavyDivider } from "@/components/wavy-divider"
 import { sampleReviews, occasionTags } from "@/lib/data"
@@ -75,8 +74,6 @@ export default function HomePage() {
       </main>
 
       <Footer />
-
-      <NewsletterManager />
     </div>
   )
 }
