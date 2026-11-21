@@ -6,6 +6,7 @@ import { OccasionTiles } from "@/components/occasion-tiles"
 import { PromoBand } from "@/components/promo-band"
 import { TestimonialCarousel } from "@/components/testimonial-carousel"
 import { WavyDivider } from "@/components/wavy-divider"
+import { PostalCodeCheck } from "@/components/postal-code-check"
 import { sampleReviews, occasionTags } from "@/lib/data"
 
 export default function HomePage() {
@@ -55,6 +56,21 @@ export default function HomePage() {
                 </p>
               </div>
               <DeliCategoryGrid />
+            </div>
+          </div>
+        </section>
+
+        {/* Postal Code Delivery Check */}
+        <section className="py-8 lg:py-10 section-alt" aria-labelledby="delivery-check-heading">
+          <div className="container mx-auto px-6 lg:px-8">
+            <div className="max-w-xl mx-auto text-center">
+              <h2 id="delivery-check-heading" className="text-h2 max-sm:text-2xl text-brand-primary mb-2">
+                Do we deliver to you?
+              </h2>
+              <p className="text-body text-slate-700 mb-4">
+                Check your postal code for local delivery in Pretoria & Centurion.
+              </p>
+              <PostalCodeCheck variant="section" />
             </div>
           </div>
         </section>
