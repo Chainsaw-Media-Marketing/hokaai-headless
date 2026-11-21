@@ -8,7 +8,6 @@ import type { Product, ShopifyVariant } from "@/lib/types"
 import { addToCartAndHydrate } from "@/lib/cart-actions"
 import { trackMetaPixelEvent } from "@/lib/metaPixel"
 import { useCart } from "@/lib/cart-context"
-import { DeliveryCheckModal } from "@/components/delivery-check-modal"
 
 type PendingLines = Parameters<typeof addToCartAndHydrate>[0]["lines"]
 
@@ -102,8 +101,6 @@ export function ProductCard({
   })
   const [isAdding, setIsAdding] = useState(false)
   const { state } = useCart()
-  const [showDeliveryModal, setShowDeliveryModal] = useState(false)
-  const [pendingLines, setPendingLines] = useState<PendingLines | null>(null)
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-ZA", {
@@ -196,30 +193,7 @@ export function ProductCard({
       },
     ]
 
-    const needsVerification =
-      state.itemCount === 0 &&
-      typeof window !== "undefined" &&
-      !localStorage.getItem("hk_postal_verified")
-
-    if (needsVerification) {
-      setPendingLines(lines)
-      setShowDeliveryModal(true)
-      return
-    }
-
     await runAddToCart(lines)
-  }
-
-  const resumePendingAdd = () => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("hk_postal_verified", "true")
-    }
-    setShowDeliveryModal(false)
-    const lines = pendingLines
-    setPendingLines(null)
-    if (lines) {
-      void runAddToCart(lines)
-    }
   }
 
   return (
@@ -325,12 +299,6 @@ export function ProductCard({
           </Link>
         )}
       </div>
-
-      <DeliveryCheckModal
-        isOpen={showDeliveryModal}
-        onClose={resumePendingAdd}
-        onVerified={resumePendingAdd}
-      />
     </div>
   )
 }

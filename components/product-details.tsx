@@ -7,7 +7,6 @@ import { PlusIcon } from "@/components/icons/Plus"
 import type { Product, ShopifyVariant } from "@/lib/types"
 import { addToCartAndHydrate } from "@/lib/cart-actions"
 import { useCart } from "@/lib/cart-context"
-import { DeliveryCheckModal } from "@/components/delivery-check-modal"
 import { isBulkProduct } from "@/lib/product-flags"
 import { ProductStickyBar } from "@/components/product-sticky-bar"
 
@@ -96,8 +95,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const [fatPreference, setFatPreference] = useState<string>("")
 
   const { state } = useCart()
-  const [showDeliveryModal, setShowDeliveryModal] = useState(false)
-  const [pendingLines, setPendingLines] = useState<PendingLines | null>(null)
 
   const addToCartRef = useRef<HTMLDivElement>(null)
   const [stickyBarWanted, setStickyBarWanted] = useState(false)
@@ -123,7 +120,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     return () => window.removeEventListener("hk-cookie-consent-change", readConsent)
   }, [])
 
-  const stickyBarVisible = stickyBarWanted && !state.isOpen && !showDeliveryModal && !cookieBannerShowing
+  const stickyBarVisible = stickyBarWanted && !state.isOpen && !cookieBannerShowing
 
   useEffect(() => {
     if (stickyBarVisible) {
@@ -321,30 +318,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       },
     ]
 
-    const needsVerification =
-      state.itemCount === 0 &&
-      typeof window !== "undefined" &&
-      !localStorage.getItem("hk_postal_verified")
-
-    if (needsVerification) {
-      setPendingLines(lines)
-      setShowDeliveryModal(true)
-      return
-    }
-
     await runAddToCart(lines)
-  }
-
-  const resumePendingAdd = () => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("hk_postal_verified", "true")
-    }
-    setShowDeliveryModal(false)
-    const lines = pendingLines
-    setPendingLines(null)
-    if (lines) {
-      void runAddToCart(lines)
-    }
   }
 
   return (
@@ -585,12 +559,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           <span className="text-sm font-semibold">Out of Stock</span>
         </div>
       )}
-
-      <DeliveryCheckModal
-        isOpen={showDeliveryModal}
-        onClose={resumePendingAdd}
-        onVerified={resumePendingAdd}
-      />
 
       <ProductStickyBar
         visible={stickyBarVisible}
