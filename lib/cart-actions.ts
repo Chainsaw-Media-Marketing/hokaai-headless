@@ -52,11 +52,12 @@ export async function addToCartAndHydrate(input: AddToCartInput): Promise<void> 
       if (payload.checkoutUrl) {
         window.localStorage.setItem("hk_shopify_checkout_url", payload.checkoutUrl)
       }
-      window.dispatchEvent(new CustomEvent("cart:hydrate", { detail: payload }))
+      const hydratePayload = { ...payload, openDrawer: true }
+      window.dispatchEvent(new CustomEvent("cart:hydrate", { detail: hydratePayload }))
 
       // Hard-wired hydrator
       if ((window as any).__HK_CART_HYDRATE__) {
-        ;(window as any).__HK_CART_HYDRATE__(payload)
+        ;(window as any).__HK_CART_HYDRATE__(hydratePayload)
       }
     }
 
