@@ -11,6 +11,7 @@ interface PostalCodeCheckProps {
   variant: PostalCodeCheckVariant
   autoFocus?: boolean
   onDone?: (result: DeliveryCheck) => void
+  onCancel?: () => void
 }
 
 const INVALID_MESSAGE = "Please enter a 4-digit postal code."
@@ -21,7 +22,7 @@ export function getDeliveryResultMessage(check: DeliveryCheck) {
     : `${check.code} is outside our local area: R350 courier. Collection in store is free.`
 }
 
-export function PostalCodeCheck({ variant, autoFocus = false, onDone }: PostalCodeCheckProps) {
+export function PostalCodeCheck({ variant, autoFocus = false, onDone, onCancel }: PostalCodeCheckProps) {
   const { status, check, save } = useDeliveryCheck()
   const [value, setValue] = useState("")
   const [error, setError] = useState<string | null>(null)
@@ -114,8 +115,9 @@ export function PostalCodeCheck({ variant, autoFocus = false, onDone }: PostalCo
             aria-invalid={error ? "true" : undefined}
             aria-describedby={messageId}
             className={cn(
-              "w-24 rounded-md border border-slate-300 bg-white px-3 text-slate-900 tabular-nums placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:border-slate-500",
-              isCart ? "h-8 text-xs" : "h-9 text-sm",
+              "rounded-md border border-slate-300 bg-white px-3 text-slate-900 tabular-nums placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:border-slate-500",
+              isSection ? "w-[120px]" : "w-24",
+              isCart ? "h-10 text-xs" : "h-11 text-sm lg:h-9",
               error && "border-red-700",
             )}
           />
@@ -123,11 +125,20 @@ export function PostalCodeCheck({ variant, autoFocus = false, onDone }: PostalCo
             type="submit"
             className={cn(
               "rounded-md bg-brand-primary font-semibold text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2",
-              isCart ? "h-8 px-3 text-xs" : "h-9 px-4 text-sm",
+              isCart ? "h-10 px-3 text-xs" : "h-11 px-4 text-sm lg:h-9",
             )}
           >
             Check
           </button>
+          {isCart && onCancel && (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="h-10 px-1 text-xs font-semibold text-slate-700 underline underline-offset-4 hover:opacity-80"
+            >
+              Cancel
+            </button>
+          )}
         </form>
       )}
 

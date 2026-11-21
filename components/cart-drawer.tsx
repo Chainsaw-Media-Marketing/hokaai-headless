@@ -255,6 +255,7 @@ export function CartDrawer() {
                         setPostalCheckOpen(false)
                         setPostalCheckAnnouncement(getDeliveryResultMessage(result))
                       }}
+                      onCancel={() => setPostalCheckOpen(false)}
                     />
                   </div>
                 ) : (

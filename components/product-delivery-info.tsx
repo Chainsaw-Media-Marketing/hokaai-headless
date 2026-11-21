@@ -23,7 +23,7 @@ export function ProductDeliveryInfo() {
       <Accordion type="single" collapsible>
         <AccordionItem value="delivery-info" className="group border-b-0">
           <div className="group-data-[state=open]:mb-4 lg:mb-4">
-            <div className="flex items-center gap-3 [&>h3]:flex-1 [&>h3]:min-w-max">
+            <div className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-3 lg:[&>h3]:flex-1 [&>h3]:min-w-max">
               <AccordionTrigger className="py-0 items-center rounded-none font-heading font-semibold text-lg text-brand-primary hover:no-underline cursor-pointer lg:cursor-default lg:pointer-events-none lg:[&>svg]:hidden">
                 Delivery Information
               </AccordionTrigger>
@@ -33,7 +33,7 @@ export function ProductDeliveryInfo() {
                 aria-expanded={checkOpen}
                 aria-controls={checkOpen ? checkSlotId : undefined}
                 className={cn(
-                  "min-w-0 text-right text-xs font-semibold text-brand-primary hover:opacity-80",
+                  "self-start whitespace-nowrap text-left text-xs font-semibold text-brand-primary hover:opacity-80 lg:self-auto lg:min-w-0 lg:whitespace-normal lg:text-right",
                   status === "unknown" && "invisible",
                 )}
               >
