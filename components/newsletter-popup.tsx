@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
+import { useCart } from "@/lib/cart-context"
 
 const Mail = ({ className }: { className?: string }) => (
   <svg className={className} fill="currentColor" viewBox="0 0 24 24">
@@ -127,11 +128,18 @@ export function NewsletterPopup({ onSignupComplete, onClose }: NewsletterPopupPr
 }
 
 export function NewsletterFloatingButton({ onClick }: { onClick: () => void }) {
+  const { state } = useCart()
+  const isCartOpen = state.isOpen
+
   return (
     <button
       onClick={onClick}
       data-floating-button="newsletter"
-      className="fixed bottom-[76px] right-4 w-12 h-12 lg:bottom-[92px] lg:right-6 lg:w-auto lg:h-auto bg-brand-red hover:bg-red-700 text-white p-3 lg:p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-105 z-50 flex items-center justify-center"
+      aria-hidden={isCartOpen ? true : undefined}
+      tabIndex={isCartOpen ? -1 : undefined}
+      className={`fixed bottom-[76px] right-4 w-12 h-12 lg:bottom-[92px] lg:right-6 lg:w-auto lg:h-auto bg-brand-red hover:bg-red-700 text-white p-3 lg:p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-105 z-50 flex items-center justify-center ${
+        isCartOpen ? "opacity-0 pointer-events-none" : ""
+      }`}
       aria-label="Subscribe to newsletter"
     >
       <Mail className="h-6 w-6" />

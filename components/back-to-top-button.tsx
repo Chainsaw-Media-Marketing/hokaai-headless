@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useCart } from "@/lib/cart-context"
 
 const ChevronUp = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -11,6 +12,8 @@ const ChevronUp = ({ className }: { className?: string }) => (
 export function BackToTopButton() {
   const [isVisible, setIsVisible] = useState(false)
   const [newsletterVisible, setNewsletterVisible] = useState(false)
+  const { state } = useCart()
+  const isCartOpen = state.isOpen
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -53,9 +56,11 @@ export function BackToTopButton() {
     <button
       onClick={scrollToTop}
       data-floating-button="back-to-top"
-      className={`fixed right-4 w-12 h-12 lg:bottom-[92px] lg:right-6 lg:w-auto lg:h-auto bg-brand-primary hover:bg-slate-800 text-white p-3 lg:p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-105 z-50 flex items-center justify-center ${
-        newsletterVisible ? "bottom-[136px]" : "bottom-[76px]"
-      }`}
+      aria-hidden={isCartOpen ? true : undefined}
+      tabIndex={isCartOpen ? -1 : undefined}
+      className={`fixed right-4 w-12 h-12 lg:right-6 lg:w-auto lg:h-auto bg-brand-primary hover:bg-slate-800 text-white p-3 lg:p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-105 z-50 flex items-center justify-center ${
+        newsletterVisible ? "bottom-[136px] lg:bottom-[160px]" : "bottom-[76px] lg:bottom-[92px]"
+      } ${isCartOpen ? "opacity-0 pointer-events-none" : ""}`}
       aria-label="Back to top"
     >
       <ChevronUp className="h-6 w-6" />
