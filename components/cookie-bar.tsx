@@ -76,7 +76,7 @@ export function CookieBar() {
     <div role="region" aria-label="Cookie notice" className="fixed inset-x-0 bottom-0 z-40">
       <div className="mx-auto max-w-6xl px-4 pb-4 lg:pr-24">
         <div className="relative rounded-xl bg-neutral-900/95 text-neutral-100 shadow-lg ring-1 ring-black/40">
-          <div className="flex flex-col gap-2 p-3 sm:flex-row sm:items-center sm:gap-4 sm:p-4">
+          <div className="flex flex-col gap-2 px-3 pt-3 pb-1.5 sm:flex-row sm:items-center sm:gap-4 sm:px-4 sm:py-2">
             <p className="pr-10 text-xs leading-snug text-neutral-300 sm:flex-1 sm:pr-0">
               We use cookies to improve your shopping and understand how our site is used. By continuing to browse, you
               accept cookies.{" "}
@@ -90,7 +90,7 @@ export function CookieBar() {
               </a>
             </p>
 
-            <div className="flex w-full flex-col items-stretch sm:w-auto sm:shrink-0 sm:items-center">
+            <div className="flex w-full flex-col items-stretch gap-1 sm:w-auto sm:shrink-0 sm:items-center">
               <button
                 type="button"
                 onClick={() => handleChoice("accepted_all")}
@@ -101,7 +101,7 @@ export function CookieBar() {
               <button
                 type="button"
                 onClick={() => handleChoice("essential_only")}
-                className="inline-flex min-h-11 items-center justify-center self-center px-2 text-xs text-neutral-200 underline underline-offset-2 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                className="inline-flex min-h-8 items-center justify-center self-center px-2 text-xs text-neutral-200 underline underline-offset-2 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
               >
                 Only essential
               </button>
