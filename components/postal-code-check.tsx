@@ -25,7 +25,7 @@ export function PostalCodeCheck({ variant, autoFocus = false, onDone }: PostalCo
   const { status, check, save } = useDeliveryCheck()
   const [value, setValue] = useState("")
   const [error, setError] = useState<string | null>(null)
-  const [submitted, setSubmitted] = useState<DeliveryCheck | null>(null)
+  const [hasSubmitted, setHasSubmitted] = useState(false)
   const [editing, setEditing] = useState(false)
   const [focusRequest, setFocusRequest] = useState(autoFocus ? 1 : 0)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -42,7 +42,9 @@ export function PostalCodeCheck({ variant, autoFocus = false, onDone }: PostalCo
         ? check
         : null
       : variant === "header"
-        ? submitted
+        ? hasSubmitted && status === "checked"
+          ? check
+          : null
         : null
 
   const isCart = variant === "cart"
@@ -57,7 +59,7 @@ export function PostalCodeCheck({ variant, autoFocus = false, onDone }: PostalCo
     }
     setError(null)
     const next = save(value)
-    setSubmitted(next)
+    setHasSubmitted(true)
     setEditing(false)
     setValue("")
     onDone?.(next)
