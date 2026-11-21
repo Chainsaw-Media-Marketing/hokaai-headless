@@ -1,5 +1,7 @@
 "use client"
 
+import { useCart } from "@/lib/cart-context"
+
 interface WhatsAppFabProps {
   onClick: () => void
 }
@@ -11,14 +13,21 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 )
 
 export function WhatsAppFab({ onClick }: WhatsAppFabProps) {
+  const { state } = useCart()
+  const isCartOpen = state.isOpen
+
   return (
     <button
       onClick={onClick}
       data-floating-button="whatsapp"
-      className="fixed bottom-4 right-4 w-12 h-12 lg:w-14 lg:h-14 lg:bottom-6 lg:right-6 bg-[#25D366] hover:bg-[#1DA851] text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 z-50 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-2"
+      aria-hidden={isCartOpen ? true : undefined}
+      tabIndex={isCartOpen ? -1 : undefined}
+      className={`fixed bottom-4 right-4 w-11 h-11 lg:w-14 lg:h-14 lg:bottom-6 lg:right-6 bg-[#25D366] hover:bg-[#1DA851] text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 z-50 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-2 ${
+        isCartOpen ? "opacity-0 pointer-events-none" : ""
+      }`}
       aria-label="Chat on WhatsApp"
     >
-      <WhatsAppIcon className="h-6 w-6 lg:h-7 lg:w-7" />
+      <WhatsAppIcon className="h-[22px] w-[22px] lg:h-7 lg:w-7" />
     </button>
   )
 }
