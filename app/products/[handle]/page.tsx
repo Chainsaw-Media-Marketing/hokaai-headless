@@ -180,10 +180,10 @@ export default async function ProductPage(props: { params: Promise<{ handle: str
     <div className="min-h-screen">
       <Header />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-4 lg:py-8">
         <ProductBreadcrumb />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-12 mb-16">
           {/* Product Gallery */}
           <ProductGallery product={product} />
 
