@@ -1,16 +1,58 @@
 "use client"
 
 import Link from "next/link"
+import { useId, useState } from "react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { PostalCodeCheck } from "@/components/postal-code-check"
+import { useDeliveryCheck } from "@/lib/use-delivery-check"
+import { cn } from "@/lib/utils"
 
 export function ProductDeliveryInfo() {
+  const { status, check } = useDeliveryCheck()
+  const [checkOpen, setCheckOpen] = useState(false)
+  const [checkKey, setCheckKey] = useState(0)
+  const checkSlotId = useId()
+
+  const openCheck = () => {
+    setCheckOpen(true)
+    setCheckKey((key) => key + 1)
+  }
+
   return (
     <div className="bg-slate-50 rounded-2xl p-6 mt-12">
       <Accordion type="single" collapsible>
         <AccordionItem value="delivery-info" className="group border-b-0">
-          <AccordionTrigger className="py-0 items-center rounded-none font-heading font-semibold text-lg text-brand-primary hover:no-underline cursor-pointer data-[state=open]:mb-4 lg:mb-4 lg:cursor-default lg:pointer-events-none lg:[&>svg]:hidden">
-            Delivery Information
-          </AccordionTrigger>
+          <div className="group-data-[state=open]:mb-4 lg:mb-4">
+            <div className="flex items-center gap-3 [&>h3]:flex-1 [&>h3]:min-w-max">
+              <AccordionTrigger className="py-0 items-center rounded-none font-heading font-semibold text-lg text-brand-primary hover:no-underline cursor-pointer lg:cursor-default lg:pointer-events-none lg:[&>svg]:hidden">
+                Delivery Information
+              </AccordionTrigger>
+              <button
+                type="button"
+                onClick={openCheck}
+                aria-expanded={checkOpen}
+                aria-controls={checkOpen ? checkSlotId : undefined}
+                className={cn(
+                  "min-w-0 text-right text-xs font-semibold text-brand-primary hover:opacity-80",
+                  status === "unknown" && "invisible",
+                )}
+              >
+                {status === "checked" && check ? (
+                  <>
+                    {`Delivering to ${check.code}${check.local ? " \u2713" : ""} \u00b7 `}
+                    <span className="underline underline-offset-4">change</span>
+                  </>
+                ) : (
+                  <span className="underline underline-offset-4">Check your area</span>
+                )}
+              </button>
+            </div>
+            {checkOpen && (
+              <div id={checkSlotId} className="mt-3">
+                <PostalCodeCheck key={checkKey} variant="header" autoFocus />
+              </div>
+            )}
+          </div>
           <AccordionContent
             forceMount
             className="pb-0 text-base group-data-[state=closed]:hidden lg:group-data-[state=closed]:block"

@@ -12,6 +12,8 @@ import { refreshAndGetCheckoutUrl, goToCheckout } from "@/lib/shopifyClient"
 import { PlusIcon } from "@/components/icons/Plus"
 import { updateCartQuantityAndHydrate, removeCartLineAndHydrate, clearCartAndHydrate } from "@/lib/cart-actions"
 import { trackMetaPixelEvent } from "@/lib/metaPixel"
+import { PostalCodeCheck, getDeliveryResultMessage } from "@/components/postal-code-check"
+import { useDeliveryCheck } from "@/lib/use-delivery-check"
 
 const XIcon = () => (
   <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -52,6 +54,9 @@ export function CartDrawer() {
   const [upsellProducts, setUpsellProducts] = useState<Product[]>([])
   const [checkoutBusy, setCheckoutBusy] = useState(false)
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
+  const { status: deliveryCheckStatus, check: storedDeliveryCheck } = useDeliveryCheck()
+  const [postalCheckOpen, setPostalCheckOpen] = useState(false)
+  const [postalCheckAnnouncement, setPostalCheckAnnouncement] = useState("")
   const router = useRouter()
 
   // Diagnostic logging to track cart state updates
@@ -96,6 +101,9 @@ export function CartDrawer() {
   const FREE_DELIVERY_THRESHOLD = 1500
   const remainingForFreeDelivery = Math.max(0, FREE_DELIVERY_THRESHOLD - state.total)
   const progressPercentage = Math.min(100, (state.total / FREE_DELIVERY_THRESHOLD) * 100)
+
+  const deliveryCheck = deliveryCheckStatus === "checked" ? storedDeliveryCheck : null
+  const isOutsideDeliveryArea = deliveryCheck !== null && !deliveryCheck.local
 
   const navTo = (url: string) => {
     try {
@@ -217,27 +225,62 @@ export function CartDrawer() {
             <div className="p-6 space-y-6">
               {/* Free Delivery Progress */}
               <div className="bg-slate-50 rounded-xl p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-2">
-                    <div className="text-brand-red">
-                      <TruckIcon />
+                {!isOutsideDeliveryArea && (
+                  <>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center space-x-2">
+                        <div className="text-brand-red">
+                          <TruckIcon />
+                        </div>
+                        <span className="text-sm font-semibold text-brand-primary">Free Delivery</span>
+                      </div>
+                      <span className="text-sm text-slate-600">
+                        {remainingForFreeDelivery > 0 ? `${formatPrice(remainingForFreeDelivery)} to go` : "Qualified!"}
+                      </span>
                     </div>
-                    <span className="text-sm font-semibold text-brand-primary">Free Delivery</span>
+                    <div className="w-full bg-slate-200 rounded-full h-2">
+                      <div
+                        className="bg-brand-success h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${progressPercentage}%` }}
+                      />
+                    </div>
+                  </>
+                )}
+                {postalCheckOpen ? (
+                  <div className={isOutsideDeliveryArea ? undefined : "mt-2"}>
+                    <PostalCodeCheck
+                      variant="cart"
+                      autoFocus
+                      onDone={(result) => {
+                        setPostalCheckOpen(false)
+                        setPostalCheckAnnouncement(getDeliveryResultMessage(result))
+                      }}
+                    />
                   </div>
-                  <span className="text-sm text-slate-600">
-                    {remainingForFreeDelivery > 0 ? `${formatPrice(remainingForFreeDelivery)} to go` : "Qualified!"}
-                  </span>
-                </div>
-                <div className="w-full bg-slate-200 rounded-full h-2">
-                  <div
-                    className="bg-brand-success h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${progressPercentage}%` }}
-                  />
-                </div>
-                <p className="text-xs text-slate-600 mt-2">
-                  {remainingForFreeDelivery > 0
-                    ? `You're ${formatPrice(remainingForFreeDelivery)} away from free delivery in select areas of Pretoria & Centurion.`
-                    : "Your order qualifies for free delivery in selected areas of Pretoria & Centurion. Other areas: R350 courier."}
+                ) : (
+                  <p className={`text-xs text-slate-600${isOutsideDeliveryArea ? "" : " mt-2"}`}>
+                    {deliveryCheck
+                      ? isOutsideDeliveryArea
+                        ? `Delivering to ${deliveryCheck.code}: R350 courier. Collection in store is free. · `
+                        : remainingForFreeDelivery > 0
+                          ? `Delivering to ${deliveryCheck.code}: R50, or free over R1 500 · `
+                          : `You qualify for free delivery. Delivering to ${deliveryCheck.code}. · `
+                      : `${
+                          remainingForFreeDelivery > 0
+                            ? `You're ${formatPrice(remainingForFreeDelivery)} away from free delivery in select areas of Pretoria & Centurion.`
+                            : "Your order qualifies for free delivery in selected areas of Pretoria & Centurion. Other areas: R350 courier."
+                        } `}
+                    <button
+                      type="button"
+                      onClick={() => setPostalCheckOpen(true)}
+                      className="font-semibold text-brand-primary underline underline-offset-2 hover:opacity-80"
+                    >
+                      {deliveryCheck ? "change" : "Check your postal code"}
+                    </button>
+                  </p>
+                )}
+                <p className="sr-only" aria-live="polite">
+                  {postalCheckAnnouncement}
                 </p>
               </div>
 
