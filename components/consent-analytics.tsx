@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Script from "next/script"
 
 const STORAGE_KEY = "hk_cookie_consent"
@@ -8,6 +8,8 @@ const FBCLID_STORAGE_KEY = "hk_fbclid"
 
 export function ConsentAnalytics() {
   const [enabled, setEnabled] = useState(false)
+  const [pixelMounted, setPixelMounted] = useState(false)
+  const revokedRef = useRef(false)
 
   // Persist fbclid on initial load: client-side navigation drops it from the URL before checkout.
   useEffect(() => {
@@ -24,9 +26,18 @@ export function ConsentAnalytics() {
   useEffect(() => {
     if (typeof window === "undefined") return
 
+    const fbq = () => (window as Window & { fbq?: (...args: unknown[]) => void }).fbq
+
+    const enable = () => {
+      setEnabled(true)
+      setPixelMounted(true)
+    }
+
     const checkConsent = () => {
       const value = window.localStorage.getItem(STORAGE_KEY)
-      setEnabled(value === "accepted_all")
+      if (value !== "essential_only") {
+        enable()
+      }
     }
 
     checkConsent()
@@ -35,8 +46,17 @@ export function ConsentAnalytics() {
       const custom = event as CustomEvent
       const consent = custom.detail?.consent
       if (consent === "accepted_all") {
-        setEnabled(true)
+        if (revokedRef.current) {
+          fbq()?.("consent", "grant")
+          revokedRef.current = false
+        }
+        enable()
       } else if (consent === "essential_only") {
+        const pixel = fbq()
+        if (pixel) {
+          pixel("consent", "revoke")
+          revokedRef.current = true
+        }
         setEnabled(false)
       }
     }
@@ -45,7 +65,9 @@ export function ConsentAnalytics() {
     return () => window.removeEventListener("hk-cookie-consent-change", handler)
   }, [])
 
-  if (!enabled) return null
+  // Once mounted, the pixel Script stays mounted so it never re-runs init/PageView in this visit;
+  // after "essential_only", consent is revoked via fbq instead.
+  if (!enabled && !pixelMounted) return null
 
   return (
     <>
