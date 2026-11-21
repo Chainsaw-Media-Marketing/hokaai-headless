@@ -59,6 +59,7 @@ type CartAction =
           weight?: number
           weightUnit?: string
         }>
+        openDrawer?: boolean
       }
     }
 
@@ -272,7 +273,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         itemCount,
         lineCount,
         items,
-        isOpen: items.length > 0 ? true : state.isOpen,
+        isOpen: p.openDrawer ? true : state.isOpen,
       }
 
       if (typeof window !== "undefined") {
