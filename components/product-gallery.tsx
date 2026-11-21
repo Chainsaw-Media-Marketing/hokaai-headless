@@ -17,12 +17,13 @@ export function ProductGallery({ product }: ProductGalleryProps) {
   return (
     <div className="space-y-4">
       {/* Main Image */}
-      <div className="aspect-square relative overflow-hidden rounded-2xl bg-slate-100">
+      <div className="aspect-square relative overflow-hidden rounded-2xl w-60 mx-auto bg-white lg:w-auto lg:mx-0 lg:bg-slate-100">
         <Image
           src={images[selectedImage] || "/placeholder.svg"}
           alt={product.title}
           fill
-          className="object-cover"
+          sizes="(min-width: 1024px) 50vw, 240px"
+          className="object-contain lg:object-cover"
           priority
         />
       </div>

@@ -310,10 +310,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-2 lg:block lg:space-y-6">
       {/* Title and Occasion Chips */}
-      <div>
-        <div className="mb-3">
+      <div className="contents lg:block">
+        <div className="order-10 lg:order-none lg:mb-3">
           {getOccasionChips(product.tags).map((tag) => (
             <span
               key={tag}
@@ -323,28 +323,28 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             </span>
           ))}
         </div>
-        <h1 className="text-h2 font-heading font-bold text-brand-primary mb-4">{product.title}</h1>
+        <h1 className="order-1 lg:order-none text-h2 font-heading font-bold text-brand-primary lg:mb-4">{product.title}</h1>
       </div>
 
       {/* Price */}
-      <div className="border-b border-slate-200 pb-6">
-        <div className="text-3xl font-bold text-brand-primary mb-2">
+      <div className="contents lg:block border-b border-slate-200 pb-6">
+        <div className="order-2 lg:order-none text-3xl font-bold text-brand-primary lg:mb-2">
           From {formatPrice(product.minVariantPrice || product.pricePerKg)}
         </div>
         {product.price_per_kg && (
-          <div className="text-lg text-slate-700 mb-2">Price per kg: {formatPrice(product.price_per_kg)}</div>
+          <div className="order-3 lg:order-none text-base lg:text-lg text-slate-700 lg:mb-2">Price per kg: {formatPrice(product.price_per_kg)}</div>
         )}
         <div
-          className="text-slate-700 prose prose-sm max-w-none"
+          className="order-11 lg:order-none text-slate-700 prose prose-sm max-w-none"
           dangerouslySetInnerHTML={{ __html: product.description || "" }}
         />
       </div>
 
       {/* Selectors */}
-      <div className="space-y-6">
+      <div className="contents lg:block lg:space-y-6">
         {showVariantSelector && (
-          <div>
-            <label className="text-label text-slate-700 mb-3 block">Weight</label>
+          <div className="order-5 lg:order-none">
+            <label className="text-label text-slate-700 mb-1 lg:mb-3 block">Weight</label>
             <div className="flex-1">
               <select
                 value={selectedVariant?.id || ""}
@@ -352,7 +352,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   const variant = product.variants?.find((v) => v.id === e.target.value)
                   if (variant) setSelectedVariant(variant)
                 }}
-                className="w-full px-4 py-3 border border-slate-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-success"
+                className="w-full px-4 py-2.5 lg:py-3 border border-slate-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-success"
               >
                 {product.variants?.map((variant) => (
                   <option key={variant.id} value={variant.id} disabled={!variant.availableForSale}>
@@ -366,12 +366,12 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         )}
 
         {/* Quantity Selector */}
-        <div>
-          <label className="text-label text-slate-700 mb-3 block">Quantity (# of packs)</label>
+        <div className="order-6 lg:order-none">
+          <label className="text-label text-slate-700 mb-1 lg:mb-3 block">Quantity (# of packs)</label>
           <div className="flex items-center space-x-4">
             <button
               onClick={() => handleQuantityChange(quantity - 1)}
-              className="p-2 border border-slate-400 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-3.5 lg:p-2 border border-slate-400 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={quantity <= 1}
             >
               <Minus className="h-4 w-4" />
@@ -381,7 +381,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 type="number"
                 value={quantity}
                 onChange={(e) => handleQuantityChange(Number(e.target.value))}
-                className="w-full px-4 py-3 border border-slate-400 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-brand-success"
+                className="w-full px-4 py-2.5 lg:py-3 border border-slate-400 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-brand-success"
                 min="1"
                 max="20"
               />
@@ -389,7 +389,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             {/* DO NOT MODIFY: using approved + icon component */}
             <button
               onClick={() => handleQuantityChange(quantity + 1)}
-              className="p-2 border border-slate-400 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-3.5 lg:p-2 border border-slate-400 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={quantity >= 20}
             >
               <PlusIcon className="h-4 w-4" />
@@ -399,7 +399,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
         {isBiltong && (
           <>
-            <div>
+            <div className="order-7 lg:order-none">
               <label className="text-label text-slate-700 mb-3 block">Moisture Preference</label>
               <select
                 value={moisturePreference}
@@ -412,7 +412,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               </select>
             </div>
 
-            <div>
+            <div className="order-7 lg:order-none">
               <label className="text-label text-slate-700 mb-3 block">Fat Preference</label>
               <select
                 value={fatPreference}
@@ -428,7 +428,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         )}
 
         {isBulk && (
-          <div>
+          <div className="order-7 lg:order-none">
             <label className="text-label text-slate-700 mb-3 flex items-center gap-2">
               Household size (optional)
               <TooltipProvider>
@@ -467,7 +467,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         )}
 
         {isHamper && (
-          <div>
+          <div className="order-7 lg:order-none">
             <label className="text-label text-slate-700 mb-3 block">Special requests (optional)</label>
             <textarea
               value={specialRequests}
@@ -486,8 +486,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           </div>
         )}
 
-        <div className="bg-slate-50 rounded-xl p-4">
-          <div className="flex justify-between items-center mb-2">
+        <div className="order-8 lg:order-none bg-slate-50 rounded-xl p-3 lg:p-4">
+          <div className="flex justify-between items-center mb-1 lg:mb-2">
             <span className="font-semibold text-brand-primary">Estimated Total:</span>
             <span className="text-2xl font-bold text-brand-primary">{formatPrice(displayTotal)}</span>
           </div>
@@ -515,7 +515,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       </div>
 
       {/* Action Buttons */}
-      <div className="space-y-4">
+      <div className="order-9 lg:order-none space-y-4">
         <Button
           size="lg"
           className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-semibold"
@@ -528,7 +528,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       </div>
 
       {/* Product Notes */}
-      <div className="bg-slate-50 rounded-xl p-4">
+      <div className="order-12 lg:order-none bg-slate-50 rounded-xl p-4">
         <p className="text-sm text-slate-700">
           <strong>Note:</strong> All products are cut fresh to order. Images are for illustrative purposes only and may
           differ slightly from the actual product. Actual weight may vary due to natural product variation.
@@ -537,12 +537,12 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
       {/* Stock Status */}
       {selectedVariant?.availableForSale ? (
-        <div className="flex items-center text-brand-success">
+        <div className="order-4 lg:order-none flex items-center text-brand-success">
           <div className="w-2 h-2 bg-brand-success rounded-full mr-2"></div>
           <span className="text-sm font-semibold">In Stock</span>
         </div>
       ) : (
-        <div className="flex items-center text-brand-danger">
+        <div className="order-4 lg:order-none flex items-center text-brand-danger">
           <div className="w-2 h-2 bg-brand-danger rounded-full mr-2"></div>
           <span className="text-sm font-semibold">Out of Stock</span>
         </div>
